@@ -1,3 +1,6 @@
+@import './pages/server-error.pcss';
+@import './vars.pcss';
+
 html, body {
     width: 100%;
     height: 100%;
@@ -10,11 +13,11 @@ html, body {
 }
 
 body {
-    background-color: #171821;
-    color: #fff;
+    background-color: var(--black);
+    color: var(--white);
 }
 
-.root {
+#root {
     width: 100%;
     height: 100%;
 }
@@ -30,39 +33,4 @@ body {
     clip-path: inset(100%);
     clip: rect(0 0 0 0);
     overflow: hidden;
-}
-
-
-/* Errors */
-.server-error {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    &__title {
-        font-weight: 500;
-        font-size: 40px;
-        line-height: 40px;
-
-        margin: 0 0 20px;
-    }
-
-    &__subtitle {
-        font-weight: 500;
-        font-size: 20px;
-        line-height: 20px;
-        margin: 0 0 69px;
-    }
-
-    &__link {
-        font-weight: 500;
-        font-size: 11px;
-        line-height: 11px;
-        color: #25D366;
-        text-decoration: none;
-    }
 }
