@@ -1,5 +1,10 @@
-@import './pages/server-error.pcss';
+@import './vendor/normalize.css';
+@import './vendor/Inter_Web/inter.css';
+@import './pages/server-error.scss';
 @import './vars.pcss';
+@import './components/login/login.scss';
+@import './components/register/register.scss';
+@import './components/auth.scss';
 
 html, body {
     width: 100%;
@@ -20,6 +25,15 @@ body {
 #root {
     width: 100%;
     height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'Inter', serif;
+    font-style: normal;
+    font-weight: 500;
 }
 
 .visually-hidden {

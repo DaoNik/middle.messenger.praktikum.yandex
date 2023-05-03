@@ -11,7 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.3",
     "parcel": "^2.8.3",
-    "postcss-nested": "^6.0.1"
+    "postcss-comment": "^2.0.0",
+    "postcss-nested": "^6.0.1",
+    "postcss-scss": "^4.0.6",
+    "postcss-strip-inline-comments": "^0.1.5"
   }
 }
