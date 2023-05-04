@@ -1,7 +1,10 @@
 @import './vendor/normalize.css';
 @import './vendor/Inter_Web/inter.css';
-@import './pages/server-error.scss';
 @import './vars.pcss';
+
+@import './pages/server-error.scss';
+@import './pages/profile/profile.scss';
+
 @import './components/login/login.scss';
 @import './components/register/register.scss';
 @import './components/auth.scss';
@@ -26,10 +29,10 @@ body {
     width: 100%;
     height: 100%;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    //display: flex;
+    //flex-direction: column;
+    //justify-content: center;
+    //align-items: center;
 
     font-family: 'Inter', serif;
     font-style: normal;
