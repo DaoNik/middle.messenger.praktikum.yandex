@@ -8,7 +8,31 @@
 <body>
   <div id="root">
     <h1 class="visually-hidden">Messenger</h1>
-    <section class="profile">
+    <div class="overlay">
+  <section class="dialog">
+    <h3 class="dialog__title">Загрузите файл</h3>
+    <label class="dialog__load-label">
+      <input class="dialog__load-input" type="file" name="file">
+      <span class="dialog__load-text">Выбрать файл на компьютере</span>
+    </label>
+<!--    <label for="upload"></label>-->
+<!--    <input type="file" name="photo" id="upload">-->
+    <button class="dialog__submit">Поменять</button>
+  </section>
+</div>
+
+<!--    <div class="overlay">
+  <section class="dialog">
+    <h3 class="dialog__title">Добавить пользователя</h3>
+    <label class="dialog__label">
+      <span class="dialog__label-text">Логин</span>
+      <input class="dialog__input" placeholder="Логин" type="text">
+    </label>
+    <button class="dialog__submit">Добавить</button>
+  </section>
+</div>
+-->
+<!--    <section class="profile">
   <img src="assets/no-avatar.svg" class="profile__image" alt="ваш аватар">
   <h2 class="profile__title">Иван</h2>
   <table class="profile__table profile__table_big">
@@ -58,7 +82,7 @@
 <aside class="sidebar">
   <img src="assets/exit.svg" alt="Вернуться к чатам" class="sidebar__image">
 </aside>
-
+-->
 <!--    <section class="auth register">
   <h2 class="auth__title">Регистрация</h2>
   <form class="auth__form">

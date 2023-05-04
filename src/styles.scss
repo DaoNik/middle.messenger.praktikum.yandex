@@ -8,6 +8,8 @@
 @import './components/login/login.scss';
 @import './components/register/register.scss';
 @import './components/auth.scss';
+@import './components/dialog';
+@import './components/load-file-dialog/load-file-dialog.scss';
 
 html, body {
     width: 100%;
