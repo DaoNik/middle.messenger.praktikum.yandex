@@ -203,7 +203,7 @@
   &__message-with-text {
     border: 1px solid #B5BFD633;
     background: var(--light-black);
-    padding: 11px;
+    padding: 11px 11px 15px 11px;
     display: flex;
     column-gap: 14px;
   }
@@ -224,12 +224,6 @@
     color: #999999;
   }
 
-  &__spacer {
-    width: 37.3px;
-    height: 9px;
-    display: inline-block;
-  }
-
   &__message-with-photo &__message-time {
     background: #52525280;
     color: #fff;
@@ -241,7 +235,11 @@
     background: #7A7C8D80;
   }
 
-  &__user-messages &__message-time {
+  &__message-with-text &__message-time {
+    bottom: 4px;
+  }
+
+  &__message_from-user &__message-time {
     color: var(--green);
   }
 
