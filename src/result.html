@@ -88,8 +88,8 @@
     </div>
     <div class="chat__messages">
       <p class="chat__date">19 июля</p>
-      <div class="chat__messages-to-user">
-        <div class="chat__message chat__message-with-text">
+        <div class="chat__message-container">
+        <div class="chat__message chat__message-with-text chat__message_to-user">
           <p class="chat__message-content">
             Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой.
 
@@ -97,13 +97,15 @@
           </p>
           <span class="chat__message-time">11:56</span>
         </div>
-        <div class="chat__message chat__message-with-photo">
-          <img class="chat__message-photo" src="assets/camera.png" alt="камера">
-          <span class="chat__message-time">11:56</span>
         </div>
-      </div>
-      <div class="chat__user-messages">
-        <div class="chat__message chat__message-with-text">
+        <div class="chat__message-container">
+          <div class="chat__message chat__message-with-photo chat__message_to-user">
+            <img class="chat__message-photo" src="assets/camera.png" alt="камера">
+            <span class="chat__message-time">11:56</span>
+          </div>
+        </div>
+      <div class="chat__message-container">
+        <div class="chat__message chat__message-with-text chat__message_from-user">
           <p class="chat__message-content">
             Круто!
           </p>
