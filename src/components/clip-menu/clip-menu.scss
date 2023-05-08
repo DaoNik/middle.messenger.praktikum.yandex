@@ -1,0 +1,28 @@
+.clip-menu {
+  position: absolute;
+  bottom: 65px;
+  left: 321px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  background: var(--light-black);
+  padding: 15px;
+  row-gap: 16px;
+
+  &__button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    line-height: 14px;
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+    padding: 0;
+  }
+
+  &__icon {
+    width: 22px;
+    height: 22px;
+  }
+}
