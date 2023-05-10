@@ -168,6 +168,7 @@
     grid-auto-rows: min-content;
     margin-top: auto;
     row-gap: 10px;
+    max-height: 100%;
   }
 
   &__date {
@@ -204,8 +205,6 @@
     border: 1px solid #B5BFD633;
     background: var(--light-black);
     padding: 11px 11px 15px 11px;
-    display: flex;
-    column-gap: 14px;
   }
 
   &__message-content {
