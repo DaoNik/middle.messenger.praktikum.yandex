@@ -8,7 +8,7 @@
 <body>
   <div id="root">
     <h1 class="visually-hidden">Messenger</h1>
-    <div class="wrapper">
+<!--    <div class="wrapper">
   <aside class="chats">
     <a class="chats__profile-link" href="/">Профиль<span class="chats__profile-arrow"> > </span></a>
     <input class="chats__search" placeholder="Поиск" type="text">
@@ -128,33 +128,33 @@
   </section>
 </div>
 
-
-    <section class="clip-menu">
-  <button class="clip-menu__button">
-    <img src="assets/photo-icon.svg" alt="фото" class="clip-menu__icon">
+-->
+<!--    <section class="menu clip-menu">
+  <button class="menu__button">
+    <img src="assets/photo-icon.svg" alt="фото" class="menu__icon">
     Фото или Видео
   </button>
-  <button class="clip-menu__button">
-    <img src="assets/file-icon.svg" alt="файл" class="clip-menu__icon">
+  <button class="menu__button">
+    <img src="assets/file-icon.svg" alt="файл" class="menu__icon">
     Файл
   </button>
-  <button class="clip-menu__button">
-    <img src="assets/location-icon.svg" alt="локация" class="clip-menu__icon">
+  <button class="menu__button">
+    <img src="assets/location-icon.svg" alt="локация" class="menu__icon">
     Локация
   </button>
 </section>
-
-    <section class="chat-menu">
-  <button class="chat-menu__button">
-    <img src="assets/plus.svg" alt="добавить" class="chat-menu__icon">
+-->
+<!--    <section class="menu chat-menu">
+  <button class="menu__button">
+    <img src="assets/plus.svg" alt="добавить" class="menu__icon">
     Добавить пользователя
   </button>
-  <button class="chat-menu__button">
-    <img src="assets/close.svg" alt="удалить" class="chat-menu__icon">
+  <button class="menu__button">
+    <img src="assets/close.svg" alt="удалить" class="menu__icon">
     Удалить пользователя
   </button>
 </section>
-
+-->
 <!--    <div class="overlay">
   <section class="dialog">
     <h3 class="dialog__title">Загрузите файл</h3>
@@ -177,7 +177,7 @@
   </section>
 </div>
 -->
-<!--    <section class="profile">
+    <section class="profile">
   <img src="assets/no-avatar.svg" class="profile__image" alt="ваш аватар">
   <h2 class="profile__title">Иван</h2>
   <table class="profile__table profile__table_big">
@@ -227,7 +227,61 @@
 <aside class="sidebar">
   <img src="assets/exit.svg" alt="Вернуться к чатам" class="sidebar__image">
 </aside>
+
+<!--    <div class="overlay">
+  <section class="auth dialog change-data">
+    <h2 class="auth__title">Изменение данных</h2>
+    <form class="auth__form">
+      <label class="auth__label">
+        <span class="auth__label-text">Почта</span>
+        <input class="auth__input" placeholder="Почта" type="text">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Логин</span>
+        <input class="auth__input" placeholder="Логин" type="text">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Имя</span>
+        <input class="auth__input" placeholder="Имя" type="text">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Фамилия</span>
+        <input class="auth__input" placeholder="Фамилия" type="text">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Телефон</span>
+        <input class="auth__input" placeholder="Телефон" type="text">
+      </label>
+      <div class="auth__actions">
+        <button class="auth__submit">Сохранить</button>
+      </div>
+    </form>
+  </section>
+</div>
 -->
+    <div class="overlay">
+  <section class="auth dialog change-password">
+    <h2 class="auth__title">Изменение пароля</h2>
+    <form class="auth__form">
+      <label class="auth__label">
+        <span class="auth__label-text">Старый пароль</span>
+        <input class="auth__input" placeholder="Старый пароль" type="password">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Новый пароль</span>
+        <input class="auth__input" placeholder="Новый пароль" type="password">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Новый пароль (ещё раз)</span>
+        <input class="auth__input" placeholder="Новый пароль (ещё раз)" type="password">
+      </label>
+      <div class="auth__actions">
+        <button class="auth__submit">Сохранить</button>
+      </div>
+    </form>
+  </section>
+</div>
+
 <!--    <section class="auth register">
   <h2 class="auth__title">Регистрация</h2>
   <form class="auth__form">

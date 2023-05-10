@@ -11,7 +11,7 @@
   justify-content: center;
 
   //opacity: 1;
-  transition: visibility 0.3s, opacity 0.3s linear;
+  //transition: visibility 0.3s, opacity 0.3s linear;
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -63,7 +63,6 @@
 
   &__submit {
     width: 100%;
-    margin-bottom: 14px;
     border-radius: 8px;
     background: var(--green);
     padding: 12px 0;
