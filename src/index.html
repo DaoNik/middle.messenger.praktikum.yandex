@@ -8,18 +8,349 @@
 <body>
   <div id="root">
     <h1 class="visually-hidden">Messenger</h1>
-<!--    {{>/pages/chats/chats.html}}-->
-<!--    {{>/components/clip-menu/clip-menu.html}}-->
-<!--    {{>/components/chat-menu/chat-menu.html}}-->
-<!--    {{>/components/load-file-dialog/load-file-dialog.html}}-->
-<!--    {{>/components/add-user-dialog/add-user-dialog.html}}-->
-    {{>/pages/profile/profile.html}}
-<!--    {{>/components/change-user-data-dialog/change-user-data-dialog.html}}-->
-    {{>/components/change-password-dialog/change-password-dialog.html}}
-<!--    {{>/components/register/register.html}}-->
-<!--    {{>/components/login/login.html}}-->
-<!--    {{>/pages/500/500.html}}-->
-<!--    {{>/pages/404/404.html}}-->
+<!--    <div class="wrapper">
+  <aside class="chats">
+    <a class="chats__profile-link" href="/">Профиль<span class="chats__profile-arrow"> > </span></a>
+    <input class="chats__search" placeholder="Поиск" type="text">
+    <ul class="chats__list">
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus et inventore placeat quaerat, sunt vero?</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+      <li class="chats__list-item">
+        <h3 class="chats__item-title">User name</h3>
+        <img class="chats__item-image" src="assets/no-avatar.svg" alt="аватар">
+        <p class="chats__item-message">Последнее сообщение</p>
+        <span class="chats__item-time">10:49</span>
+        <span class="chats__message-num">2</span>
+      </li>
+    </ul>
+  </aside>
+  <section class="chat">
+    <div class="chat__header">
+      <h2 class="chat__name">User name</h2>
+      <img class="chat__avatar" src="assets/no-avatar.svg"/>
+      <button class="chat__menu">
+        <img class="chat__menu-image" src="assets/menu.svg" alt="меню">
+      </button>
+    </div>
+    <div class="chat__messages">
+      <p class="chat__date">19 июля</p>
+      <div class="chat__message-container">
+      <div class="chat__message chat__message-with-text chat__message_to-user">
+        <p class="chat__message-content">
+          Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой.
+
+          Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.
+        </p>
+        <div class="chat__message-time">11:56</div>
+      </div>
+      </div>
+      <div class="chat__message-container">
+        <div class="chat__message chat__message-with-photo chat__message_to-user">
+          <img class="chat__message-photo" src="assets/camera.png" alt="камера">
+          <span class="chat__message-time">11:56</span>
+        </div>
+      </div>
+      <div class="chat__message-container">
+        <div class="chat__message chat__message-with-text chat__message_from-user">
+          <p class="chat__message-content">
+            Круто!
+          </p>
+          <div class="chat__message-time">
+            <img class="chat__message-status" src="assets/reading_message.svg">
+            12:00
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat__add-text">
+      <buttton class="chat__button-attach">
+        <img src="assets/clip.svg" alt="прикрепить файл" class="chat__image-clip">
+      </buttton>
+      <input type="text" placeholder="Сообщение" class="chat__input" name="message">
+      <button class="chat__button-send">
+        <img src="assets/exit.svg" alt="отправить" class="chat__image-send">
+      </button>
+    </div>
+  </section>
+</div>
+
+-->
+<!--    <section class="menu clip-menu">
+  <button class="menu__button">
+    <img src="assets/photo-icon.svg" alt="фото" class="menu__icon">
+    Фото или Видео
+  </button>
+  <button class="menu__button">
+    <img src="assets/file-icon.svg" alt="файл" class="menu__icon">
+    Файл
+  </button>
+  <button class="menu__button">
+    <img src="assets/location-icon.svg" alt="локация" class="menu__icon">
+    Локация
+  </button>
+</section>
+-->
+<!--    <section class="menu chat-menu">
+  <button class="menu__button">
+    <img src="assets/plus.svg" alt="добавить" class="menu__icon">
+    Добавить пользователя
+  </button>
+  <button class="menu__button">
+    <img src="assets/close.svg" alt="удалить" class="menu__icon">
+    Удалить пользователя
+  </button>
+</section>
+-->
+<!--    <div class="overlay">
+  <section class="dialog">
+    <h3 class="dialog__title">Загрузите файл</h3>
+    <label class="dialog__load-label">
+      <input class="dialog__load-input" type="file" name="avatar">
+      <span class="dialog__load-text">Выбрать файл на компьютере</span>
+    </label>
+    <button class="dialog__submit">Поменять</button>
+  </section>
+</div>
+-->
+<!--    <div class="overlay">
+  <section class="dialog">
+    <h3 class="dialog__title">Добавить пользователя</h3>
+    <label class="dialog__label">
+      <span class="dialog__label-text">Логин</span>
+      <input class="dialog__input" placeholder="Логин" type="text">
+    </label>
+    <button class="dialog__submit">Добавить</button>
+  </section>
+</div>
+-->
+    <section class="profile">
+  <img src="assets/no-avatar.svg" class="profile__image" alt="ваш аватар">
+  <h2 class="profile__title">Иван</h2>
+  <table class="profile__table profile__table_big">
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">Почта</td>
+      <td class="profile__table-cell">pochta@yandex.ru</td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">Логин</td>
+      <td class="profile__table-cell">ivanivanov</td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">Имя</td>
+      <td class="profile__table-cell">Иван</td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">Фамилия</td>
+      <td class="profile__table-cell">Иванов</td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">Имя в чате</td>
+      <td class="profile__table-cell">Иван</td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">Телефон</td>
+      <td class="profile__table-cell">+7 (909) 967 30 30</td>
+    </tr>
+  </table>
+  <table class="profile__table profile__table_small">
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">
+        <button class="profile__button">Изменить данные</button>
+      </td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">
+        <button class="profile__button">Изменить пароль</button>
+      </td>
+    </tr>
+    <tr class="profile__table-row">
+      <td class="profile__table-cell">
+        <button class="profile__button profile__button_warn">Выйти</button>
+      </td>
+    </tr>
+  </table>
+</section>
+<aside class="sidebar">
+  <img src="assets/exit.svg" alt="Вернуться к чатам" class="sidebar__image">
+</aside>
+
+<!--    <div class="overlay">
+  <section class="auth dialog change-data">
+    <h2 class="auth__title">Изменение данных</h2>
+    <form class="auth__form">
+      <label class="auth__label">
+        <span class="auth__label-text">Почта</span>
+        <input class="auth__input" placeholder="Почта" type="text" name="email">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Логин</span>
+        <input class="auth__input" placeholder="Логин" type="text" name="login">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Имя</span>
+        <input class="auth__input" placeholder="Имя" type="text" name="first_name">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Фамилия</span>
+        <input class="auth__input" placeholder="Фамилия" type="text" name="second_name">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Телефон</span>
+        <input class="auth__input" placeholder="Телефон" type="text" name="phone">
+      </label>
+      <div class="auth__actions">
+        <button class="auth__submit">Сохранить</button>
+      </div>
+    </form>
+  </section>
+</div>
+-->
+    <div class="overlay">
+  <section class="auth dialog change-password">
+    <h2 class="auth__title">Изменение пароля</h2>
+    <form class="auth__form">
+      <label class="auth__label">
+        <span class="auth__label-text">Старый пароль</span>
+        <input class="auth__input" placeholder="Старый пароль" type="password" name="oldPassword">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Новый пароль</span>
+        <input class="auth__input" placeholder="Новый пароль" type="password" name="newPassword">
+      </label>
+      <label class="auth__label">
+        <span class="auth__label-text">Новый пароль (ещё раз)</span>
+        <input class="auth__input" placeholder="Новый пароль (ещё раз)" type="password">
+      </label>
+      <div class="auth__actions">
+        <button class="auth__submit">Сохранить</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!--    <section class="auth register">
+  <h2 class="auth__title">Регистрация</h2>
+  <form class="auth__form">
+    <label class="auth__label">
+      <span class="auth__label-text">Почта</span>
+      <input class="auth__input" placeholder="Почта" type="text" name="email">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Логин</span>
+      <input class="auth__input" placeholder="Логин" type="text" name="login">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Имя</span>
+      <input class="auth__input" placeholder="Имя" type="text" name="first_name">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Фамилия</span>
+      <input class="auth__input" placeholder="Фамилия" type="text" name="second_name">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Телефон</span>
+      <input class="auth__input" placeholder="Телефон" type="text" name="phone">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Пароль</span>
+      <input class="auth__input" placeholder="Пароль" type="password" name="password">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Пароль (ещё раз)</span>
+      <input class="auth__input" placeholder="Пароль (ещё раз)" type="password">
+    </label>
+    <div class="auth__actions">
+      <button class="auth__submit">Зарегистрироваться</button>
+      <a class="auth__link" href="/">Войти</a>
+    </div>
+  </form>
+</section>
+-->
+<!--    <section class="auth login">
+  <h2 class="auth__title">Вход</h2>
+  <form class="auth__form">
+    <label class="auth__label">
+      <span class="auth__label-text">Логин</span>
+      <input class="auth__input" placeholder="Логин" type="text" name="login">
+    </label>
+    <label class="auth__label">
+      <span class="auth__label-text">Пароль</span>
+      <input class="auth__input" placeholder="Пароль" type="password" name="password">
+    </label>
+    <div class="auth__actions">
+      <button class="auth__submit">Авторизоваться</button>
+      <a class="auth__link" href="/">Нет аккаунта?</a>
+    </div>
+  </form>
+</section>
+-->
+<!--    <div class="server-error">
+  <h2 class="server-error__title">500</h2>
+  <p class="server-error__subtitle">Мы уже фиксим</p>
+  <a href="/" class="server-error__link">Назад к чатам</a>
+</div>
+
+-->
+<!--    <div class="server-error">
+  <h2 class="server-error__title">404</h2>
+  <p class="server-error__subtitle">Не туда попали</p>
+  <a href="/" class="server-error__link">Назад к чатам</a>
+</div>
+-->
   </div>
 <!--  <script src="./template.js"></script>-->
 </body>
