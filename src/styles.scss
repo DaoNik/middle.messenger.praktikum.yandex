@@ -6,8 +6,8 @@
 @import './pages/profile/profile.scss';
 @import './pages/chats/chats.scss';
 
-@import './components/login/login.scss';
-@import './components/register/register.scss';
+@import 'components/login-dialog/login-dialog';
+@import 'components/register-dialog/register-dialog';
 @import './components/auth.scss';
 @import './components/dialog';
 @import './components/load-file-dialog/load-file-dialog.scss';
