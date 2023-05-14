@@ -1,47 +1,53 @@
 const fs = require('fs');
 
+function wrapper(template) {
+  return `
+    export default \`${template}\`
+  `;
+}
+
 function template(path) {
   const stringTmpl = fs.readFileSync(`${path}`, 'utf8');
 
   const keys = stringTmpl.match(/{{>.*}}/gm);
   let result = stringTmpl;
 
-  const newPath = path.replace('.html', '.template.html');
+  const newPath = path.replace('.html', '.js');
 
   if (!keys || keys.length === 0) {
-    fs.writeFile(`${newPath}`, result, 'utf8', () => {});
+    fs.writeFile(`${newPath}`, wrapper(result), 'utf8', () => {});
     return;
   }
 
   keys
-    .map(key => key.slice(3, key.length - 2))
+    .map((key) => key.slice(3, key.length - 2))
     .forEach((key) => {
       const file = fs.readFileSync(`${__dirname}${key}`, 'utf8');
-      const regExp = new RegExp(`{{>${key}}}`, 'gm')
+      const regExp = new RegExp(`{{>${key}}}`, 'gm');
       result = result.replace(regExp, file);
     });
 
-  fs.writeFile(`${newPath}`, result, 'utf8', () => {});
+  fs.writeFile(`${newPath}`, wrapper(result), 'utf8', () => {});
 
-  return result;
+  return wrapper(result);
 }
 
-fs.promises.readdir(`${__dirname}/pages`).then(directories => {
+fs.promises.readdir(`${__dirname}/pages`).then((directories) => {
   for (const directory of directories) {
-    if (directory.indexOf('.html') !== -1 && directory.indexOf('.template.html') === -1) {
+    if (directory.indexOf('.html') !== -1) {
       template(directory);
     } else if (!directory.match(/.+\..+/)) {
-      fs.promises.readdir(`${__dirname}/pages/${directory}`).then(files => {
+      fs.promises.readdir(`${__dirname}/pages/${directory}`).then((files) => {
         for (const file of files) {
-          if (file.indexOf('.html') !== -1 && file.indexOf('.template.html') === -1) {
+          if (file.indexOf('.html') !== -1) {
             template(`${__dirname}/pages/${directory}/${file}`);
           }
         }
-      })
+      });
     }
   }
-})
+});
 
-template(`${__dirname}/main.html`);
+// template(`${__dirname}/main.html`);
 
 module.exports = template;

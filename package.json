@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "### Откройте pull request в ветку main из ветки, где вы разрабатывали проект, и добавьте ссылку на этот pr в README.md в ветке main.  ### ВАЖНО: pull request должен называться “Sprint i” (i — номер спринта).",
   "scripts": {
-    "dev": "node ./src/template.js && parcel src/main.template.html --no-cache",
-    "build": "node ./src/template.js && parcel build src/main.template.html",
-    "start": "node ./src/template.js && parcel build src/main.template.html && node ./src/app.js"
+    "dev": "node ./src/template.js && parcel ./src/main.html --no-cache",
+    "build": "node ./src/template.js && parcel build ./src/main.html",
+    "start": "node ./src/template.js && parcel build ./src/main.html && node ./src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +16,8 @@
     "postcss-comment": "^2.0.0",
     "postcss-nested": "^6.0.1",
     "postcss-scss": "^4.0.6",
-    "postcss-strip-inline-comments": "^0.1.5"
+    "postcss-strip-inline-comments": "^0.1.5",
+    "prettier": "^2.8.8"
   },
   "dependencies": {
     "express": "^4.18.2"

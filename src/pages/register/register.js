@@ -1,4 +1,5 @@
-<section class="auth register">
+
+    export default `<section class="auth register">
   <h2 class="auth__title">Регистрация</h2>
   <form class="auth__form">
     <label class="auth__label">
@@ -31,8 +32,10 @@
     </label>
     <div class="auth__actions">
       <button class="auth__submit">Зарегистрироваться</button>
-      <a class="auth__link" href="/">Войти</a>
+      <a class="auth__link" href="/login">Войти</a>
     </div>
   </form>
 </section>
 
+`
+  

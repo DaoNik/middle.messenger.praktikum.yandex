@@ -1,5 +1,6 @@
-<section class="profile">
-  <img src="assets/no-avatar.svg" class="profile__image" alt="ваш аватар">
+
+    export default `<section class="profile">
+  <img src="../../assets/no-avatar.svg" class="profile__image" alt="ваш аватар" />
   <h2 class="profile__title">Иван</h2>
   <table class="profile__table profile__table_big">
     <tr class="profile__table-row">
@@ -46,7 +47,9 @@
   </table>
 </section>
 <aside class="sidebar">
-  <img src="assets/exit.svg" alt="Вернуться к чатам" class="sidebar__image">
+  <a href="/chats">
+    <img src="../../assets/exit.svg" alt="Вернуться к чатам" class="sidebar__image"/>
+  </a>
 </aside>
 <div class="overlay">
   <section class="auth dialog change-password">
@@ -71,3 +74,5 @@
   </section>
 </div>
 
+`
+  
