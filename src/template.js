@@ -48,6 +48,4 @@ fs.promises.readdir(`${__dirname}/pages`).then((directories) => {
   }
 });
 
-// template(`${__dirname}/main.html`);
-
 module.exports = template;
