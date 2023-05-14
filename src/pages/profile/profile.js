@@ -1,6 +1,6 @@
 
     export default `<section class="profile">
-  <img src="../../assets/no-avatar.svg" class="profile__image" alt="ваш аватар" />
+  <img src="./no-avatar.dc86bcea.svg" class="profile__image" alt="ваш аватар" />
   <h2 class="profile__title">Иван</h2>
   <table class="profile__table profile__table_big">
     <tr class="profile__table-row">
@@ -48,7 +48,7 @@
 </section>
 <aside class="sidebar">
   <a href="/chats">
-    <img src="../../assets/exit.svg" alt="Вернуться к чатам" class="sidebar__image"/>
+    <img src="./exit.19cdc486.svg" alt="Вернуться к чатам" class="sidebar__image"/>
   </a>
 </aside>
 <div class="overlay">

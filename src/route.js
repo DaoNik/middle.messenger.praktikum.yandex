@@ -5,6 +5,18 @@ import * as pageChats from './pages/chats/chats';
 import * as pageLogin from './pages/login/login';
 import * as pageRegister from './pages/register/register';
 
+import './assets/clip.svg';
+import './assets/camera.png';
+import './assets/close.svg';
+import './assets/exit.svg';
+import './assets/file-icon.svg';
+import './assets/location-icon.svg';
+import './assets/menu.svg';
+import './assets/no-avatar.svg';
+import './assets/photo-icon.svg';
+import './assets/plus.svg';
+import './assets/reading_message.svg';
+
 const pageNotFound = { route: '404', content: page404Content.default };
 
 const pages = [
