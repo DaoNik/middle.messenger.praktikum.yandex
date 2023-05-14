@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "### Откройте pull request в ветку main из ветки, где вы разрабатывали проект, и добавьте ссылку на этот pr в README.md в ветке main.  ### ВАЖНО: pull request должен называться “Sprint i” (i — номер спринта).",
   "scripts": {
-    "dev": "node ./src/template.js && parcel src/index.html --no-cache",
-    "build": "node ./src/template.js && parcel build src/index.html",
-    "start": "node ./src/template.js && parcel build src/index.html && node ./src/app.js"
+    "dev": "parcel ./src/index.html --no-cache",
+    "build": "parcel build ./src/index.html",
+    "start": "parcel build ./src/index.html && node ./src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.3",
     "parcel": "^2.8.3",
+    "parcel-transformer-bubbles": "file:src/libs/parcel-transformer-bubbles",
     "postcss-comment": "^2.0.0",
     "postcss-nested": "^6.0.1",
     "postcss-scss": "^4.0.6",

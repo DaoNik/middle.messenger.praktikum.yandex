@@ -1,8 +1,0 @@
-
-    export default `<div class="server-error">
-  <h2 class="server-error__title">404</h2>
-  <p class="server-error__subtitle">Не туда попали</p>
-  <a href="/chats" class="server-error__link">Назад к чатам</a>
-</div>
-`
-  
