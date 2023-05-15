@@ -8,7 +8,7 @@
     "start": "parcel build ./src/index.html && node ./src/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nikita Taranin",
   "license": "ISC",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.3",
