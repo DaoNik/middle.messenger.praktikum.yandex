@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1 class="visually-hidden">Messenger</h1>
-<div id="root">
+<main id="root">
   <section class="profile">
     <img src="../../assets/no-avatar.svg" class="profile__image" alt="ваш аватар" />
     <h2 class="profile__title">Иван</h2>
@@ -40,17 +40,17 @@
     <table class="profile__table profile__table_small">
       <tr class="profile__table-row">
         <td class="profile__table-cell">
-          <button class="profile__button">Изменить данные</button>
+          <button class="profile__button" type="button">Изменить данные</button>
         </td>
       </tr>
       <tr class="profile__table-row">
         <td class="profile__table-cell">
-          <button class="profile__button">Изменить пароль</button>
+          <button class="profile__button" type="button">Изменить пароль</button>
         </td>
       </tr>
       <tr class="profile__table-row">
         <td class="profile__table-cell">
-          <button class="profile__button profile__button_warn">Выйти</button>
+          <button class="profile__button profile__button_warn" type="button">Выйти</button>
         </td>
       </tr>
     </table>
@@ -61,6 +61,7 @@
     </a>
   </aside>
   {{>/components/change-password-dialog/change-password-dialog.html}}
-</div>
+  {{>/components/change-user-data-dialog/change-user-data-dialog.html}}
+</main>
 </body>
 </html>

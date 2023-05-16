@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1 class="visually-hidden">Messenger</h1>
-<div id="root">
+<main id="root">
   <div class="wrapper">
     <aside class="chats">
       <a class="chats__profile-link" href="../profile/profile.html">Профиль<span class="chats__profile-arrow"> > </span></a>
@@ -82,7 +82,7 @@
       <div class="chat__header">
         <h2 class="chat__name">User name</h2>
         <img class="chat__avatar" src="../../assets/no-avatar.svg"/>
-        <button class="chat__menu">
+        <button class="chat__menu" type="button">
           <img class="chat__menu-image" src="../../assets/menu.svg" alt="меню">
         </button>
       </div>
@@ -117,16 +117,16 @@
         </div>
       </div>
       <div class="chat__add-text">
-        <buttton class="chat__button-attach">
+        <buttton class="chat__button-attach" type="button">
           <img src="../../assets/clip.svg" alt="прикрепить файл" class="chat__image-clip">
         </buttton>
         <input type="text" placeholder="Сообщение" class="chat__input" name="message">
-        <button class="chat__button-send">
+        <button class="chat__button-send" type="button">
           <img src="../../assets/exit.svg" alt="отправить" class="chat__image-send">
         </button>
       </div>
     </section>
   </div>
-</div>
+</main>
 </body>
 </html>
