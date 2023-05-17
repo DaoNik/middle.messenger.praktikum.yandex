@@ -1,0 +1,81 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  display: flex;
+  //visibility: visible;
+  align-items: center;
+  justify-content: center;
+
+  //opacity: 1;
+  //transition: visibility 0.3s, opacity 0.3s linear;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 340px;
+  position: absolute;
+  background: var(--light-black);
+  padding: 40px 30px;
+  border-radius: 12px;
+  cursor: auto;
+
+  &__title {
+    margin: 0 0 24px;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: center;
+  }
+
+  &__label {
+    text-align: start;
+    font-size: 9px;
+    line-height: 9px;
+    color: #999999;
+    height: 37px;
+  }
+
+  &__label-text {
+    visibility: hidden;
+  }
+
+  &__input {
+    margin-top: 8px;
+    width: 100%;
+    background: none;
+    font-size: 13px;
+    line-height: 13px;
+    color: var(--white);
+    border: none;
+    border-bottom: 1px solid var(--green);
+    padding: 0 0 7px;
+  }
+
+  &__input:focus {
+    outline: none;
+  }
+
+  &__submit {
+    width: 100%;
+    border-radius: 8px;
+    background: var(--green);
+    padding: 12px 0;
+    color: var(--white);
+    border: none;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 13px;
+
+    margin-top: 33px;
+  }
+
+  &__submit:hover {
+    cursor: pointer;
+  }
+}

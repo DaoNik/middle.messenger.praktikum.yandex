@@ -1,0 +1,61 @@
+@import './vendor/normalize.css';
+@import './vendor/Inter_Web/inter.css';
+@import './vars.pcss';
+
+@import './pages/server-error.scss';
+@import './pages/profile/profile.scss';
+@import './pages/chats/chats.scss';
+
+@import './components/login-dialog/login-dialog';
+@import './components/register-dialog/register-dialog';
+@import './components/auth.scss';
+@import './components/dialog';
+@import './components/load-file-dialog/load-file-dialog.scss';
+@import './components/clip-menu/clip-menu.scss';
+@import './components/chat-menu/chat-menu.scss';
+@import './components/menu.scss';
+@import './components/change-user-data-dialog/change-user-data-dialog.scss';
+@import './components/change-password-dialog/change-password-dialog.scss';
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'Inter', serif;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    white-space: nowrap;
+    clip-path: inset(100%);
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+}

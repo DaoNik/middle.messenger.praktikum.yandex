@@ -1,0 +1,26 @@
+.server-error {
+    text-align: center;
+
+    &__title {
+        font-weight: 500;
+        font-size: 40px;
+        line-height: 40px;
+
+        margin: 0 0 20px;
+    }
+
+    &__subtitle {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 20px;
+        margin: 0 0 69px;
+    }
+
+    &__link {
+        font-weight: 500;
+        font-size: 11px;
+        line-height: 11px;
+        color: var(--green);
+        text-decoration: none;
+    }
+}
