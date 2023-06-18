@@ -12,7 +12,7 @@ export class Register extends Module {
     super();
   }
 
-  init() {}
+  init(): void {}
 
   componentDidMount() {
     super.componentDidMount();

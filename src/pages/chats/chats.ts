@@ -23,24 +23,11 @@ export class Chats extends Module {
     super();
   }
 
-  init() {
-    this.form = new Form({
-      controls: new Map<string, IFormControl>([
-        [
-          'message',
-          {
-            value: '',
-            validators: [isNotEmptyValidator],
-            valid: false,
-            error: '',
-          },
-        ],
-      ]),
-      valid: false,
-    });
-  }
+  init() {}
 
   componentDidMount(): void {
+    super.componentDidMount();
+
     document
       .querySelector('button.chat__menu')!
       .addEventListener('click', () => {
@@ -84,7 +71,20 @@ export class Chats extends Module {
       });
     }
 
-    super.componentDidMount();
+    this.form = new Form({
+      controls: new Map<string, IFormControl>([
+        [
+          'message',
+          {
+            value: '',
+            validators: [isNotEmptyValidator],
+            valid: false,
+            error: '',
+          },
+        ],
+      ]),
+      valid: false,
+    });
 
     this.form.init('send-message', this.formSubmit);
   }

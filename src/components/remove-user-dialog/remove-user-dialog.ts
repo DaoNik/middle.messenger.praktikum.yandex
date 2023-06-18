@@ -12,7 +12,9 @@ export class RemoveUserDialog extends Component {
     super();
   }
 
-  init() {
+  init() {}
+
+  componentDidMount() {
     this.form = new Form({
       controls: new Map<string, IFormControl>([
         [
@@ -28,9 +30,7 @@ export class RemoveUserDialog extends Component {
       ]),
       valid: false,
     });
-  }
 
-  componentDidMount() {
     this.form.init('remove-user', this.formSubmit);
   }
 
