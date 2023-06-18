@@ -58,13 +58,6 @@
     color: var(--green);
   }
 
-  &__button {
-    background: none;
-    margin: 0;
-    border: none;
-    color: var(--green);
-  }
-
   &__button_warn {
     color: red;
   }
@@ -82,8 +75,13 @@
   align-items: center;
   border-right: 1px solid #EAEAEA;
 
-  &__image {
+  &__link {
+    background: var(--green);
     width: 28px;
-    height: 28px;
+    height:28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
   }
 }

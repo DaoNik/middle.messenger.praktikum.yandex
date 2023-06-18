@@ -1,21 +1,18 @@
-@import './vendor/normalize.css';
-@import './vendor/Inter_Web/inter.css';
-@import './vars.pcss';
-
-@import './pages/server-error.scss';
-@import './pages/profile/profile.scss';
-@import './pages/chats/chats.scss';
-
-@import './components/login-dialog/login-dialog';
-@import './components/register-dialog/register-dialog';
-@import './components/auth.scss';
+@import './vendor/normalize';
+@import 'vars';
+@import './pages/server-error';
+@import './pages/profile/profile';
+@import './pages/chats/chats';
+@import './components/login-form/login-form';
+@import './components/register-form/register-form';
+@import './components/auth';
 @import './components/dialog';
-@import './components/load-file-dialog/load-file-dialog.scss';
-@import './components/clip-menu/clip-menu.scss';
-@import './components/chat-menu/chat-menu.scss';
-@import './components/menu.scss';
-@import './components/change-user-data-dialog/change-user-data-dialog.scss';
-@import './components/change-password-dialog/change-password-dialog.scss';
+@import './components/load-file-dialog/load-file-dialog';
+@import './components/clip-menu/clip-menu';
+@import './components/chat-menu/chat-menu';
+@import './components/menu';
+@import './components/change-user-data-dialog/change-user-data-dialog';
+@import './components/change-password-dialog/change-password-dialog';
 
 html, body {
     width: 100%;
@@ -36,13 +33,20 @@ body {
 #root {
     width: 100%;
     height: 100%;
+<<<<<<< HEAD
 
+=======
+>>>>>>> affd535 (init with vite)
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+<<<<<<< HEAD
 
     font-family: 'Inter', serif;
+=======
+    font-family: Inter, sans-serif;
+>>>>>>> affd535 (init with vite)
     font-style: normal;
     font-weight: 500;
 }
@@ -58,4 +62,26 @@ body {
     clip-path: inset(100%);
     clip: rect(0 0 0 0);
     overflow: hidden;
+}
+
+.opened {
+  display: flex;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button[type='submit'][disabled] {
+  cursor: auto;
+  background: gray;
+}
+
+.nav-menu {
+  padding: 10px;
+  text-align: center;
+
+  a {
+    color: #fff;
+  }
 }

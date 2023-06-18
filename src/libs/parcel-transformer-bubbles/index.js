@@ -1,5 +1,5 @@
 const { Transformer } = require('@parcel/plugin');
-const { compile } = require('bubbles');
+const { compile } = require('src/libs/bubbles');
 
 module.exports = new Transformer({
   async transform({ asset }) {
