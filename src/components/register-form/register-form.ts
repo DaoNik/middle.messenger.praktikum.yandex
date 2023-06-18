@@ -5,10 +5,13 @@ import {
   isPhoneNumber,
 } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Block } from '../../core/block';
+import { Component } from '../../app.module.ts';
+import template from './register-form.html?raw';
 
-export class RegisterForm extends Block {
+export class RegisterForm extends Component {
   form!: Form;
+  selector = 'register-form';
+  content = template;
 
   constructor() {
     super();

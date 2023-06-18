@@ -1,9 +1,12 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Block } from '../../core/block';
+import { Component } from '../../app.module.ts';
+import template from './add-user-dialog.html?raw';
 
-export class AddUserDialog extends Block {
+export class AddUserDialog extends Component {
   form!: Form;
+  content = template;
+  selector = 'add-user-dialog';
 
   constructor() {
     super();

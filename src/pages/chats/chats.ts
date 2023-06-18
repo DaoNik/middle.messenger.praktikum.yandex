@@ -5,18 +5,22 @@ import { Form, IFormControl } from '../../core/form';
 import { Block } from '../../core/block';
 import { ClipMenu } from '../../components/clip-menu/clip-menu';
 import { ChatMenu } from '../../components/chat-menu/chat-menu';
-import value from './chats.html?raw';
+import template from './chats.html?raw';
+import { Module } from '../../app.module.ts';
+import { Template } from '../../core/template.ts';
 
-export class Chats extends Block {
+export class Chats extends Block implements Module {
   form!: Form;
+  declarations = [ChatMenu, ClipMenu, AddUserDialog, RemoveUserDialog];
+  imports: Module[] = [];
+  templater = new Template();
+  content: string = this.templater.precompile(template, this.declarations);
 
   constructor() {
     super();
   }
 
-  init() {
-    this.content = value;
-  }
+  init() {}
 
   componentDidMount(): void {
     document
@@ -77,10 +81,9 @@ export class Chats extends Block {
       valid: false,
     });
 
-    new AddUserDialog();
-    new RemoveUserDialog();
-    new ClipMenu();
-    new ChatMenu();
+    for (const component of this.declarations) {
+      new component();
+    }
 
     this.form.init('send-message', this.formSubmit);
   }

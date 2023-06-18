@@ -1,9 +1,12 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Block } from '../../core/block';
+import value from './remove-user-dialog.html?raw';
+import { Component } from '../../app.module.ts';
 
-export class RemoveUserDialog extends Block {
+export class RemoveUserDialog extends Component {
   form!: Form;
+  content = value;
+  selector = 'remove-user-dialog';
 
   constructor() {
     super();

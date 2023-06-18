@@ -13,7 +13,6 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unicorn": "^47.0.0",
-    "vite-plugin-bubbles": "file:src/libs/vite-plugin-bubbles",
     "postcss": "^8.4.24",
     "postcss-comment": "^2.0.0",
     "postcss-nested": "^6.0.1",

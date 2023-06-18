@@ -2,16 +2,21 @@ import { ChangeUserDataDialog } from '../../components/change-user-data-dialog/c
 import { ChangePasswordDialog } from '../../components/change-password-dialog/change-password-dialog';
 import { Block } from '../../core/block';
 import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dialog';
-import value from './profile.html?raw';
+import template from './profile.html?raw';
+import { Module } from '../../app.module.ts';
+import { Template } from '../../core/template.ts';
 
-export class Profile extends Block {
+export class Profile extends Block implements Module {
+  declarations = [ChangeUserDataDialog, ChangePasswordDialog, LoadFileDialog];
+  imports = [];
+  templater = new Template();
+  content: string = this.templater.precompile(template, this.declarations);
+
   constructor() {
     super();
   }
 
-  init(): void {
-    this.content = value;
-  }
+  init(): void {}
 
   componentDidMount() {
     new ChangeUserDataDialog();

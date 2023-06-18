@@ -1,12 +1,15 @@
 import { Block } from '../../core/block';
-import value from './500.html?raw';
+import template from './500.html?raw';
+import { Module } from '../../app.module.ts';
 
-export class Page500 extends Block {
+export class Page500 extends Block implements Module {
+  content = template;
+  declarations = [];
+  imports = [];
+
   constructor() {
     super();
   }
 
-  init(): void {
-    this.content = value;
-  }
+  init(): void {}
 }

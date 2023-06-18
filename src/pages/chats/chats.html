@@ -9,7 +9,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -20,7 +20,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">
@@ -34,7 +34,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -45,7 +45,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -56,7 +56,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -67,7 +67,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -78,7 +78,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -89,7 +89,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -100,7 +100,7 @@
         <h3 class="chats__item-title">User name</h3>
         <img
           class="chats__item-image"
-          src="../../assets/no-avatar.svg"
+          src="/assets/no-avatar.svg"
           alt="аватар"
         />
         <p class="chats__item-message">Последнее сообщение</p>
@@ -112,9 +112,9 @@
   <section class="chat">
     <div class="chat__header">
       <h2 class="chat__name">User name</h2>
-      <img class="chat__avatar" src="../../assets/no-avatar.svg" />
+      <img class="chat__avatar" src="/assets/no-avatar.svg" />
       <button class="chat__menu" type="button">
-        <img class="chat__menu-image" src="../../assets/menu.svg" alt="меню" />
+        <img class="chat__menu-image" src="/assets/menu.svg" alt="меню" />
       </button>
     </div>
     <div class="chat__messages">
@@ -143,7 +143,7 @@
         >
           <img
             class="chat__message-photo"
-            src="../../assets/camera.png"
+            src="/assets/camera.png"
             alt="камера"
           />
           <span class="chat__message-time">11:56</span>
@@ -157,7 +157,7 @@
           <div class="chat__message-time">
             <img
               class="chat__message-status"
-              src="../../assets/reading_message.svg"
+              src="/assets/reading_message.svg"
             />
             12:00
           </div>
@@ -167,7 +167,7 @@
     <form class="chat__add-text" name="send-message">
       <buttton class="chat__button-attach" type="button">
         <img
-          src="../../assets/clip.svg"
+          src="/assets/clip.svg"
           alt="прикрепить файл"
           class="chat__image-clip"
         />
@@ -179,16 +179,9 @@
         name="message"
       />
       <button class="chat__button-send" type="submit">
-        <img
-          src="../../assets/exit.svg"
-          alt="отправить"
-          class="chat__image-send"
-        />
+        <img src="/assets/exit.svg" alt="отправить" class="chat__image-send" />
       </button>
     </form>
   </section>
 </div>
-{{>/components/chat-menu/chat-menu.html}}
-{{>/components/clip-menu/clip-menu.html}}
-{{>/components/add-user-dialog/add-user-dialog.html}}
-{{>/components/remove-user-dialog/remove-user-dialog.html}}
+{{>chat-menu}} {{>clip-menu}} {{>add-user-dialog}} {{>remove-user-dialog}}

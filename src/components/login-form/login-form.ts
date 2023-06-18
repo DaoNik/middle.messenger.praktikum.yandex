@@ -1,9 +1,12 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Block } from '../../core/block';
+import { Component } from '../../app.module.ts';
+import template from './login-form.html?raw';
 
-export class LoginForm extends Block {
+export class LoginForm extends Component {
   form!: Form;
+  selector = 'login-form';
+  content = template;
 
   constructor() {
     super();

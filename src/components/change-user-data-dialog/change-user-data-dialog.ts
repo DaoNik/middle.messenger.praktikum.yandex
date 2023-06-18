@@ -5,10 +5,13 @@ import {
   isPhoneNumber,
 } from '../../core/validators';
 import { IFormControl, Form } from '../../core/form';
-import { Block } from '../../core/block';
+import { Component } from '../../app.module.ts';
+import template from './change-user-data-dialog.html?raw';
 
-export class ChangeUserDataDialog extends Block {
+export class ChangeUserDataDialog extends Component {
   form!: Form;
+  selector = 'change-user-data-dialog';
+  content = template;
 
   constructor() {
     super();

@@ -2,7 +2,7 @@ import { EventBus } from './event-bus';
 
 export type PropertiesT = Record<string, unknown>;
 
-export class Block {
+export abstract class Block {
   static EVENTS = {
     INIT: 'init',
     FLOW_CDM: 'flow:component-did-mount',
@@ -12,9 +12,9 @@ export class Block {
 
   eventBus = new EventBus();
   props: PropertiesT;
-  content = '';
+  abstract content: string;
 
-  constructor(properties: PropertiesT = {}) {
+  protected constructor(properties: PropertiesT = {}) {
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
     this.eventBus.emit(Block.EVENTS.INIT);

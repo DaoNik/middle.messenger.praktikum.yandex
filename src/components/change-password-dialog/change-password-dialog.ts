@@ -1,9 +1,12 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { IFormControl, Form } from '../../core/form';
-import { Block } from '../../core/block';
+import { Component } from '../../app.module.ts';
+import template from './change-password-dialog.html?raw';
 
-export class ChangePasswordDialog extends Block {
+export class ChangePasswordDialog extends Component {
   form!: Form;
+  selector = 'change-password-dialog';
+  content = template;
 
   constructor() {
     super();
