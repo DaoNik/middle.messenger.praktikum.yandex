@@ -1,7 +1,7 @@
-import { Component } from '../app.module.ts';
+import { Component } from '../types.ts';
 
 export class Template {
-  precompile(template: string, declarations: any[]): string {
+  precompile(template: string, declarations: Component[]): string {
     const keys = template.match(/{{>[\w-]*}}/gm);
     let result = template;
     const componentsMap = new Map<string, string>();
@@ -10,8 +10,7 @@ export class Template {
       return result;
     }
 
-    for (const componentFactory of declarations) {
-      const component = new componentFactory() as Component;
+    for (const component of declarations) {
       componentsMap.set(component.selector, component.content);
     }
 

@@ -1,6 +1,6 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Component } from '../../app.module.ts';
+import { Component } from '../../types.ts';
 import template from './add-user-dialog.html?raw';
 
 export class AddUserDialog extends Component {
@@ -12,7 +12,9 @@ export class AddUserDialog extends Component {
     super();
   }
 
-  init(): void {
+  init(): void {}
+
+  componentDidMount() {
     this.form = new Form({
       controls: new Map<string, IFormControl>([
         [

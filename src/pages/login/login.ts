@@ -1,12 +1,10 @@
 import { LoginForm } from '../../components/login-form/login-form';
-import { Block } from '../../core/block';
 import template from './login.html?raw';
-import { Module } from '../../app.module.ts';
+import { Module } from '../../types.ts';
 import { Template } from '../../core/template.ts';
 
-export class Login extends Block implements Module {
-  declarations = [LoginForm];
-  imports = [];
+export class Login extends Module {
+  declarations = [new LoginForm()];
   templater = new Template();
   content: string = this.templater.precompile(template, this.declarations);
 
@@ -17,6 +15,6 @@ export class Login extends Block implements Module {
   init(): void {}
 
   componentDidMount(): void {
-    new LoginForm();
+    super.componentDidMount();
   }
 }

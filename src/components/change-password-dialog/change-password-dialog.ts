@@ -1,6 +1,6 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { IFormControl, Form } from '../../core/form';
-import { Component } from '../../app.module.ts';
+import { Component } from '../../types.ts';
 import template from './change-password-dialog.html?raw';
 
 export class ChangePasswordDialog extends Component {
@@ -12,7 +12,9 @@ export class ChangePasswordDialog extends Component {
     super();
   }
 
-  init() {
+  init() {}
+
+  componentDidMount() {
     this.form = new Form({
       controls: new Map<string, IFormControl>([
         [

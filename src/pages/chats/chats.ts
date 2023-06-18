@@ -2,17 +2,20 @@ import { AddUserDialog } from '../../components/add-user-dialog/add-user-dialog'
 import { RemoveUserDialog } from '../../components/remove-user-dialog/remove-user-dialog';
 import { isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Block } from '../../core/block';
 import { ClipMenu } from '../../components/clip-menu/clip-menu';
 import { ChatMenu } from '../../components/chat-menu/chat-menu';
 import template from './chats.html?raw';
-import { Module } from '../../app.module.ts';
+import { Module } from '../../types.ts';
 import { Template } from '../../core/template.ts';
 
-export class Chats extends Block implements Module {
+export class Chats extends Module {
   form!: Form;
-  declarations = [ChatMenu, ClipMenu, AddUserDialog, RemoveUserDialog];
-  imports: Module[] = [];
+  declarations = [
+    new ChatMenu(),
+    new ClipMenu(),
+    new AddUserDialog(),
+    new RemoveUserDialog(),
+  ];
   templater = new Template();
   content: string = this.templater.precompile(template, this.declarations);
 
@@ -20,7 +23,22 @@ export class Chats extends Block implements Module {
     super();
   }
 
-  init() {}
+  init() {
+    this.form = new Form({
+      controls: new Map<string, IFormControl>([
+        [
+          'message',
+          {
+            value: '',
+            validators: [isNotEmptyValidator],
+            valid: false,
+            error: '',
+          },
+        ],
+      ]),
+      valid: false,
+    });
+  }
 
   componentDidMount(): void {
     document
@@ -66,24 +84,7 @@ export class Chats extends Block implements Module {
       });
     }
 
-    this.form = new Form({
-      controls: new Map<string, IFormControl>([
-        [
-          'message',
-          {
-            value: '',
-            validators: [isNotEmptyValidator],
-            valid: false,
-            error: '',
-          },
-        ],
-      ]),
-      valid: false,
-    });
-
-    for (const component of this.declarations) {
-      new component();
-    }
+    super.componentDidMount();
 
     this.form.init('send-message', this.formSubmit);
   }

@@ -5,7 +5,7 @@ import {
   isPhoneNumber,
 } from '../../core/validators';
 import { IFormControl, Form } from '../../core/form';
-import { Component } from '../../app.module.ts';
+import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 
 export class ChangeUserDataDialog extends Component {
@@ -17,7 +17,9 @@ export class ChangeUserDataDialog extends Component {
     super();
   }
 
-  init() {
+  init() {}
+
+  componentDidMount() {
     this.form = new Form({
       controls: new Map<string, IFormControl>([
         [

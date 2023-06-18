@@ -1,14 +1,16 @@
 import { ChangeUserDataDialog } from '../../components/change-user-data-dialog/change-user-data-dialog';
 import { ChangePasswordDialog } from '../../components/change-password-dialog/change-password-dialog';
-import { Block } from '../../core/block';
 import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dialog';
 import template from './profile.html?raw';
-import { Module } from '../../app.module.ts';
+import { Module } from '../../types.ts';
 import { Template } from '../../core/template.ts';
 
-export class Profile extends Block implements Module {
-  declarations = [ChangeUserDataDialog, ChangePasswordDialog, LoadFileDialog];
-  imports = [];
+export class Profile extends Module {
+  declarations = [
+    new ChangeUserDataDialog(),
+    new ChangePasswordDialog(),
+    new LoadFileDialog(),
+  ];
   templater = new Template();
   content: string = this.templater.precompile(template, this.declarations);
 
@@ -19,9 +21,7 @@ export class Profile extends Block implements Module {
   init(): void {}
 
   componentDidMount() {
-    new ChangeUserDataDialog();
-    new ChangePasswordDialog();
-    new LoadFileDialog();
+    super.componentDidMount();
 
     document
       .querySelector('.profile__button_data')!
@@ -56,5 +56,3 @@ export class Profile extends Block implements Module {
     }
   }
 }
-
-new Profile();

@@ -1,12 +1,10 @@
 import { RegisterForm } from '../../components/register-form/register-form';
-import { Block } from '../../core/block';
 import template from './register.html?raw';
-import { Module } from '../../app.module.ts';
+import { Module } from '../../types.ts';
 import { Template } from '../../core/template.ts';
 
-export class Register extends Block implements Module {
-  declarations = [RegisterForm];
-  imports = [];
+export class Register extends Module {
+  declarations = [new RegisterForm()];
   templater = new Template();
   content: string = this.templater.precompile(template, this.declarations);
 
@@ -17,6 +15,6 @@ export class Register extends Block implements Module {
   init() {}
 
   componentDidMount() {
-    new RegisterForm();
+    super.componentDidMount();
   }
 }

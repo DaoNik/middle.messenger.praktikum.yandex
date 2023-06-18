@@ -5,7 +5,7 @@ import {
   isPhoneNumber,
 } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Component } from '../../app.module.ts';
+import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
 
 export class RegisterForm extends Component {
@@ -17,7 +17,9 @@ export class RegisterForm extends Component {
     super();
   }
 
-  init() {
+  init() {}
+
+  componentDidMount() {
     this.form = new Form({
       controls: new Map<string, IFormControl>([
         [
@@ -93,7 +95,6 @@ export class RegisterForm extends Component {
       ]),
       valid: false,
     });
-
     this.form.init('register', this.formSubmit);
   }
 

@@ -1,6 +1,6 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
-import { Component } from '../../app.module.ts';
+import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
 
 export class LoginForm extends Component {
@@ -12,7 +12,9 @@ export class LoginForm extends Component {
     super();
   }
 
-  init() {
+  init() {}
+
+  componentDidMount() {
     this.form = new Form({
       controls: new Map<string, IFormControl>([
         [
@@ -38,7 +40,6 @@ export class LoginForm extends Component {
       ]),
       valid: false,
     });
-
     this.form.init('login', this.formSubmit);
   }
 

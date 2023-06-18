@@ -1,7 +1,7 @@
 import { isMinimalLength, isNotEmptyValidator } from '../../core/validators';
 import { Form, IFormControl } from '../../core/form';
 import value from './remove-user-dialog.html?raw';
-import { Component } from '../../app.module.ts';
+import { Component } from '../../types.ts';
 
 export class RemoveUserDialog extends Component {
   form!: Form;
@@ -28,7 +28,9 @@ export class RemoveUserDialog extends Component {
       ]),
       valid: false,
     });
+  }
 
+  componentDidMount() {
     this.form.init('remove-user', this.formSubmit);
   }
 
