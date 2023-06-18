@@ -1,4 +1,5 @@
 import { isControlValid, isFormValid } from './validators';
+import { PropertiesT } from './block.ts';
 
 export interface IValidatorValue {
   isValid: boolean;
@@ -20,9 +21,11 @@ export interface IForm {
 
 export class Form {
   form: IForm;
+  props: PropertiesT;
 
-  constructor(form: IForm) {
+  constructor(form: IForm, props: PropertiesT) {
     this.form = form;
+    this.props = props;
   }
 
   init(
@@ -61,7 +64,9 @@ export class Form {
 
         control.valid = isValid;
         control.error = error;
-        console.log(control);
+        if (this.props[`${input.name}_error`] !== control.error) {
+          this.props[`${input.name}_error`] = control.error;
+        }
         this.form.valid = isFormValid(this.form);
         submitButtonElement!.disabled = !this.form.valid;
       });

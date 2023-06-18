@@ -1,23 +1,19 @@
 import { ChangeUserDataDialog } from '../../components/change-user-data-dialog/change-user-data-dialog';
 import { ChangePasswordDialog } from '../../components/change-password-dialog/change-password-dialog';
-import { Block } from '../../core/block';
 import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dialog';
-import value from './profile.html?raw';
+import template from './profile.html?raw';
+import { Block } from '../../core/block.ts';
 
 export class Profile extends Block {
   constructor() {
-    super();
-  }
-
-  init(): void {
-    this.content = value;
+    super(template, [
+      new ChangeUserDataDialog(),
+      new ChangePasswordDialog(),
+      new LoadFileDialog(),
+    ]);
   }
 
   componentDidMount() {
-    new ChangeUserDataDialog();
-    new ChangePasswordDialog();
-    new LoadFileDialog();
-
     document
       .querySelector('.profile__button_data')!
       .addEventListener('click', () => {
@@ -49,7 +45,7 @@ export class Profile extends Block {
         event.stopPropagation();
       });
     }
+
+    super.componentDidMount();
   }
 }
-
-new Profile();

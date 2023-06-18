@@ -1,14 +1,8 @@
-import { Block } from '../../core/block';
-// import value from 'bundle-text:./404.html';
-import value from './404.html?raw';
+import template from './404.html?raw';
+import { Block } from '../../core/block.ts';
 
 export class Page404 extends Block {
   constructor() {
-    super();
-  }
-
-  init(): void {
-    console.log(value);
-    this.content = value;
+    super(template);
   }
 }

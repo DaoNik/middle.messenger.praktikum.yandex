@@ -1,7 +1,10 @@
-import { Block } from '../../core/block';
+import { Component } from '../../types.ts';
+import template from './load-file-dialog.html?raw';
 
-export class LoadFileDialog extends Block {
+export class LoadFileDialog extends Component {
+  selector = 'load-file-dialog';
+
   constructor() {
-    super();
+    super(template);
   }
 }

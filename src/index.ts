@@ -21,12 +21,11 @@ const routes: IRoute[] = [
 ];
 
 // TODO: на основе его добавить destroy при смене урла
-let currentComponent: Block | null = null;
+let currentComponent: any = null;
 
 for (const { path, component } of routes) {
   if (path === document.location.pathname) {
-    currentComponent = new component() as Block;
-    console.log(currentComponent.content);
+    currentComponent = new component();
     document.querySelector('#root')!.innerHTML = currentComponent.content;
     currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }

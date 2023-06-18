@@ -1,17 +1,9 @@
 import { LoginForm } from '../../components/login-form/login-form';
-import { Block } from '../../core/block';
-import value from './login.html?raw';
+import template from './login.html?raw';
+import { Block } from '../../core/block.ts';
 
 export class Login extends Block {
   constructor() {
-    super();
-  }
-
-  init(): void {
-    this.content = value;
-  }
-
-  componentDidMount(): void {
-    new LoginForm();
+    super(template, [new LoginForm()]);
   }
 }

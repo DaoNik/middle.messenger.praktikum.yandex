@@ -1,8 +1,11 @@
 import { EventBus } from './event-bus';
+import { v4 as uuidV4 } from 'uuid';
+import { Template } from './template.ts';
+import { Component } from '../types.ts';
 
 export type PropertiesT = Record<string, unknown>;
 
-export class Block {
+export abstract class Block {
   static EVENTS = {
     INIT: 'init',
     FLOW_CDM: 'flow:component-did-mount',
@@ -12,9 +15,18 @@ export class Block {
 
   eventBus = new EventBus();
   props: PropertiesT;
-  content = '';
+  blockId = uuidV4();
+  content: string;
+  templater = new Template();
+  declarations: Component[];
 
-  constructor(properties: PropertiesT = {}) {
+  protected constructor(
+    content: string,
+    declarations: Component[] = [],
+    properties: PropertiesT = {}
+  ) {
+    this.content = content;
+    this.declarations = declarations;
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
     this.eventBus.emit(Block.EVENTS.INIT);
@@ -32,24 +44,41 @@ export class Block {
 
   private _init(): void {
     this.init();
+
+    this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  init(): void {}
+  init(): void {
+    this.content = this.templater.precompile(
+      this.content,
+      this.declarations,
+      this.blockId
+    );
+  }
 
   private _componentDidMount(): void {
     this.componentDidMount();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  componentDidMount(): void {}
+  componentDidMount(): void {
+    if (this.declarations.length > 0) {
+      for (const component of this.declarations) {
+        component.eventBus.emit(Block.EVENTS.FLOW_CDM);
+      }
+    }
+
+    this.templater.compile(this.props, this.blockId);
+  }
 
   private _render(): void {
     this.render();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  render(): void {}
+  render(): void {
+    if (this.content) {
+      this.templater.compile(this.props, this.blockId);
+    }
+  }
 
   private _componentDidUpdate(
     oldProperties: PropertiesT,
@@ -66,7 +95,7 @@ export class Block {
     oldProperties: PropertiesT,
     newProperties: PropertiesT
   ): boolean {
-    return JSON.stringify(oldProperties) === JSON.stringify(newProperties);
+    return JSON.stringify(oldProperties) !== JSON.stringify(newProperties);
   }
 
   private _makePropsProxy(properties: PropertiesT): PropertiesT {
@@ -78,6 +107,7 @@ export class Block {
         return typeof value === 'function' ? value.bind(target) : value;
       },
       set(target: PropertiesT, property: string, value) {
+        console.log('set proxy trigger');
         const oldTarget = { ...target };
         target[property] = value;
 
