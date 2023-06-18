@@ -1,0 +1,8 @@
+{
+  "syntax": "postcss-scss",
+  "parser": "postcss-scss",
+  "plugins": {
+    "postcss-nested": {},
+    "postcss-strip-inline-comments": {}
+  }
+}
