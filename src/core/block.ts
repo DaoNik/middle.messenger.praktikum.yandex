@@ -32,6 +32,8 @@ export abstract class Block {
 
   private _init(): void {
     this.init();
+
+    this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -66,7 +68,7 @@ export abstract class Block {
     oldProperties: PropertiesT,
     newProperties: PropertiesT
   ): boolean {
-    return JSON.stringify(oldProperties) === JSON.stringify(newProperties);
+    return JSON.stringify(oldProperties) !== JSON.stringify(newProperties);
   }
 
   private _makePropsProxy(properties: PropertiesT): PropertiesT {
