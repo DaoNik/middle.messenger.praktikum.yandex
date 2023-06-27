@@ -3,25 +3,20 @@ import { Module } from '../../types.ts';
 import { Template } from '../../core/template.ts';
 
 export class Page404 extends Module {
-  content = template;
-  precompiledContent: string | null = null;
   declarations = [];
   templater = new Template();
+  content: string = this.templater.precompile(
+    template,
+    this.declarations,
+    this.blockId
+  );
 
   constructor() {
     super();
   }
 
-  init(): void {}
-
-  render(): void {
-    if (this.precompiledContent) {
-      this.content = this.templater.compile(
-        this.precompiledContent,
-        this.props
-      );
-      document.querySelector('#root')!.innerHTML = this.content;
-    }
+  init(): void {
+    super.init();
   }
 
   componentDidMount() {

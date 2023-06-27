@@ -1,10 +1,15 @@
-<div class="overlay overlay-add-user">
+<div class="overlay overlay-add-user" id="{{blockId}}">
   <section class="dialog">
     <h3 class="dialog__title">Добавить пользователя</h3>
     <form name="add-user">
       <label class="dialog__label">
         <span class="dialog__label-text">Логин</span>
-        <input class="dialog__input" placeholder="Логин" type="text" name="login">
+        <input
+          class="dialog__input"
+          placeholder="Логин"
+          type="text"
+          name="login"
+        />
       </label>
       <button class="dialog__submit" type="submit">Добавить</button>
     </form>

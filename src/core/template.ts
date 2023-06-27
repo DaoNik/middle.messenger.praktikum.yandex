@@ -2,10 +2,16 @@ import { Component } from '../types.ts';
 import { PropertiesT } from './block.ts';
 
 export class Template {
-  precompile(template: string, declarations: Component[]): string {
+  precompile(
+    template: string,
+    declarations: Component[],
+    blockId: string
+  ): string {
     const keys = template.match(/{{>[\w-]*}}/gm);
     let result = template;
     const componentsMap = new Map<string, string>();
+
+    result = result.replace(/{{blockId}}/gm, blockId);
 
     if (!keys || keys.length === 0 || declarations.length === 0) {
       return result;

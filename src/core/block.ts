@@ -1,4 +1,6 @@
 import { EventBus } from './event-bus';
+import { v4 as uuidV4 } from 'uuid';
+import { Template } from './template.ts';
 
 export type PropertiesT = Record<string, unknown>;
 
@@ -12,7 +14,10 @@ export abstract class Block {
 
   eventBus = new EventBus();
   props: PropertiesT;
+  blockId = uuidV4();
   abstract content: string;
+  precompiledContent = '';
+  templater = new Template();
 
   protected constructor(properties: PropertiesT = {}) {
     this.props = this._makePropsProxy(properties);
@@ -50,8 +55,15 @@ export abstract class Block {
     this.render();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  render(): void {}
+  render(): void {
+    if (this.precompiledContent) {
+      this.content = this.templater.compile(
+        this.precompiledContent,
+        this.props
+      );
+      document.getElementById(this.blockId)!.innerHTML = this.content;
+    }
+  }
 
   private _componentDidUpdate(
     oldProperties: PropertiesT,
