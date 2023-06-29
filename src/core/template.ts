@@ -34,7 +34,7 @@ export class Template {
   }
 
   compile(template: string, properties: PropertiesT): string {
-    const keys = template.match(/{{[\w-]*}}/gm);
+    const keys = template.match(/{{[\w-.()']*}}/gm);
     let result = template;
 
     if (!keys || keys.length === 0 || properties.length === 0) {
@@ -46,7 +46,8 @@ export class Template {
       .forEach((key) => {
         const regExp = new RegExp(`{{${key}}}`, 'gm');
         const value = properties[key];
-        if (value && typeof value === 'string') {
+        console.log(key, properties, value);
+        if (typeof value === 'string') {
           result = result.replace(regExp, value);
         }
       });

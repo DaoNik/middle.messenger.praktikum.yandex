@@ -92,6 +92,7 @@ export abstract class Block {
         return typeof value === 'function' ? value.bind(target) : value;
       },
       set(target: PropertiesT, property: string, value) {
+        console.log('set proxy trigger');
         const oldTarget = { ...target };
         target[property] = value;
 

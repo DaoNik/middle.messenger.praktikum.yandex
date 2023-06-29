@@ -6,7 +6,11 @@ import { Template } from '../../core/template.ts';
 export class Register extends Module {
   declarations = [new RegisterForm()];
   templater = new Template();
-  content: string = this.templater.precompile(template, this.declarations);
+  content: string = this.templater.precompile(
+    template,
+    this.declarations,
+    this.blockId
+  );
 
   constructor() {
     super();

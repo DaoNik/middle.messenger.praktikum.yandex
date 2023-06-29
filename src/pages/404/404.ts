@@ -15,10 +15,7 @@ export class Page404 extends Module {
     super();
   }
 
-  init(): void {
-    super.init();
-  }
-
+  // TODO: delete it
   componentDidMount() {
     this.props.errorCode = '404';
     setTimeout(() => {

@@ -11,7 +11,8 @@ import template from './register-form.html?raw';
 export class RegisterForm extends Component {
   form!: Form;
   selector = 'register-form';
-  content = template;
+  content: string = this.templater.precompile(template, [], this.blockId);
+  precompiledContent = this.content;
 
   constructor() {
     super();
@@ -20,81 +21,84 @@ export class RegisterForm extends Component {
   init() {}
 
   componentDidMount() {
-    this.form = new Form({
-      controls: new Map<string, IFormControl>([
-        [
-          'email',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength, isEmail],
-            minLength: 4,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'login',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 4,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'first_name',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 4,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'second_name',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 4,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'phone',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength, isPhoneNumber],
-            minLength: 8,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'password',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 6,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'password_repeat',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 6,
-            valid: false,
-            error: '',
-          },
-        ],
-      ]),
-      valid: false,
-    });
+    this.form = new Form(
+      {
+        controls: new Map<string, IFormControl>([
+          [
+            'email',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength, isEmail],
+              minLength: 4,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'login',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 4,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'first_name',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 4,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'second_name',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 4,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'phone',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength, isPhoneNumber],
+              minLength: 8,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'password',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 6,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'password_repeat',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 6,
+              valid: false,
+              error: '',
+            },
+          ],
+        ]),
+        valid: false,
+      },
+      this.props
+    );
     this.form.init('register', this.formSubmit);
   }
 

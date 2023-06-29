@@ -20,7 +20,7 @@
   &__form {
     display: flex;
     flex-direction: column;
-    row-gap: 16px;
+    row-gap: 12px;
     padding: 30px;
   }
 
@@ -29,7 +29,6 @@
     font-size: 9px;
     line-height: 9px;
     color: #999;
-    height: 37px;
   }
 
   &__label-text {
@@ -46,6 +45,7 @@
     border: none;
     border-bottom: 1px solid var(--green);
     padding: 0 0 7px;
+    margin-bottom: 7px;
   }
 
   &__input:focus {
@@ -75,5 +75,10 @@
     font-size: 11px;
     line-height: 11px;
     text-decoration: none;
+  }
+
+  &__input-error {
+    color: #ff2f2f;
+    padding-top: 7px;
   }
 }
