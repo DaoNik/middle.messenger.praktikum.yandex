@@ -6,42 +6,20 @@ import { ClipMenu } from '../../components/clip-menu/clip-menu';
 import { ChatMenu } from '../../components/chat-menu/chat-menu';
 import template from './chats.html?raw';
 import { Module } from '../../types.ts';
-import { Template } from '../../core/template.ts';
 
 export class Chats extends Module {
   form!: Form;
-  declarations = [
-    new ChatMenu(),
-    new ClipMenu(),
-    new AddUserDialog(),
-    new RemoveUserDialog(),
-  ];
-  templater = new Template();
-  content: string = this.templater.precompile(
-    template,
-    this.declarations,
-    this.blockId
-  );
 
   constructor() {
-    super();
-  }
-
-  init() {}
-
-  render(): void {
-    if (this.precompiledContent) {
-      this.content = this.templater.compile(
-        this.precompiledContent,
-        this.props
-      );
-      document.getElementById(this.blockId)!.innerHTML = this.content;
-    }
+    super(template, [
+      new ChatMenu(),
+      new ClipMenu(),
+      new AddUserDialog(),
+      new RemoveUserDialog(),
+    ]);
   }
 
   componentDidMount(): void {
-    super.componentDidMount();
-
     document
       .querySelector('button.chat__menu')!
       .addEventListener('click', () => {
@@ -85,22 +63,27 @@ export class Chats extends Module {
       });
     }
 
-    this.form = new Form({
-      controls: new Map<string, IFormControl>([
-        [
-          'message',
-          {
-            value: '',
-            validators: [isNotEmptyValidator],
-            valid: false,
-            error: '',
-          },
-        ],
-      ]),
-      valid: false,
-    });
+    this.form = new Form(
+      {
+        controls: new Map<string, IFormControl>([
+          [
+            'message',
+            {
+              value: '',
+              validators: [isNotEmptyValidator],
+              valid: false,
+              error: '',
+            },
+          ],
+        ]),
+        valid: false,
+      },
+      this.props
+    );
 
     this.form.init('send-message', this.formSubmit);
+
+    super.componentDidMount();
   }
 
   formSubmit(formValue: Record<string, string>): void {

@@ -6,52 +6,57 @@ import template from './change-password-dialog.html?raw';
 export class ChangePasswordDialog extends Component {
   form!: Form;
   selector = 'change-password-dialog';
-  content = template;
 
   constructor() {
-    super();
+    super(template, [], {
+      oldPassword_error: '',
+      newPassword_error: '',
+      password_repeat_error: '',
+    });
   }
 
-  init() {}
-
   componentDidMount() {
-    this.form = new Form({
-      controls: new Map<string, IFormControl>([
-        [
-          'oldPassword',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 6,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'newPassword',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 6,
-            valid: false,
-            error: '',
-          },
-        ],
-        [
-          'password_repeat',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 6,
-            valid: false,
-            error: '',
-          },
-        ],
-      ]),
-      valid: false,
-    });
+    this.form = new Form(
+      {
+        controls: new Map<string, IFormControl>([
+          [
+            'oldPassword',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 6,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'newPassword',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 6,
+              valid: false,
+              error: '',
+            },
+          ],
+          [
+            'password_repeat',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 6,
+              valid: false,
+              error: '',
+            },
+          ],
+        ]),
+        valid: false,
+      },
+      this.props
+    );
 
     this.form.init('change-password', this.formSubmit);
+    super.componentDidMount();
   }
 
   formSubmit(formValue: Record<string, string>): void {

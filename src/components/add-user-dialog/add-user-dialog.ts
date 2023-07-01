@@ -5,33 +5,37 @@ import template from './add-user-dialog.html?raw';
 
 export class AddUserDialog extends Component {
   form!: Form;
-  content = template;
   selector = 'add-user-dialog';
 
   constructor() {
-    super();
+    super(template, [], {
+      login_error: '',
+    });
   }
 
-  init(): void {}
-
   componentDidMount() {
-    this.form = new Form({
-      controls: new Map<string, IFormControl>([
-        [
-          'login',
-          {
-            value: '',
-            validators: [isNotEmptyValidator, isMinimalLength],
-            minLength: 4,
-            valid: false,
-            error: '',
-          },
-        ],
-      ]),
-      valid: false,
-    });
+    this.form = new Form(
+      {
+        controls: new Map<string, IFormControl>([
+          [
+            'login',
+            {
+              value: '',
+              validators: [isNotEmptyValidator, isMinimalLength],
+              minLength: 4,
+              valid: false,
+              error: '',
+            },
+          ],
+        ]),
+        valid: false,
+      },
+      this.props
+    );
 
     this.form.init('add-user', this.formSubmit);
+
+    super.componentDidMount();
   }
 
   formSubmit(formValue: Record<string, string>): void {

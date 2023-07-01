@@ -3,40 +3,17 @@ import { ChangePasswordDialog } from '../../components/change-password-dialog/ch
 import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dialog';
 import template from './profile.html?raw';
 import { Module } from '../../types.ts';
-import { Template } from '../../core/template.ts';
 
 export class Profile extends Module {
-  declarations = [
-    new ChangeUserDataDialog(),
-    new ChangePasswordDialog(),
-    new LoadFileDialog(),
-  ];
-  templater = new Template();
-  content: string = this.templater.precompile(
-    template,
-    this.declarations,
-    this.blockId
-  );
-
   constructor() {
-    super();
-  }
-
-  init(): void {}
-
-  render(): void {
-    if (this.precompiledContent) {
-      this.content = this.templater.compile(
-        this.precompiledContent,
-        this.props
-      );
-      document.getElementById(this.blockId)!.innerHTML = this.content;
-    }
+    super(template, [
+      new ChangeUserDataDialog(),
+      new ChangePasswordDialog(),
+      new LoadFileDialog(),
+    ]);
   }
 
   componentDidMount() {
-    super.componentDidMount();
-
     document
       .querySelector('.profile__button_data')!
       .addEventListener('click', () => {
@@ -68,5 +45,7 @@ export class Profile extends Module {
         event.stopPropagation();
       });
     }
+
+    super.componentDidMount();
   }
 }

@@ -29,7 +29,6 @@ let currentComponent: any = null;
 for (const { path, component } of routes) {
   if (path === document.location.pathname) {
     currentComponent = new component();
-    currentComponent.precompiledContent = currentComponent.content;
     document.querySelector('#root')!.innerHTML = currentComponent.content;
     currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }

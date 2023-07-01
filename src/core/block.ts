@@ -1,6 +1,7 @@
 import { EventBus } from './event-bus';
 import { v4 as uuidV4 } from 'uuid';
 import { Template } from './template.ts';
+import { Component } from '../types.ts';
 
 export type PropertiesT = Record<string, unknown>;
 
@@ -15,11 +16,17 @@ export abstract class Block {
   eventBus = new EventBus();
   props: PropertiesT;
   blockId = uuidV4();
-  abstract content: string;
-  precompiledContent = '';
+  content: string;
   templater = new Template();
+  declarations: Component[];
 
-  protected constructor(properties: PropertiesT = {}) {
+  protected constructor(
+    content: string,
+    declarations: Component[] = [],
+    properties: PropertiesT = {}
+  ) {
+    this.content = content;
+    this.declarations = declarations;
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
     this.eventBus.emit(Block.EVENTS.INIT);
@@ -41,24 +48,35 @@ export abstract class Block {
     this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  init(): void {}
+  init(): void {
+    this.content = this.templater.precompile(
+      this.content,
+      this.declarations,
+      this.blockId
+    );
+  }
 
   private _componentDidMount(): void {
     this.componentDidMount();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  componentDidMount(): void {}
+  componentDidMount(): void {
+    if (this.declarations.length > 0) {
+      for (const component of this.declarations) {
+        component.eventBus.emit(Block.EVENTS.FLOW_CDM);
+      }
+    }
+
+    this.templater.compile(this.props, this.blockId);
+  }
 
   private _render(): void {
     this.render();
   }
 
   render(): void {
-    if (this.precompiledContent) {
+    if (this.content) {
       this.templater.compile(this.props, this.blockId);
-      // document.getElementById(this.blockId)!.innerHTML = this.content;
     }
   }
 

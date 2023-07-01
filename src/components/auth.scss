@@ -1,7 +1,7 @@
 .auth {
-  max-width: 340px;
+  max-width: 100%;
   border: 1px solid var(--blue-grey);
-  width: 100%;
+  width: 340px;
   text-align: center;
   box-shadow: 0 0 6px #00000023;
   border-radius: 12px;
@@ -78,7 +78,8 @@
   }
 
   &__input-error {
+    display: inline-block;
     color: #ff2f2f;
-    padding-top: 7px;
+    height: 9px;
   }
 }

@@ -11,11 +11,17 @@ import template from './register-form.html?raw';
 export class RegisterForm extends Component {
   form!: Form;
   selector = 'register-form';
-  content: string = this.templater.precompile(template, [], this.blockId);
-  precompiledContent = this.content;
 
   constructor() {
-    super();
+    super(template, [], {
+      email_error: '',
+      login_error: '',
+      first_name_error: '',
+      second_name_error: '',
+      phone_error: '',
+      password_error: '',
+      password_repeat_error: '',
+    });
   }
 
   init() {}
@@ -100,6 +106,7 @@ export class RegisterForm extends Component {
       this.props
     );
     this.form.init('register', this.formSubmit);
+    super.componentDidMount();
   }
 
   formSubmit(formValue: Record<string, string>): void {
