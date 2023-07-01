@@ -8,10 +8,11 @@ export class LoginForm extends Component {
   selector = 'login-form';
 
   constructor() {
-    super(template);
+    super(template, [], {
+      login_error: '',
+      password_error: '',
+    });
   }
-
-  init() {}
 
   componentDidMount() {
     this.form = new Form(

@@ -24,8 +24,6 @@ export class RegisterForm extends Component {
     });
   }
 
-  init() {}
-
   componentDidMount() {
     this.form = new Form(
       {
