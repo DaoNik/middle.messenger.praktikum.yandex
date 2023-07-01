@@ -64,8 +64,9 @@ export class Form {
 
         control.valid = isValid;
         control.error = error;
-        this.props[`${input.name}_error`] = control.error;
-        console.log(control, this.form);
+        if (this.props[`${input.name}_error`] !== control.error) {
+          this.props[`${input.name}_error`] = control.error;
+        }
         this.form.valid = isFormValid(this.form);
         submitButtonElement!.disabled = !this.form.valid;
       });

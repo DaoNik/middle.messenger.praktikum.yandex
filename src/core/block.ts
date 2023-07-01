@@ -57,11 +57,8 @@ export abstract class Block {
 
   render(): void {
     if (this.precompiledContent) {
-      this.content = this.templater.compile(
-        this.precompiledContent,
-        this.props
-      );
-      document.getElementById(this.blockId)!.innerHTML = this.content;
+      this.templater.compile(this.props, this.blockId);
+      // document.getElementById(this.blockId)!.innerHTML = this.content;
     }
   }
 
