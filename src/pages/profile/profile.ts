@@ -2,9 +2,9 @@ import { ChangeUserDataDialog } from '../../components/change-user-data-dialog/c
 import { ChangePasswordDialog } from '../../components/change-password-dialog/change-password-dialog';
 import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dialog';
 import template from './profile.html?raw';
-import { Module } from '../../types.ts';
+import { Block } from '../../core/block.ts';
 
-export class Profile extends Module {
+export class Profile extends Block {
   constructor() {
     super(template, [
       new ChangeUserDataDialog(),

@@ -5,14 +5,11 @@ import { Page404 } from './pages/404/404';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
-// import { AppModule } from './types.ts';
 
 export interface IRoute {
   path: string;
   component: any;
 }
-
-// new AppModule();
 
 const routes: IRoute[] = [
   { path: '/chats', component: Chats },

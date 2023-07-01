@@ -5,9 +5,9 @@ import { Form, IFormControl } from '../../core/form';
 import { ClipMenu } from '../../components/clip-menu/clip-menu';
 import { ChatMenu } from '../../components/chat-menu/chat-menu';
 import template from './chats.html?raw';
-import { Module } from '../../types.ts';
+import { Block } from '../../core/block.ts';
 
-export class Chats extends Module {
+export class Chats extends Block {
   form!: Form;
 
   constructor() {

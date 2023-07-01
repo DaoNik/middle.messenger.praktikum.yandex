@@ -1,7 +1,7 @@
 import template from './404.html?raw';
-import { Module } from '../../types.ts';
+import { Block } from '../../core/block.ts';
 
-export class Page404 extends Module {
+export class Page404 extends Block {
   constructor() {
     super(template);
   }

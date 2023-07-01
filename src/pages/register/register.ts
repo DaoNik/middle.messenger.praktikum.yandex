@@ -1,8 +1,8 @@
 import { RegisterForm } from '../../components/register-form/register-form';
 import template from './register.html?raw';
-import { Module } from '../../types.ts';
+import { Block } from '../../core/block.ts';
 
-export class Register extends Module {
+export class Register extends Block {
   constructor() {
     super(template, [new RegisterForm()]);
   }
