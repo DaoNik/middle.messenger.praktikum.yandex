@@ -9,7 +9,6 @@ lerna-debug.log*
 
 .nyc_output
 node_modules
-dist
 dist-ssr
 *.local
 .env
