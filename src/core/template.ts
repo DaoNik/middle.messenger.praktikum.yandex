@@ -34,7 +34,8 @@ export class Template {
   }
 
   compile(properties: PropertiesT, blockId: string): void {
-    const block = document.querySelector(`#${blockId}`);
+    // eslint-disable-next-line unicorn/prefer-query-selector
+    const block = document.getElementById(blockId);
 
     if (!block) return;
 
