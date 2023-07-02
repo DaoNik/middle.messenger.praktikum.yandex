@@ -13,7 +13,7 @@ export class Template {
     let result = template;
     const componentsMap = new Map<string, string>();
 
-    result = result.replace(/{{blockId}}/gm, blockId);
+    result = result.replaceAll(/{{blockId}}/gm, blockId);
 
     if (!keys || keys.length === 0 || declarations.length === 0) {
       return result;
@@ -23,20 +23,18 @@ export class Template {
       componentsMap.set(component.selector, component.content);
     }
 
-    keys
-      .map((key) => key.slice(3, key.length - 2))
-      .forEach((key) => {
-        const regExp = new RegExp(`{{>${key}}}`, 'gm');
-        if (componentsMap.has(key)) {
-          result = result.replace(regExp, componentsMap.get(key)!);
-        }
-      });
+    for (const key of keys.map((key) => key.slice(3, -2))) {
+      const regExp = new RegExp(`{{>${key}}}`, 'gm');
+      if (componentsMap.has(key)) {
+        result = result.replace(regExp, componentsMap.get(key)!);
+      }
+    }
 
     return result;
   }
 
   compile(properties: PropertiesT, blockId: string): void {
-    const block = document.getElementById(blockId);
+    const block = document.querySelector(`#${blockId}`);
 
     if (!block) return;
 
@@ -53,7 +51,7 @@ export class Template {
   ) {
     if (childNodes.length > 0) {
       for (const node of childNodes) {
-        if (Array.from(node.childNodes).length > 0) {
+        if ([...node.childNodes].length > 0) {
           this._replaceTextContentChildNode(node.childNodes, properties);
         } else {
           this._replaceTextContent(node, properties);
@@ -82,25 +80,23 @@ export class Template {
     }
 
     if (content) {
-      const keys = content.match(/{{[\w-.()']*}}/gm);
+      const keys = content.match(/{{[\w-.'()]*}}/gm);
 
       if (!keys || keys.length === 0 || properties.length === 0) {
         return;
       }
 
-      keys
-        .map((key) => key.slice(2, key.length - 2))
-        .forEach((key) => {
-          const regExp = new RegExp(`{{${key}}}`, 'gm');
-          const value = properties[key];
-          if (typeof value === 'string') {
-            const elements = this.elementsContentMap.get(key) ?? new Set();
+      for (const key of keys.map((key) => key.slice(2, -2))) {
+        const regExp = new RegExp(`{{${key}}}`, 'gm');
+        const value = properties[key];
+        if (typeof value === 'string') {
+          const elements = this.elementsContentMap.get(key) ?? new Set();
 
-            elements.add(element);
-            this.elementsContentMap.set(key, elements);
-            element.textContent = content.replace(regExp, value);
-          }
-        });
+          elements.add(element);
+          this.elementsContentMap.set(key, elements);
+          element.textContent = content.replace(regExp, value);
+        }
+      }
     }
   }
 }

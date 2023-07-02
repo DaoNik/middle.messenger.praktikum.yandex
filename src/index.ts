@@ -20,12 +20,9 @@ const routes: IRoute[] = [
   { path: '/profile', component: Profile },
 ];
 
-// TODO: на основе его добавить destroy при смене урла
-let currentComponent: any = null;
-
 for (const { path, component } of routes) {
   if (path === document.location.pathname) {
-    currentComponent = new component();
+    const currentComponent = new component();
     document.querySelector('#root')!.innerHTML = currentComponent.content;
     currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }

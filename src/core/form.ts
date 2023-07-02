@@ -23,9 +23,9 @@ export class Form {
   form: IForm;
   props: PropertiesT;
 
-  constructor(form: IForm, props: PropertiesT) {
+  constructor(form: IForm, properties: PropertiesT) {
     this.form = form;
-    this.props = props;
+    this.props = properties;
   }
 
   init(

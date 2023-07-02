@@ -9,6 +9,7 @@ export class EventBus {
 
     this._listeners[event].push(callback);
   }
+
   off(event: string, callback: unknown): void {
     if (!this._listeners[event]) {
       throw new Error('Нет такого события');

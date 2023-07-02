@@ -24,5 +24,6 @@
     "no-var": "error",
     "no-use-before-define": "error",
     "unicorn/no-null": "off"
-  }
+  },
+  "ignorePatterns": ["**/*.js", "**/*.d.ts"]
 }
