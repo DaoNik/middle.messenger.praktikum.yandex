@@ -23,7 +23,8 @@
     "semi": ["error", "always"],
     "no-var": "error",
     "no-use-before-define": "error",
-    "unicorn/no-null": "off"
+    "unicorn/no-null": "off",
+    "complexity": ["error", 15]
   },
   "ignorePatterns": ["**/*.js", "**/*.d.ts"]
 }

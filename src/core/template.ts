@@ -2,7 +2,7 @@ import { Component } from '../types.ts';
 import { PropertiesT } from './block.ts';
 
 export class Template {
-  elementsContentMap = new Map<string, Set<ChildNode>>();
+  elementsContentMap = new Map<string, Set<Element>>();
 
   precompile(
     template: string,
@@ -39,21 +39,22 @@ export class Template {
 
     if (!block) return;
 
-    if (block.childNodes.length > 0) {
-      this._replaceTextContentChildNode(block.childNodes, properties);
+    if (block.children.length > 0) {
+      this._replaceTextContentChildNode(block.children, properties);
     } else {
       this._replaceTextContent(block, properties);
     }
   }
 
   private _replaceTextContentChildNode(
-    childNodes: NodeListOf<ChildNode>,
+    children: HTMLCollection,
     properties: PropertiesT
   ) {
-    if (childNodes.length > 0) {
-      for (const node of childNodes) {
-        if ([...node.childNodes].length > 0) {
-          this._replaceTextContentChildNode(node.childNodes, properties);
+    if (children.length > 0) {
+      for (const node of children) {
+        // TODO: добавить проверку на наличие blockId
+        if (node.children.length > 0) {
+          this._replaceTextContentChildNode(node.children, properties);
         } else {
           this._replaceTextContent(node, properties);
         }
@@ -61,10 +62,7 @@ export class Template {
     }
   }
 
-  private _replaceTextContent(
-    element: ChildNode,
-    properties: PropertiesT
-  ): void {
+  private _replaceTextContent(element: Element, properties: PropertiesT): void {
     const content = element.textContent;
 
     for (const key in properties) {
@@ -74,6 +72,7 @@ export class Template {
         for (const element of elements) {
           const value = properties[key];
           if (typeof value === 'string') {
+            console.log(element);
             element.textContent = value;
           }
         }

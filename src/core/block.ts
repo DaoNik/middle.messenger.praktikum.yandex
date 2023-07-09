@@ -3,7 +3,13 @@ import { v4 as uuidV4 } from 'uuid';
 import { Template } from './template.ts';
 import { Component } from '../types.ts';
 
+export type EventsT = Record<string, () => {}>;
 export type PropertiesT = Record<string, unknown>;
+
+export interface IBlockProperties {
+  props: PropertiesT;
+  events: EventsT;
+}
 
 export abstract class Block {
   static EVENTS = {
@@ -107,7 +113,6 @@ export abstract class Block {
         return typeof value === 'function' ? value.bind(target) : value;
       },
       set(target: PropertiesT, property: string, value) {
-        console.log('set proxy trigger');
         const oldTarget = { ...target };
         target[property] = value;
 

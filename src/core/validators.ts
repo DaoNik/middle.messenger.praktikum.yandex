@@ -12,7 +12,10 @@ export function isMinimalLength(
 ): IValidatorValue {
   return value.length > minLength
     ? { isValid: true, error: '' }
-    : { isValid: false, error: `строка должна быть не менее ${minLength}` };
+    : {
+        isValid: false,
+        error: `строка должна быть не менее ${minLength} символов`,
+      };
 }
 
 export function isEmail(value: string): IValidatorValue {
