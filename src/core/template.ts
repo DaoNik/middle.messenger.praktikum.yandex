@@ -42,24 +42,40 @@ export class Template {
   }
 
   addEvents(block: HTMLElement, functions: EventsT) {
-    this._addEvents(block, functions);
+    this._addOrRemoveEvents(block, functions, false);
 
     if (block.children.length > 0) {
-      this._registerEvents(block.children, functions);
+      this._registerEvents(block.children, functions, false);
     }
   }
 
-  private _registerEvents(elements: HTMLCollection, functions: EventsT) {
+  removeEvents(block: HTMLElement, functions: EventsT) {
+    this._addOrRemoveEvents(block, functions, true);
+
+    if (block.children.length > 0) {
+      this._registerEvents(block.children, functions, true);
+    }
+  }
+
+  private _registerEvents(
+    elements: HTMLCollection,
+    functions: EventsT,
+    isRemove: boolean
+  ) {
     for (const element of elements) {
-      this._addEvents(element, functions);
+      this._addOrRemoveEvents(element, functions, isRemove);
 
       if (element.children.length > 0) {
-        this._registerEvents(element.children, functions);
+        this._registerEvents(element.children, functions, isRemove);
       }
     }
   }
 
-  private _addEvents(element: Element, functions: EventsT) {
+  private _addOrRemoveEvents(
+    element: Element,
+    functions: EventsT,
+    isRemove: boolean
+  ) {
     const reg = /^\(.*\)$/;
 
     for (const attr of element.attributes) {
@@ -69,7 +85,11 @@ export class Template {
         const callback = functions[attr.value];
 
         if (callback) {
-          element.addEventListener(eventName, callback);
+          if (isRemove) {
+            element.removeEventListener(eventName, callback);
+          } else {
+            element.addEventListener(eventName, callback);
+          }
         }
       }
     }

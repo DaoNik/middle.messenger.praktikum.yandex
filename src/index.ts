@@ -20,9 +20,15 @@ const routes: IRoute[] = [
   { path: '/profile', component: Profile },
 ];
 
+let currentComponent = null;
+
 for (const { path, component } of routes) {
   if (path === document.location.pathname) {
-    const currentComponent = new component();
+    if (currentComponent) {
+      currentComponent.eventBus.emit(Block.EVENTS.DESTROY);
+    }
+
+    currentComponent = new component();
     document.querySelector('#root')!.innerHTML = currentComponent.content;
     currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }

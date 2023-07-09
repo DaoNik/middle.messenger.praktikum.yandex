@@ -18,6 +18,7 @@ export abstract class Block {
     FLOW_CDM: 'flow:component-did-mount',
     FLOW_RENDER: 'flow:render',
     FLOW_CDU: 'flow:component-did-update',
+    DESTROY: 'destroy',
   };
 
   eventBus = new EventBus();
@@ -50,6 +51,10 @@ export abstract class Block {
     this.eventBus.on(
       Block.EVENTS.FLOW_CDU,
       this._componentDidUpdate.bind(this)
+    );
+    this.eventBus.on(
+      Block.EVENTS.DESTROY,
+      this._componentDidUnmount.bind(this)
     );
   }
 
@@ -127,5 +132,11 @@ export abstract class Block {
         return true;
       },
     });
+  }
+
+  private _componentDidUnmount() {
+    if (this.element) {
+      this.templater.removeEvents(this.element, this.events);
+    }
   }
 }
