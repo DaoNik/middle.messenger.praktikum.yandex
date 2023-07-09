@@ -113,7 +113,7 @@
     <div class="chat__header">
       <h2 class="chat__name">User name</h2>
       <img class="chat__avatar" src="/assets/no-avatar.svg" />
-      <button class="chat__menu" type="button">
+      <button class="chat__menu" type="button" (click)="onChatMenuToggled">
         <img class="chat__menu-image" src="/assets/menu.svg" alt="меню" />
       </button>
     </div>
@@ -165,7 +165,11 @@
       </div>
     </div>
     <form class="chat__add-text" name="send-message" (submit)="onSubmit">
-      <buttton class="chat__button-attach" type="button">
+      <buttton
+        class="chat__button-attach"
+        type="button"
+        (click)="onClipMenuToggled"
+      >
         <img
           src="/assets/clip.svg"
           alt="прикрепить файл"

@@ -5,6 +5,6 @@ export class ClipMenu extends Component {
   selector = 'clip-menu';
 
   constructor() {
-    super(template);
+    super(template, [], {}, {});
   }
 }

@@ -5,6 +5,22 @@ export class ChatMenu extends Component {
   selector = 'chat-menu';
 
   constructor() {
-    super(template);
+    super(
+      template,
+      [],
+      {},
+      {
+        onAddUserDialogOpened: () => {
+          document
+            .querySelector('.overlay-add-user')!
+            .classList.add('overlay_opened');
+        },
+        onRemoveUserDialogOpened: () => {
+          document
+            .querySelector('.overlay-remove-user')!
+            .classList.add('overlay_opened');
+        },
+      }
+    );
   }
 }

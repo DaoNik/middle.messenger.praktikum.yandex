@@ -6,30 +6,26 @@ import { Block } from '../../core/block.ts';
 
 export class Profile extends Block {
   constructor() {
-    super(template, [
-      new ChangeUserDataDialog(),
-      new ChangePasswordDialog(),
-      new LoadFileDialog(),
-    ]);
-  }
-
-  componentDidMount() {
-    document
-      .querySelector('.profile__button_data')!
-      .addEventListener('click', () => {
-        document
-          .querySelector('.overlay-change-data')!
-          .classList.add('overlay_opened');
-      });
-
-    document
-      .querySelector('.profile__button_pass')!
-      .addEventListener('click', () => {
-        document
-          .querySelector('.overlay-change-password')!
-          .classList.add('overlay_opened');
-      });
-
-    super.componentDidMount();
+    super(
+      template,
+      [
+        new ChangeUserDataDialog(),
+        new ChangePasswordDialog(),
+        new LoadFileDialog(),
+      ],
+      {},
+      {
+        onChangeDataDialogOpened: () => {
+          document
+            .querySelector('.overlay-change-data')!
+            .classList.add('overlay_opened');
+        },
+        onChangePasswordDialogOpened: () => {
+          document
+            .querySelector('.overlay-change-password')!
+            .classList.add('overlay_opened');
+        },
+      }
+    );
   }
 }

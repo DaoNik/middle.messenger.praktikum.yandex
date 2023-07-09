@@ -76,38 +76,13 @@ export class Chats extends Block {
           ) as HTMLButtonElement;
           submitButtonElement!.disabled = !form.valid;
         },
+        onChatMenuToggled: () => {
+          document.querySelector('.chat-menu')?.classList.toggle('opened');
+        },
+        onClipMenuToggled: () => {
+          document.querySelector('.clip-menu')?.classList.toggle('opened');
+        },
       }
     );
-  }
-
-  componentDidMount(): void {
-    document
-      .querySelector('button.chat__menu')!
-      .addEventListener('click', () => {
-        document.querySelector('.chat-menu')?.classList.toggle('opened');
-      });
-    document
-      .querySelector('.chat__button-attach')!
-      .addEventListener('click', () => {
-        document.querySelector('.clip-menu')?.classList.toggle('opened');
-      });
-
-    document
-      .querySelector<HTMLButtonElement>('.chat-menu .menu__button_add')!
-      .addEventListener('click', () => {
-        document
-          .querySelector('.overlay-add-user')!
-          .classList.add('overlay_opened');
-      });
-
-    document
-      .querySelector<HTMLButtonElement>('.chat-menu .menu__button_remove')!
-      .addEventListener('click', () => {
-        document
-          .querySelector('.overlay-remove-user')!
-          .classList.add('overlay_opened');
-      });
-
-    super.componentDidMount();
   }
 }

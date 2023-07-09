@@ -30,14 +30,22 @@
   <table class="profile__table profile__table_small">
     <tr class="profile__table-row">
       <td class="profile__table-cell">
-        <button class="profile__button profile__button_data" type="button">
+        <button
+          class="profile__button profile__button_data"
+          type="button"
+          (click)="onChangeDataDialogOpened"
+        >
           Изменить данные
         </button>
       </td>
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">
-        <button class="profile__button profile__button_pass" type="button">
+        <button
+          class="profile__button profile__button_pass"
+          type="button"
+          (click)="onChangePasswordDialogOpened"
+        >
           Изменить пароль
         </button>
       </td>
