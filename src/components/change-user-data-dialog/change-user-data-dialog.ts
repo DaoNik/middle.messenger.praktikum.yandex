@@ -34,6 +34,16 @@ export class ChangeUserDataDialog extends Component {
         },
       ],
       [
+        'display_name',
+        {
+          value: '',
+          validators: [isNotEmptyValidator, isMinimalLength],
+          minLength: 4,
+          valid: false,
+          error: '',
+        },
+      ],
+      [
         'first_name',
         {
           value: '',
@@ -78,6 +88,7 @@ export class ChangeUserDataDialog extends Component {
         first_name_error: '',
         second_name_error: '',
         phone_error: '',
+        display_name_error: '',
       },
       {
         onSubmit: (event: SubmitEvent) => {

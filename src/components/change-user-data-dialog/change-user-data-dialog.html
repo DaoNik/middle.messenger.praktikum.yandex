@@ -61,6 +61,17 @@
         />
         <span class="auth__input-error">{{phone_error}}</span>
       </label>
+      <label class="auth__label">
+        <input
+          class="auth__input"
+          placeholder="Имя в чате"
+          type="text"
+          name="display_name"
+          (input)="onInput"
+          (blur)="onBlur"
+        />
+        <span class="auth__input-error">{{display_name_error}}</span>
+      </label>
       <div class="auth__actions">
         <button class="auth__submit" type="submit" disabled>Сохранить</button>
       </div>
