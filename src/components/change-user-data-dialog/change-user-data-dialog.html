@@ -1,13 +1,15 @@
 <div class="overlay overlay-change-data" id="{{blockId}}">
   <section class="auth dialog change-data">
     <h2 class="auth__title">Изменение данных</h2>
-    <form class="auth__form" name="change-data">
+    <form class="auth__form" name="change-data" (submit)="onSubmit">
       <label class="auth__label">
         <input
           class="auth__input"
           placeholder="Почта"
           type="text"
           name="email"
+          (input)="onInput"
+          (blur)="onBlur"
         />
         <span class="auth__input-error">{{email_error}}</span>
       </label>
@@ -17,6 +19,8 @@
           placeholder="Логин"
           type="text"
           name="login"
+          (input)="onInput"
+          (blur)="onBlur"
         />
         <span class="auth__input-error">{{login_error}}</span>
       </label>
@@ -26,6 +30,8 @@
           placeholder="Имя"
           type="text"
           name="first_name"
+          (input)="onInput"
+          (blur)="onBlur"
         />
         <span class="auth__input-error">{{first_name_error}}</span>
       </label>
@@ -35,6 +41,8 @@
           placeholder="Фамилия"
           type="text"
           name="second_name"
+          (input)="onInput"
+          (blur)="onBlur"
         />
         <span class="auth__input-error">{{second_name_error}}</span>
       </label>
@@ -44,11 +52,13 @@
           placeholder="Телефон"
           type="text"
           name="phone"
+          (input)="onInput"
+          (blur)="onBlur"
         />
         <span class="auth__input-error">{{phone_error}}</span>
       </label>
       <div class="auth__actions">
-        <button class="auth__submit" type="submit">Сохранить</button>
+        <button class="auth__submit" type="submit" disabled>Сохранить</button>
       </div>
     </form>
   </section>

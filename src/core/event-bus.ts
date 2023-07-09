@@ -1,6 +1,7 @@
+import { EventT } from './block.ts';
+
 export class EventBus {
-  private _listeners: Record<string, Array<(...parameters: any[]) => void>> =
-    {};
+  private _listeners: Record<string, Array<EventT>> = {};
 
   on(event: string, callback: (...parameters: any[]) => void): void {
     if (!this._listeners[event]) {

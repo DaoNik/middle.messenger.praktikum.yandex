@@ -3,7 +3,8 @@ import { v4 as uuidV4 } from 'uuid';
 import { Template } from './template.ts';
 import { Component } from '../types.ts';
 
-export type EventsT = Record<string, () => {}>;
+export type EventT = (...parameters: any[]) => void;
+export type EventsT = Record<string, EventT>;
 export type PropertiesT = Record<string, unknown>;
 
 export interface IBlockProperties {
@@ -25,14 +26,17 @@ export abstract class Block {
   content: string;
   templater = new Template();
   declarations: Component[];
+  events: EventsT;
 
   protected constructor(
     content: string,
     declarations: Component[] = [],
-    properties: PropertiesT = {}
+    properties: PropertiesT = {},
+    events: EventsT = {}
   ) {
     this.content = content;
     this.declarations = declarations;
+    this.events = events;
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
     this.eventBus.emit(Block.EVENTS.INIT);
@@ -63,6 +67,7 @@ export abstract class Block {
   }
 
   private _componentDidMount(): void {
+    this.templater.addEvents(this.blockId, this.events);
     this.componentDidMount();
   }
 

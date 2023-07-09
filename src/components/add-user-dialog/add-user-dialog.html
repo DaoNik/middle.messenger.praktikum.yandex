@@ -1,18 +1,19 @@
 <div class="overlay overlay-add-user" id="{{blockId}}">
   <section class="dialog">
     <h3 class="dialog__title">Добавить пользователя</h3>
-    <form name="add-user" (submit)="function()">
+    <form name="add-user" (submit)="onSubmit">
       <label class="dialog__label">
         <input
           class="dialog__input"
           placeholder="Логин"
           type="text"
           name="login"
-          (input)="inputFunc()"
+          (input)="onInput"
+          (blur)="onBlur"
         />
         <span class="auth__input-error">{{login_error}}</span>
       </label>
-      <button class="dialog__submit" type="submit">Добавить</button>
+      <button class="dialog__submit" type="submit" disabled>Добавить</button>
     </form>
   </section>
 </div>

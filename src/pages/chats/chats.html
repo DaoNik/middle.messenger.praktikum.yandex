@@ -164,7 +164,7 @@
         </div>
       </div>
     </div>
-    <form class="chat__add-text" name="send-message">
+    <form class="chat__add-text" name="send-message" (submit)="onSubmit">
       <buttton class="chat__button-attach" type="button">
         <img
           src="/assets/clip.svg"
@@ -177,8 +177,10 @@
         placeholder="Сообщение"
         class="chat__input"
         name="message"
+        (input)="onInput"
+        (blur)="onBlur"
       />
-      <button class="chat__button-send" type="submit">
+      <button class="chat__button-send" type="submit" disabled>
         <img src="/assets/exit.svg" alt="отправить" class="chat__image-send" />
       </button>
     </form>

@@ -1,12 +1,26 @@
 <section class="auth register" id="{{blockId}}">
   <h2 class="auth__title">Регистрация</h2>
-  <form class="auth__form" name="register" novalidate>
+  <form class="auth__form" name="register" novalidate (submit)="onSubmit">
     <label class="auth__label">
-      <input class="auth__input" placeholder="Почта" type="text" name="email" />
+      <input
+        class="auth__input"
+        placeholder="Почта"
+        type="text"
+        name="email"
+        (input)="onInput"
+        (blur)="onBlur"
+      />
       <span class="auth__input-error">{{email_error}}</span>
     </label>
     <label class="auth__label">
-      <input class="auth__input" placeholder="Логин" type="text" name="login" />
+      <input
+        class="auth__input"
+        placeholder="Логин"
+        type="text"
+        name="login"
+        (input)="onInput"
+        (blur)="onBlur"
+      />
       <span class="auth__input-error">{{login_error}}</span>
     </label>
     <label class="auth__label">
@@ -15,6 +29,8 @@
         placeholder="Имя"
         type="text"
         name="first_name"
+        (input)="onInput"
+        (blur)="onBlur"
       />
       <span class="auth__input-error">{{first_name_error}}</span>
     </label>
@@ -24,6 +40,8 @@
         placeholder="Фамилия"
         type="text"
         name="second_name"
+        (input)="onInput"
+        (blur)="onBlur"
       />
       <span class="auth__input-error">{{second_name_error}}</span>
     </label>
@@ -33,6 +51,8 @@
         placeholder="Телефон"
         type="text"
         name="phone"
+        (input)="onInput"
+        (blur)="onBlur"
       />
       <span class="auth__input-error">{{phone_error}}</span>
     </label>
@@ -42,6 +62,8 @@
         placeholder="Пароль"
         type="password"
         name="password"
+        (input)="onInput"
+        (blur)="onBlur"
       />
       <span class="auth__input-error">{{password_error}}</span>
     </label>
@@ -51,11 +73,15 @@
         placeholder="Пароль (ещё раз)"
         type="password"
         name="password_repeat"
+        (input)="onInput"
+        (blur)="onBlur"
       />
       <span class="auth__input-error">{{password_repeat_error}}</span>
     </label>
     <div class="auth__actions">
-      <button class="auth__submit" type="submit">Зарегистрироваться</button>
+      <button class="auth__submit" type="submit" disabled>
+        Зарегистрироваться
+      </button>
       <a class="auth__link" href="/login">Войти</a>
     </div>
   </form>

@@ -1,5 +1,5 @@
 import { Component } from '../types.ts';
-import { PropertiesT } from './block.ts';
+import { EventsT, PropertiesT } from './block.ts';
 
 export class Template {
   elementsContentMap = new Map<string, Set<Element>>();
@@ -46,6 +46,45 @@ export class Template {
     }
   }
 
+  addEvents(blockId: string, functions: EventsT) {
+    // eslint-disable-next-line unicorn/prefer-query-selector
+    const block = document.getElementById(blockId);
+
+    if (!block) return;
+
+    this._addEvents(block, functions);
+
+    if (block.children.length > 0) {
+      this._registerEvents(block.children, functions);
+    }
+  }
+
+  private _registerEvents(elements: HTMLCollection, functions: EventsT) {
+    for (const element of elements) {
+      this._addEvents(element, functions);
+
+      if (element.children.length > 0) {
+        this._registerEvents(element.children, functions);
+      }
+    }
+  }
+
+  private _addEvents(element: Element, functions: EventsT) {
+    const reg = /^\(.*\)$/;
+
+    for (const attr of element.attributes) {
+      if (reg.test(attr.name)) {
+        const eventName = attr.name.slice(1, -1);
+
+        const callback = functions[attr.value];
+
+        if (callback) {
+          element.addEventListener(eventName, callback);
+        }
+      }
+    }
+  }
+
   private _replaceTextContentChildNode(
     children: HTMLCollection,
     properties: PropertiesT
@@ -72,7 +111,6 @@ export class Template {
         for (const element of elements) {
           const value = properties[key];
           if (typeof value === 'string') {
-            console.log(element);
             element.textContent = value;
           }
         }
