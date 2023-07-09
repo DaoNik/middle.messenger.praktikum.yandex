@@ -1,5 +1,9 @@
-<div class="overlay overlay-remove-user" id="{{blockId}}">
-  <section class="dialog">
+<div
+  class="overlay overlay-remove-user"
+  id="{{blockId}}"
+  (click)="onDialogClose"
+>
+  <section class="dialog" (click)="onDialogNotClose">
     <h3 class="dialog__title">Удалить пользователя</h3>
     <form name="remove-user" (submit)="onSubmit">
       <label class="dialog__label">

@@ -108,22 +108,6 @@ export class Chats extends Block {
           .classList.add('overlay_opened');
       });
 
-    // eslint-disable-next-line unicorn/prefer-spread
-    for (const overlay of Array.from(document.querySelectorAll('.overlay'))) {
-      overlay.addEventListener('click', () => {
-        overlay.classList.remove('overlay_opened');
-      });
-    }
-
-    // eslint-disable-next-line unicorn/prefer-spread
-    for (const overlayChild of Array.from(
-      document.querySelectorAll('.overlay section')
-    )) {
-      overlayChild.addEventListener('click', (event) => {
-        event.stopPropagation();
-      });
-    }
-
     super.componentDidMount();
   }
 }

@@ -33,12 +33,7 @@ export class Template {
     return result;
   }
 
-  compile(properties: PropertiesT, blockId: string): void {
-    // eslint-disable-next-line unicorn/prefer-query-selector
-    const block = document.getElementById(blockId);
-
-    if (!block) return;
-
+  compile(properties: PropertiesT, block: HTMLElement): void {
     if (block.children.length > 0) {
       this._replaceTextContentChildNode(block.children, properties);
     } else {
@@ -46,12 +41,7 @@ export class Template {
     }
   }
 
-  addEvents(blockId: string, functions: EventsT) {
-    // eslint-disable-next-line unicorn/prefer-query-selector
-    const block = document.getElementById(blockId);
-
-    if (!block) return;
-
+  addEvents(block: HTMLElement, functions: EventsT) {
     this._addEvents(block, functions);
 
     if (block.children.length > 0) {

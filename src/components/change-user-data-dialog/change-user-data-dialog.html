@@ -1,5 +1,9 @@
-<div class="overlay overlay-change-data" id="{{blockId}}">
-  <section class="auth dialog change-data">
+<div
+  class="overlay overlay-change-data"
+  id="{{blockId}}"
+  (click)="onDialogClose"
+>
+  <section class="auth dialog change-data" (click)="onDialogNotClose">
     <h2 class="auth__title">Изменение данных</h2>
     <form class="auth__form" name="change-data" (submit)="onSubmit">
       <label class="auth__label">

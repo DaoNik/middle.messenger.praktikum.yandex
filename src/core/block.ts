@@ -27,6 +27,7 @@ export abstract class Block {
   templater = new Template();
   declarations: Component[];
   events: EventsT;
+  element: HTMLElement | null = null;
 
   protected constructor(
     content: string,
@@ -67,7 +68,8 @@ export abstract class Block {
   }
 
   private _componentDidMount(): void {
-    this.templater.addEvents(this.blockId, this.events);
+    this.element = document.getElementById(this.blockId)!;
+    this.templater.addEvents(this.element, this.events);
     this.componentDidMount();
   }
 
@@ -78,7 +80,7 @@ export abstract class Block {
       }
     }
 
-    this.templater.compile(this.props, this.blockId);
+    this.templater.compile(this.props, this.element!);
   }
 
   private _render(): void {
@@ -86,8 +88,8 @@ export abstract class Block {
   }
 
   render(): void {
-    if (this.content) {
-      this.templater.compile(this.props, this.blockId);
+    if (this.content && this.element) {
+      this.templater.compile(this.props, this.element);
     }
   }
 

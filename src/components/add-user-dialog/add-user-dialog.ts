@@ -66,11 +66,19 @@ export class AddUserDialog extends Component {
           }
           form.valid = isFormValid(form);
 
-          const formElement = document.getElementById(this.blockId)!;
-          const submitButtonElement = formElement.querySelector(
+          const submitButtonElement = this.element?.querySelector(
             'button[type="submit"]'
-          ) as HTMLButtonElement;
-          submitButtonElement!.disabled = !form.valid;
+          );
+
+          if (submitButtonElement) {
+            (submitButtonElement as HTMLButtonElement).disabled = !form.valid;
+          }
+        },
+        onDialogClose: () => {
+          this.element?.classList.remove('overlay_opened');
+        },
+        onDialogNotClose: (event) => {
+          event.stopPropagation();
         },
       }
     );
