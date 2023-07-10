@@ -7,7 +7,6 @@ import {
 import { IForm, IFormControl } from '../../core/form';
 import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
-import { redirect } from '../../utils/redirect.ts';
 
 export class LoginForm extends Component {
   form: IForm = {
@@ -86,7 +85,6 @@ export class LoginForm extends Component {
             (submitButtonElement as HTMLButtonElement).disabled = !form.valid;
           }
         },
-        onRedirect: redirect,
       }
     );
   }
