@@ -70,8 +70,7 @@ export class Chats extends Block {
           }
           form.valid = isFormValid(form);
 
-          const formElement = document.getElementById(this.blockId)!;
-          const submitButtonElement = formElement.querySelector(
+          const submitButtonElement = this.element?.querySelector(
             'button[type="submit"]'
           ) as HTMLButtonElement;
           submitButtonElement!.disabled = !form.valid;

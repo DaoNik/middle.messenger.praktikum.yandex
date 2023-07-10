@@ -73,6 +73,7 @@ export abstract class Block {
   }
 
   private _componentDidMount(): void {
+    // eslint-disable-next-line unicorn/prefer-query-selector
     this.element = document.getElementById(this.blockId)!;
     this.templater.addEvents(this.element, this.events);
     this.componentDidMount();

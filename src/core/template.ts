@@ -78,11 +78,11 @@ export class Template {
   ) {
     const reg = /^\(.*\)$/;
 
-    for (const attr of element.attributes) {
-      if (reg.test(attr.name)) {
-        const eventName = attr.name.slice(1, -1);
+    for (const attribute of element.attributes) {
+      if (reg.test(attribute.name)) {
+        const eventName = attribute.name.slice(1, -1);
 
-        const callback = functions[attr.value];
+        const callback = functions[attribute.value];
 
         if (callback) {
           if (isRemove) {
