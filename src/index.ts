@@ -22,6 +22,10 @@ const routes: IRoute[] = [
 
 let currentComponent = null;
 
+if (document.location.pathname === '/') {
+  document.location.pathname = '/login';
+}
+
 for (const { path, component } of routes) {
   if (path === document.location.pathname) {
     if (currentComponent) {
