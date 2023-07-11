@@ -1,19 +1,19 @@
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-
+  inset: 0;
   display: flex;
-  //visibility: visible;
+  visibility: hidden;
   align-items: center;
   justify-content: center;
-
-  //opacity: 1;
-  //transition: visibility 0.3s, opacity 0.3s linear;
+  opacity: 0;
+  transition: visibility 0.3s, opacity 0.3s linear;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #0006;
+
+  &_opened {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 
 .dialog {
@@ -37,7 +37,7 @@
     text-align: start;
     font-size: 9px;
     line-height: 9px;
-    color: #999999;
+    color: #999;
     height: 37px;
   }
 
@@ -71,7 +71,6 @@
     font-weight: 500;
     font-size: 13px;
     line-height: 13px;
-
     margin-top: 33px;
   }
 

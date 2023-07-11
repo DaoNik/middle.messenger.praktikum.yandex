@@ -1,10 +1,23 @@
-<div class="overlay">
-  <section class="dialog">
+<div
+  class="overlay overlay-remove-user"
+  id="{{blockId}}"
+  (click)="onDialogClose"
+>
+  <section class="dialog" (click)="onDialogNotClose">
     <h3 class="dialog__title">Удалить пользователя</h3>
-    <label class="dialog__label">
-      <span class="dialog__label-text">Логин</span>
-      <input class="dialog__input" placeholder="Логин" type="text">
-    </label>
-    <button class="dialog__submit" type="submit">Удалить</button>
+    <form name="remove-user" (submit)="onSubmit">
+      <label class="dialog__label">
+        <input
+          class="dialog__input"
+          placeholder="Логин"
+          type="text"
+          name="login"
+          (input)="onInput"
+          (blur)="onBlur"
+        />
+        <span class="auth__input-error">{{login_error}}</span>
+      </label>
+      <button class="dialog__submit" type="submit" disabled>Удалить</button>
+    </form>
   </section>
 </div>
