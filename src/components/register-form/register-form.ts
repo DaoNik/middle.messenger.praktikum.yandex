@@ -4,9 +4,13 @@ import {
   isEmail,
   isPhoneNumber,
   isFormValid,
-  isControlValid,
 } from '../../core/validators';
-import { IForm, IFormControl } from '../../core/form';
+import {
+  blurHandler,
+  IForm,
+  IFormControl,
+  inputHandler,
+} from '../../core/form';
 import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
 
@@ -113,34 +117,11 @@ export class RegisterForm extends Component {
             console.log(formValue);
           }
         },
-        onInput: (event) => {
-          const controls = this.form.controls;
-          const target = event.target as HTMLInputElement;
-
-          if (controls.has(target.name)) {
-            controls.get(target.name)!.value = target.value;
-          }
+        onInput: (event: InputEvent) => {
+          inputHandler(event, this.form.controls);
         },
-        onBlur: (event) => {
-          const form = this.form;
-          const target = event.target as HTMLInputElement;
-          const control = form.controls.get(target.name)!;
-          const { isValid, error } = isControlValid(control);
-
-          control.valid = isValid;
-          control.error = error;
-          if (this.props[`${target.name}_error`] !== control.error) {
-            this.props[`${target.name}_error`] = control.error;
-          }
-          form.valid = isFormValid(form);
-
-          const submitButtonElement = this.element?.querySelector(
-            'button[type="submit"]'
-          );
-
-          if (submitButtonElement) {
-            (submitButtonElement as HTMLButtonElement).disabled = !form.valid;
-          }
+        onBlur: (event: FocusEvent) => {
+          blurHandler(event, this.form, this.props, this.element);
         },
       }
     );

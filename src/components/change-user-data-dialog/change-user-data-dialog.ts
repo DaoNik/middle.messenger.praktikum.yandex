@@ -1,12 +1,16 @@
 import {
-  isControlValid,
   isEmail,
   isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
   isPhoneNumber,
 } from '../../core/validators';
-import { IFormControl, IForm } from '../../core/form';
+import {
+  IFormControl,
+  IForm,
+  inputHandler,
+  blurHandler,
+} from '../../core/form';
 import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 
@@ -102,34 +106,11 @@ export class ChangeUserDataDialog extends Component {
             console.log(formValue);
           }
         },
-        onInput: (event) => {
-          const controls = this.form.controls;
-          const target = event.target as HTMLInputElement;
-
-          if (controls.has(target.name)) {
-            controls.get(target.name)!.value = target.value;
-          }
+        onInput: (event: InputEvent) => {
+          inputHandler(event, this.form.controls);
         },
-        onBlur: (event) => {
-          const form = this.form;
-          const target = event.target as HTMLInputElement;
-          const control = form.controls.get(target.name)!;
-          const { isValid, error } = isControlValid(control);
-
-          control.valid = isValid;
-          control.error = error;
-          if (this.props[`${target.name}_error`] !== control.error) {
-            this.props[`${target.name}_error`] = control.error;
-          }
-          form.valid = isFormValid(form);
-
-          const submitButtonElement = this.element?.querySelector(
-            'button[type="submit"]'
-          );
-
-          if (submitButtonElement) {
-            (submitButtonElement as HTMLButtonElement).disabled = !form.valid;
-          }
+        onBlur: (event: FocusEvent) => {
+          blurHandler(event, this.form, this.props, this.element);
         },
         onDialogClose: () => {
           this.element?.classList.remove('overlay_opened');
