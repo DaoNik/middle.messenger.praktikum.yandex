@@ -7,6 +7,8 @@
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -16,7 +18,11 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "include": ["src"]
 }
