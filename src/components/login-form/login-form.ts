@@ -11,6 +11,7 @@ import {
 } from '../../core/form';
 import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
+import { AuthApiService, IAuthCredentials, IAuthUser } from "../../api/auth-api.service.ts";
 
 export class LoginForm extends Component {
   form: IForm = {
@@ -39,6 +40,7 @@ export class LoginForm extends Component {
     valid: false,
   };
   selector = 'login-form';
+  private readonly _authApiService: AuthApiService;
 
   constructor() {
     super(
@@ -53,11 +55,11 @@ export class LoginForm extends Component {
           event.preventDefault();
           const form = this.form;
           if (isFormValid(form)) {
-            const formValue: Record<string, string> = {};
+            const formValue = {} as any;
             for (const [key, value] of form.controls) {
               formValue[key] = value.value;
             }
-            console.log(formValue);
+            this.submitHandler(formValue);
           }
         },
         onInput: (event: InputEvent) => {
@@ -68,5 +70,13 @@ export class LoginForm extends Component {
         },
       }
     );
+
+    this._authApiService = new AuthApiService();
+  }
+
+  submitHandler(credentials: IAuthCredentials) {
+    this._authApiService.signIn(credentials).then(() => {
+      return this._authApiService.user();
+    }).then(value => console.log(value));
   }
 }

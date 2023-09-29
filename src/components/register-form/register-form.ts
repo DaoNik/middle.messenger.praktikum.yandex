@@ -13,6 +13,7 @@ import {
 } from '../../core/form';
 import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
+import { AuthApiService, IAuthUser } from '../../api/auth-api.service.ts';
 
 export class RegisterForm extends Component {
   form: IForm = {
@@ -91,6 +92,7 @@ export class RegisterForm extends Component {
     valid: false,
   };
   selector = 'register-form';
+  private readonly _authApiService: AuthApiService;
 
   constructor() {
     super(
@@ -110,11 +112,13 @@ export class RegisterForm extends Component {
           event.preventDefault();
           const form = this.form;
           if (isFormValid(form)) {
-            const formValue: Record<string, string> = {};
+            const formValue = {} as any;
             for (const [key, value] of form.controls) {
-              formValue[key] = value.value;
+              if (key !== 'password_repeat') {
+                formValue[key] = value.value;
+              }
             }
-            console.log(formValue);
+            this.submitHandler(formValue);
           }
         },
         onInput: (event: InputEvent) => {
@@ -125,5 +129,11 @@ export class RegisterForm extends Component {
         },
       }
     );
+
+    this._authApiService = new AuthApiService();
+  }
+
+  submitHandler(authUser: IAuthUser) {
+    this._authApiService.signUp(authUser).then();
   }
 }

@@ -23,55 +23,96 @@ function queryStringify(data: HttpDataT) {
 }
 
 export class HTTPTransport {
-  get(url: string, options: IHttpOptions = {}) {
+  get<T>(
+    url: string,
+    options: IHttpOptions = {},
+    withCredentials?: boolean
+  ): Promise<T> {
     if (options.data && Object.keys(options.data).length > 0) {
       url += queryStringify(options.data);
     }
 
-    return this.request(
+    return this.request<T>(
       url,
-      { ...options, method: METHODS.GET },
-      options.timeout
+      {
+        ...options,
+        method: METHODS.GET,
+        headers: { Accept: 'application/json', ...options.headers },
+      },
+      options.timeout,
+      withCredentials
     );
   }
 
-  post(url: string, options: IHttpOptions = {}) {
-    return this.request(
+  post<T>(
+    url: string,
+    options: IHttpOptions = {},
+    withCredentials?: boolean
+  ): Promise<T> {
+    return this.request<T>(
       url,
-      { ...options, method: METHODS.POST },
-      options.timeout
+      {
+        ...options,
+        method: METHODS.POST,
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+      },
+      options.timeout,
+      withCredentials
     );
   }
 
-  put(url: string, options: IHttpOptions = {}) {
-    return this.request(
+  put<T>(
+    url: string,
+    options: IHttpOptions = {},
+    withCredentials?: boolean
+  ): Promise<T> {
+    return this.request<T>(
       url,
       { ...options, method: METHODS.PUT },
-      options.timeout
+      options.timeout,
+      withCredentials
     );
   }
 
-  patch(url: string, options: IHttpOptions = {}) {
-    return this.request(
+  patch<T>(
+    url: string,
+    options: IHttpOptions = {},
+    withCredentials?: boolean
+  ): Promise<T> {
+    return this.request<T>(
       url,
       { ...options, method: METHODS.PATCH },
-      options.timeout
+      options.timeout,
+      withCredentials
     );
   }
 
-  delete(url: string, options: IHttpOptions = {}) {
-    return this.request(
+  delete<T>(
+    url: string,
+    options: IHttpOptions = {},
+    withCredentials?: boolean
+  ): Promise<T> {
+    return this.request<T>(
       url,
       { ...options, method: METHODS.DELETE },
-      options.timeout
+      options.timeout,
+      withCredentials
     );
   }
 
-  request(url: string, options: IHttpOptions, timeout = 5000) {
+  request<T>(
+    url: string,
+    options: IHttpOptions,
+    timeout = 5000,
+    withCredentials: boolean = true
+  ): Promise<T> {
     const { method = '', data, headers = {} } = options;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<XMLHttpRequest>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
+      xhr.withCredentials = withCredentials;
+
+      console.log(url);
 
       xhr.open(method, url);
 
@@ -95,6 +136,12 @@ export class HTTPTransport {
       } else {
         xhr.send(JSON.stringify(data));
       }
+    }).then((data) => {
+      if (typeof data.response !== 'string') {
+        return undefined;
+      }
+
+      return JSON.parse(data.response);
     });
   }
 }
