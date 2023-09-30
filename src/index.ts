@@ -5,6 +5,7 @@ import { Page404 } from './pages/404/404';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
+import { Router } from './core/router.ts';
 
 export interface IRoute {
   path: string;
@@ -26,14 +27,19 @@ if (document.location.pathname === '/') {
   document.location.pathname = '/login';
 }
 
-for (const { path, component } of routes) {
-  if (path === document.location.pathname) {
-    if (currentComponent) {
-      currentComponent.eventBus.emit(Block.EVENTS.DESTROY);
-    }
+const router = new Router('#root');
 
-    currentComponent = new component();
-    document.querySelector('#root')!.innerHTML = currentComponent.content;
-    currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
-  }
+for (const { path, component } of routes) {
+  router.use(path, component);
+  // if (path === document.location.pathname) {
+  //   if (currentComponent) {
+  //     currentComponent.eventBus.emit(Block.EVENTS.DESTROY);
+  //   }
+  //
+  //   currentComponent = new component();
+  //   document.querySelector('#root')!.innerHTML = currentComponent.content;
+  //   currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
+  // }
 }
+
+router.start();

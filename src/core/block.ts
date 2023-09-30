@@ -140,4 +140,16 @@ export abstract class Block {
       this.templater.removeEvents(this.element, this.events);
     }
   }
+
+  show() {
+    if (this.element) {
+      this.element.style.display = 'none';
+    }
+  }
+
+  hide() {
+    if (this.element) {
+      this.element.style.display = 'block';
+    }
+  }
 }
