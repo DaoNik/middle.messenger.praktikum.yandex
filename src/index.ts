@@ -1,6 +1,5 @@
 import { Page500 } from './pages/500/500';
 import { Chats } from './pages/chats/chats';
-import { Block } from './core/block';
 import { Page404 } from './pages/404/404';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
@@ -20,8 +19,6 @@ const routes: IRoute[] = [
   { path: '/register', component: Register },
   { path: '/profile', component: Profile },
 ];
-
-let currentComponent = null;
 
 if (document.location.pathname === '/') {
   document.location.pathname = '/login';

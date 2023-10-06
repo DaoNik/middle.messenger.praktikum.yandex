@@ -28,17 +28,19 @@ export abstract class Block {
   templater = new Template();
   declarations: Component[];
   events: EventsT;
-  element: HTMLElement | null = null;
+  hostStyles: Record<string, string>;
 
   protected constructor(
     content: string,
     declarations: Component[] = [],
     properties: PropertiesT = {},
-    events: EventsT = {}
+    events: EventsT = {},
+    hostStyles: Record<string, string> = {}
   ) {
     this.content = content;
     this.declarations = declarations;
     this.events = events;
+    this.hostStyles = hostStyles;
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
     this.eventBus.emit(Block.EVENTS.INIT);
@@ -73,8 +75,6 @@ export abstract class Block {
   }
 
   private _componentDidMount(): void {
-    // eslint-disable-next-line unicorn/prefer-query-selector
-    this.element = document.getElementById(this.blockId)!;
     this.templater.addEvents(this.element, this.events);
     this.componentDidMount();
   }
@@ -142,14 +142,20 @@ export abstract class Block {
   }
 
   show() {
+    console.log('show', this.element);
+
     if (this.element) {
-      this.element.style.display = 'none';
+      this.element.style.display = this.hostStyles['display'] ?? 'block';
     }
   }
 
   hide() {
     if (this.element) {
-      this.element.style.display = 'block';
+      this.element.style.display = 'none';
     }
+  }
+
+  get element(): HTMLElement {
+    return document.getElementById(`${this.blockId}`)!;
   }
 }

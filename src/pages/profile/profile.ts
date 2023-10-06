@@ -4,9 +4,11 @@ import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dial
 import template from './profile.html?raw';
 import { Block } from '../../core/block.ts';
 import { AuthApiService } from '../../api/auth-api.service.ts';
+import { Router } from '../../core/router.ts';
 
 export class Profile extends Block {
   private readonly _authApiService: AuthApiService;
+  private readonly _router = Router.__instance;
 
   constructor() {
     super(
@@ -40,6 +42,12 @@ export class Profile extends Block {
             console.log('add redirect to login');
           });
         },
+        onGoToChats: () => {
+          this._router.go('/chats');
+        },
+      },
+      {
+        display: 'flex',
       }
     );
 

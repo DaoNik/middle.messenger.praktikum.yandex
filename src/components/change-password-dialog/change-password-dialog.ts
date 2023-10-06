@@ -87,7 +87,7 @@ export class ChangePasswordDialog extends Component {
     );
   }
 
-  componentDidMount() {
+  override componentDidMount() {
     super.componentDidMount();
   }
 }

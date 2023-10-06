@@ -1,6 +1,6 @@
 import { HTTPTransport } from '../core/http.ts';
 import { BASE_HREF } from './constants.ts';
-import { isEmpty } from '../utils/is-empty.ts';
+import { Router } from '../core/router.ts';
 
 export interface IAuthUser {
   first_name: string;
@@ -23,6 +23,7 @@ export interface IAuthCredentials {
 export class AuthApiService {
   private readonly _http: HTTPTransport;
   private readonly _baseUrl = `${BASE_HREF}/auth`;
+  private readonly _router = Router.__instance;
 
   constructor() {
     this._http = new HTTPTransport();
@@ -50,12 +51,14 @@ export class AuthApiService {
       })
       .catch((err) => {
         console.log('add redirect to login', err);
+        this._router.go('/login');
       });
   }
 
   logout(): Promise<void> {
     return this._http.post<void>(`${this._baseUrl}/logout`).then(() => {
       localStorage.clear();
+      this._router.go('/login');
     });
   }
 }

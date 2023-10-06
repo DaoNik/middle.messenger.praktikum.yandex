@@ -62,7 +62,8 @@ export class Chats extends Block {
         onClipMenuToggled: () => {
           document.querySelector('.clip-menu')?.classList.toggle('opened');
         },
-      }
+      },
+      { display: 'grid' }
     );
   }
 }

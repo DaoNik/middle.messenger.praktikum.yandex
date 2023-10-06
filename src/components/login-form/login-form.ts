@@ -11,7 +11,11 @@ import {
 } from '../../core/form';
 import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
-import { AuthApiService, IAuthCredentials, IAuthUser } from "../../api/auth-api.service.ts";
+import {
+  AuthApiService,
+  IAuthCredentials,
+} from '../../api/auth-api.service.ts';
+import { Router } from '../../core/router.ts';
 
 export class LoginForm extends Component {
   form: IForm = {
@@ -41,6 +45,7 @@ export class LoginForm extends Component {
   };
   selector = 'login-form';
   private readonly _authApiService: AuthApiService;
+  private readonly _router = Router.__instance;
 
   constructor() {
     super(
@@ -75,8 +80,15 @@ export class LoginForm extends Component {
   }
 
   submitHandler(credentials: IAuthCredentials) {
-    this._authApiService.signIn(credentials).then(() => {
-      return this._authApiService.user();
-    }).then(value => console.log(value));
+    this._authApiService
+      .signIn(credentials)
+      .then(() => {
+        return this._authApiService.user();
+      })
+      .then((value) => {
+        console.log('this add user data to storage', value);
+
+        this._router.go('/profile');
+      });
   }
 }
