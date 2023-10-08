@@ -130,7 +130,7 @@ export class Template {
     if (content) {
       const keys = content.match(/{{[\w-.'()]*}}/gm);
 
-      if (!keys || keys.length === 0 || properties.length === 0) {
+      if (!keys || keys.length === 0 || properties['length'] === 0) {
         return;
       }
 

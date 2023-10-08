@@ -2,20 +2,15 @@ import {
   isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-} from '../../core/validators';
-import {
   blurHandler,
   IForm,
   IFormControl,
   inputHandler,
-} from '../../core/form';
+  Router,
+} from '../../core';
 import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
-import {
-  AuthApiService,
-  IAuthCredentials,
-} from '../../api/auth-api.service.ts';
-import { Router } from '../../core/router.ts';
+import { AuthApiService, IAuthCredentials } from '../../api';
 
 export class LoginForm extends Component {
   form: IForm = {

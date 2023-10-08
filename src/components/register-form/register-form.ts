@@ -4,17 +4,15 @@ import {
   isEmail,
   isPhoneNumber,
   isFormValid,
-} from '../../core/validators';
-import {
   blurHandler,
   IForm,
   IFormControl,
   inputHandler,
-} from '../../core/form';
+  Router,
+} from '../../core';
 import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
-import { AuthApiService, IAuthUser } from '../../api/auth-api.service.ts';
-import { Router } from '../../core/router.ts';
+import { AuthApiService, IAuthUser } from '../../api';
 
 export class RegisterForm extends Component {
   form: IForm = {

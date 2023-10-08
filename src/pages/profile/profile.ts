@@ -1,10 +1,11 @@
-import { ChangeUserDataDialog } from '../../components/change-user-data-dialog/change-user-data-dialog';
-import { ChangePasswordDialog } from '../../components/change-password-dialog/change-password-dialog';
-import { LoadFileDialog } from '../../components/load-file-dialog/load-file-dialog';
+import {
+  ChangeUserDataDialog,
+  ChangePasswordDialog,
+  LoadFileDialog,
+} from '../../components';
 import template from './profile.html?raw';
-import { Block } from '../../core/block.ts';
-import { AuthApiService } from '../../api/auth-api.service.ts';
-import { Router } from '../../core/router.ts';
+import { Block, Router } from '../../core';
+import { AuthApiService } from '../../api';
 
 export class Profile extends Block {
   private readonly _authApiService = new AuthApiService();

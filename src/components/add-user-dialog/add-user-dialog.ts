@@ -1,14 +1,5 @@
-import {
-  isFormValid,
-  isMinimalLength,
-  isNotEmptyValidator,
-} from '../../core/validators';
-import {
-  blurHandler,
-  IForm,
-  IFormControl,
-  inputHandler,
-} from '../../core/form';
+import { isFormValid, isMinimalLength, isNotEmptyValidator } from '../../core';
+import { blurHandler, IForm, IFormControl, inputHandler } from '../../core';
 import { Component } from '../../types.ts';
 import template from './add-user-dialog.html?raw';
 

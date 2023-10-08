@@ -4,13 +4,11 @@ import {
   isMinimalLength,
   isNotEmptyValidator,
   isPhoneNumber,
-} from '../../core/validators';
-import {
   IFormControl,
   IForm,
   inputHandler,
   blurHandler,
-} from '../../core/form';
+} from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 

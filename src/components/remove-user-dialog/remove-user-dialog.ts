@@ -2,13 +2,11 @@ import {
   isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-} from '../../core/validators';
-import {
   blurHandler,
   IForm,
   IFormControl,
   inputHandler,
-} from '../../core/form';
+} from '../../core';
 import template from './remove-user-dialog.html?raw';
 import { Component } from '../../types.ts';
 

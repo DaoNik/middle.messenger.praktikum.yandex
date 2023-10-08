@@ -2,13 +2,11 @@ import {
   isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-} from '../../core/validators';
-import {
   IFormControl,
   IForm,
   inputHandler,
   blurHandler,
-} from '../../core/form';
+} from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-password-dialog.html?raw';
 

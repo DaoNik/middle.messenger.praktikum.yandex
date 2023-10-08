@@ -1,16 +1,19 @@
-import { AddUserDialog } from '../../components/add-user-dialog/add-user-dialog';
-import { RemoveUserDialog } from '../../components/remove-user-dialog/remove-user-dialog';
-import { isFormValid, isNotEmptyValidator } from '../../core/validators';
 import {
+  AddUserDialog,
+  RemoveUserDialog,
+  ClipMenu,
+  ChatMenu,
+} from '../../components';
+import {
+  isFormValid,
+  isNotEmptyValidator,
   IForm,
   IFormControl,
   inputHandler,
   blurHandler,
-} from '../../core/form';
-import { ClipMenu } from '../../components/clip-menu/clip-menu';
-import { ChatMenu } from '../../components/chat-menu/chat-menu';
+  Block,
+} from '../../core';
 import template from './chats.html?raw';
-import { Block } from '../../core/block.ts';
 
 export class Chats extends Block {
   form: IForm = {

@@ -1,6 +1,5 @@
-import { HTTPTransport } from '../core/http.ts';
+import { HTTPTransport, Router } from '../core';
 import { BASE_HREF } from './constants.ts';
-import { Router } from '../core/router.ts';
 
 export interface IAuthUser {
   first_name: string;
