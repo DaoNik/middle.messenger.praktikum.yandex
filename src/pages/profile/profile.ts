@@ -7,7 +7,7 @@ import { AuthApiService } from '../../api/auth-api.service.ts';
 import { Router } from '../../core/router.ts';
 
 export class Profile extends Block {
-  private readonly _authApiService: AuthApiService;
+  private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
 
   constructor() {
@@ -39,7 +39,7 @@ export class Profile extends Block {
         },
         onLogout: () => {
           this._authApiService.logout().then(() => {
-            console.log('add redirect to login');
+            this._router.go('/login');
           });
         },
         onGoToChats: () => {
@@ -50,10 +50,6 @@ export class Profile extends Block {
         display: 'flex',
       }
     );
-
-    this._authApiService = new AuthApiService();
-
-    this._authApiService.user().then((data) => console.log(data, typeof data));
   }
 
   override componentDidMount() {

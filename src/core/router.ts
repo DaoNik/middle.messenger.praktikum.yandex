@@ -44,8 +44,6 @@ class Route {
   }
 
   render() {
-    console.log(this._blockClass, this._block);
-
     if (!this._block) {
       this._block = new this._blockClass() as Block;
       render(this._query, this._block);
@@ -89,8 +87,6 @@ export class Router {
   start() {
     window.onpopstate = ({ currentTarget }) => {
       if (currentTarget instanceof Window) {
-        console.log(currentTarget.location.pathname);
-
         this._onRoute(currentTarget.location.pathname);
       }
     };
@@ -99,15 +95,12 @@ export class Router {
   }
 
   go(pathname: string) {
-    console.log(pathname, history);
     this.history.pushState({}, '', pathname);
 
-    console.log(history);
     this._onRoute(pathname);
   }
 
   back() {
-    console.log(this.history);
     this.history.back();
   }
 

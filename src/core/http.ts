@@ -112,8 +112,6 @@ export class HTTPTransport {
       const xhr = new XMLHttpRequest();
       xhr.withCredentials = withCredentials;
 
-      console.log(url);
-
       xhr.open(method, url);
 
       for (const key in headers) {
@@ -136,12 +134,23 @@ export class HTTPTransport {
       } else {
         xhr.send(JSON.stringify(data));
       }
-    }).then((data) => {
-      if (typeof data.response !== 'string') {
-        return undefined;
-      }
+    })
+      .then((data) => {
+        if (data.status >= 400) {
+          return Promise.reject(data);
+        }
 
-      return JSON.parse(data.response);
-    });
+        return data;
+      })
+      .then((data) => {
+        if (
+          typeof data.response !== 'string' ||
+          !data.response.startsWith('{')
+        ) {
+          return undefined;
+        }
+
+        return JSON.parse(data.response);
+      });
   }
 }

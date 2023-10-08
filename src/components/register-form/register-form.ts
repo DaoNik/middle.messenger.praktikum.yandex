@@ -14,6 +14,7 @@ import {
 import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
 import { AuthApiService, IAuthUser } from '../../api/auth-api.service.ts';
+import { Router } from '../../core/router.ts';
 
 export class RegisterForm extends Component {
   form: IForm = {
@@ -92,7 +93,8 @@ export class RegisterForm extends Component {
     valid: false,
   };
   selector = 'register-form';
-  private readonly _authApiService: AuthApiService;
+  private readonly _authApiService = new AuthApiService();
+  private readonly _router = Router.__instance;
 
   constructor() {
     super(
@@ -129,11 +131,18 @@ export class RegisterForm extends Component {
         },
       }
     );
-
-    this._authApiService = new AuthApiService();
   }
 
   submitHandler(authUser: IAuthUser) {
-    this._authApiService.signUp(authUser).then();
+    this._authApiService
+      .signUp(authUser)
+      .then(() => {
+        return this._authApiService.user();
+      })
+      .then((value) => {
+        if (value) {
+          this._router.go('/chats');
+        }
+      });
   }
 }

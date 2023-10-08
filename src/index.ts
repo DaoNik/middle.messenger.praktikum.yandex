@@ -5,6 +5,7 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
 import { Router } from './core/router.ts';
+import { AuthApiService } from './api/auth-api.service.ts';
 
 export interface IRoute {
   path: string;
@@ -21,7 +22,7 @@ const routes: IRoute[] = [
 ];
 
 if (document.location.pathname === '/') {
-  document.location.pathname = '/login';
+  document.location.pathname = '/chats';
 }
 
 const router = new Router('#root');
@@ -40,3 +41,15 @@ for (const { path, component } of routes) {
 }
 
 router.start();
+
+const authService = new AuthApiService();
+
+authService.user().then((data) => {
+  if (
+    data &&
+    (document.location.pathname === '/login' ||
+      document.location.pathname === '/register')
+  ) {
+    router.go('/chats');
+  }
+});

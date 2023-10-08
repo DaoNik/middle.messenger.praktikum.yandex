@@ -44,7 +44,7 @@ export class LoginForm extends Component {
     valid: false,
   };
   selector = 'login-form';
-  private readonly _authApiService: AuthApiService;
+  private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
 
   constructor() {
@@ -75,8 +75,6 @@ export class LoginForm extends Component {
         },
       }
     );
-
-    this._authApiService = new AuthApiService();
   }
 
   submitHandler(credentials: IAuthCredentials) {
@@ -86,9 +84,9 @@ export class LoginForm extends Component {
         return this._authApiService.user();
       })
       .then((value) => {
-        console.log('this add user data to storage', value);
-
-        this._router.go('/profile');
+        if (value) {
+          this._router.go('/chats');
+        }
       });
   }
 }

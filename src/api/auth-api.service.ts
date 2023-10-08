@@ -21,12 +21,18 @@ export interface IAuthCredentials {
 }
 
 export class AuthApiService {
-  private readonly _http: HTTPTransport;
+  static __instance: AuthApiService;
+
+  private readonly _http = new HTTPTransport();
   private readonly _baseUrl = `${BASE_HREF}/auth`;
   private readonly _router = Router.__instance;
 
   constructor() {
-    this._http = new HTTPTransport();
+    if (AuthApiService.__instance) {
+      return AuthApiService.__instance;
+    }
+
+    AuthApiService.__instance = this;
   }
 
   signUp(user: IAuthUser): Promise<{ id: number }> {
@@ -50,7 +56,9 @@ export class AuthApiService {
         return user;
       })
       .catch((err) => {
-        console.log('add redirect to login', err);
+        console.error(err);
+        localStorage.clear();
+
         this._router.go('/login');
       });
   }
