@@ -1,11 +1,13 @@
 import { Page500, Chats, Page404, Login, Register, Profile } from './pages';
-import { Router } from './core';
+import { Router, RouterLink } from './core';
 import { AuthApiService } from './api';
 
 export interface IRoute {
   path: string;
   component: any;
 }
+
+customElements.define('router-link', RouterLink);
 
 const routes: IRoute[] = [
   { path: '/chats', component: Chats },
