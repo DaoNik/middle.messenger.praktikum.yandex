@@ -43,9 +43,6 @@ export class Profile extends Block {
             this._router.go('/login');
           });
         },
-        onGoToChats: () => {
-          this._router.go('/chats');
-        },
       },
       {
         display: 'flex',

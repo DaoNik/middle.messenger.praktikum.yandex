@@ -63,13 +63,13 @@
     </tr>
   </table>
   <aside class="sidebar">
-    <button (click)="onGoToChats" class="sidebar__link">
+    <router-link link="/chats" class="sidebar__link">
       <img
         src="/assets/exit.svg"
         alt="Вернуться к чатам"
         class="sidebar__image"
       />
-    </button>
+    </router-link>
   </aside>
 </section>
 {{>change-password-dialog}} {{>change-user-data-dialog}} {{>load-file-dialog}}

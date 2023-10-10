@@ -7,8 +7,6 @@ export interface IRoute {
   component: any;
 }
 
-customElements.define('router-link', RouterLink);
-
 const routes: IRoute[] = [
   { path: '/chats', component: Chats },
   { path: '/404', component: Page404 },
@@ -41,3 +39,5 @@ authService.user().then((data) => {
     router.go('/chats');
   }
 });
+
+customElements.define('router-link', RouterLink);
