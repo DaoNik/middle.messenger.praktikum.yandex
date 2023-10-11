@@ -115,12 +115,11 @@ export class Router {
   private _onRoute(pathname: string) {
     const route = this.getRoute(pathname);
 
-    // TODO: maybe add checking (|| this._currentRoute === route)
-    if (!route) {
+    if (!route || this._currentRoute?.match(route['_pathname'])) {
       return;
     }
 
-    if (this._currentRoute && this._currentRoute !== route) {
+    if (this._currentRoute) {
       this._currentRoute.leave();
     }
 

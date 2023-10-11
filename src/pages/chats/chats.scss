@@ -10,7 +10,7 @@
   height: 100%;
   overflow-y: scroll;
   background: var(--light-black);
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid #eaeaea;
   display: grid;
   grid-template-rows: auto auto 1fr;
 
@@ -52,8 +52,8 @@
     grid-template-rows: 17px auto;
     column-gap: 10px;
     height: 73px;
-    border-top: 1px solid #EAEAEA;
-    border-bottom: 1px solid #EAEAEA;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
     padding: 12px 0;
   }
 
@@ -106,7 +106,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #25D366;
+    background: #25d366;
     border-radius: 50%;
   }
 }
@@ -122,7 +122,7 @@
 
   &__header {
     display: flex;
-    border-bottom: 1px solid #EAEAEA;
+    border-bottom: 1px solid #eaeaea;
     align-items: center;
   }
 
@@ -132,7 +132,7 @@
     font-weight: 500;
   }
 
-  &__avatar{
+  &__avatar {
     order: -1;
     width: 34px;
     height: 34px;
@@ -141,14 +141,14 @@
 
   &__menu {
     margin-left: auto;
-    background: #1C1D26;
+    background: #1c1d26;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 25px;
     height: 25px;
-    border: 1px solid #B5BFD633;
+    border: 1px solid #b5bfd633;
   }
 
   &__menu-image {
@@ -195,7 +195,7 @@
   }
 
   &__message-with-text {
-    border: 1px solid #B5BFD633;
+    border: 1px solid #b5bfd633;
     background: var(--light-black);
     padding: 11px 11px 15px;
   }
@@ -223,7 +223,7 @@
   }
 
   &__user-messages &__message-with-text {
-    background: #7A7C8D80;
+    background: #7a7c8d80;
   }
 
   &__message-with-text &__message-time {
@@ -243,7 +243,7 @@
     grid-template-columns: 32px 1fr 28px;
     column-gap: 10px;
     padding: 11px 0;
-    border-top: 1px solid #EAEAEA;
+    border-top: 1px solid #eaeaea;
     align-items: center;
   }
 
@@ -251,11 +251,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
   }
 
   &__input {
     background: var(--light-black);
-    border: 1px solid #B5BFD633;
+    border: 1px solid #b5bfd633;
     border-radius: 30px;
     color: #fff;
     outline: none;
