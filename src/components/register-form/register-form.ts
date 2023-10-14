@@ -139,7 +139,7 @@ export class RegisterForm extends Component {
       })
       .then((value) => {
         if (value) {
-          this._router.go('/chats');
+          this._router.go('/messenger');
         }
       });
   }

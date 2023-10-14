@@ -58,14 +58,14 @@ export class AuthApiService {
         console.error(err);
         localStorage.clear();
 
-        this._router.go('/login');
+        this._router.go('/');
       });
   }
 
   logout(): Promise<void> {
     return this._http.post<void>(`${this._baseUrl}/logout`).then(() => {
       localStorage.clear();
-      this._router.go('/login');
+      this._router.go('/');
     });
   }
 }

@@ -11,7 +11,7 @@ export class RouterLink extends HTMLElement {
   connectedCallback() {
     // браузер вызывает этот метод при добавлении элемента в документ
     // (может вызываться много раз, если элемент многократно добавляется/удаляется)
-    const link = this.getAttribute('link') ?? '/chats';
+    const link = this.getAttribute('link') ?? '/messenger';
 
     this.addEventListener('click', () => {
       this._router.go(link);
@@ -21,7 +21,7 @@ export class RouterLink extends HTMLElement {
   disconnectedCallback() {
     // браузер вызывает этот метод при удалении элемента из документа
     // (может вызываться много раз, если элемент многократно добавляется/удаляется)
-    const link = this.getAttribute('link') ?? '/chats';
+    const link = this.getAttribute('link') ?? '/messenger';
 
     this.removeEventListener('click', () => {
       this._router.go(link);

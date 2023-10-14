@@ -40,7 +40,7 @@ export class Profile extends Block {
         },
         onLogout: () => {
           this._authApiService.logout().then(() => {
-            this._router.go('/login');
+            this._router.go('/');
           });
         },
       },

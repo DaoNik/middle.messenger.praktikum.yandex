@@ -8,17 +8,13 @@ export interface IRoute {
 }
 
 const routes: IRoute[] = [
-  { path: '/chats', component: Chats },
+  { path: '/messenger', component: Chats },
   { path: '/404', component: Page404 },
   { path: '/500', component: Page500 },
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
-  { path: '/profile', component: Profile },
+  { path: '/', component: Login },
+  { path: '/sign-up', component: Register },
+  { path: '/settings', component: Profile },
 ];
-
-if (document.location.pathname === '/') {
-  document.location.pathname = '/chats';
-}
 
 const router = new Router('#root');
 
@@ -33,10 +29,10 @@ const authService = new AuthApiService();
 authService.user().then((data) => {
   if (
     data &&
-    (document.location.pathname === '/login' ||
-      document.location.pathname === '/register')
+    (document.location.pathname === '/' ||
+      document.location.pathname === '/sign-up')
   ) {
-    router.go('/chats');
+    router.go('/messenger');
   }
 });
 
