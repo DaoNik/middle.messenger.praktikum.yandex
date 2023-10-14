@@ -4,14 +4,6 @@ function isEqual(lhs: string, rhs: string) {
   return lhs === rhs;
 }
 
-function render(query: string, block: Block): Element {
-  const root = document.querySelector(query)!;
-
-  root.innerHTML += block.content;
-
-  return root;
-}
-
 class Route {
   private readonly _blockClass: any;
 
@@ -44,14 +36,17 @@ class Route {
   }
 
   render() {
+    const root = document.querySelector(this._query)!;
+
     if (!this._block) {
       this._block = new this._blockClass() as Block;
-      render(this._query, this._block);
+      root.innerHTML = this._block.content;
       this._block.eventBus.emit(Block.EVENTS.FLOW_CDM);
       return;
     }
 
     this._block.show();
+    root.insertAdjacentElement('afterbegin', this._block.element!);
   }
 }
 

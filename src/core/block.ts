@@ -29,6 +29,7 @@ export abstract class Block {
   declarations: Component[];
   events: EventsT;
   hostStyles: Record<string, string>;
+  element: HTMLElement | null = null;
 
   protected constructor(
     content: string,
@@ -75,6 +76,7 @@ export abstract class Block {
   }
 
   private _componentDidMount(): void {
+    this.element = document.getElementById(this.blockId)!;
     this.templater.addEvents(this.element, this.events);
     this.componentDidMount();
   }
@@ -142,8 +144,6 @@ export abstract class Block {
   }
 
   show() {
-    console.log('show', this.element);
-
     if (this.element) {
       this.element.style.display = this.hostStyles['display'] ?? 'block';
     }
@@ -153,9 +153,5 @@ export abstract class Block {
     if (this.element) {
       this.element.style.display = 'none';
     }
-  }
-
-  get element(): HTMLElement {
-    return document.getElementById(`${this.blockId}`)!;
   }
 }
