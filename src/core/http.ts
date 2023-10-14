@@ -68,7 +68,11 @@ export class HTTPTransport {
   ): Promise<T> {
     return this.request<T>(
       url,
-      { ...options, method: METHODS.PUT },
+      {
+        ...options,
+        method: METHODS.PUT,
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+      },
       options.timeout,
       withCredentials
     );

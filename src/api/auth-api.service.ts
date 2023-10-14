@@ -10,8 +10,9 @@ export interface IAuthUser {
   phone: string;
 }
 
-export interface IAuthUserWithId extends IAuthUser {
+export interface IFullUserData extends Omit<IAuthUser, 'password'> {
   id: number;
+  avatar: string;
 }
 
 export interface IAuthCredentials {
@@ -46,9 +47,9 @@ export class AuthApiService {
     });
   }
 
-  user(): Promise<IAuthUserWithId | void> {
+  user(): Promise<IFullUserData | void> {
     return this._http
-      .get<IAuthUserWithId>(`${this._baseUrl}/user`)
+      .get<IFullUserData>(`${this._baseUrl}/user`)
       .then((user) => {
         localStorage.setItem('authUser', JSON.stringify(user));
 
