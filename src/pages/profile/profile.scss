@@ -10,6 +10,12 @@
   &__image {
     width: 130px;
     height: 130px;
+    border-radius: 50%;
+  }
+
+  &__image:hover {
+    cursor: pointer;
+    opacity: 0.8;
   }
 
   &__title {

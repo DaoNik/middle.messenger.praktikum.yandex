@@ -9,9 +9,11 @@ import {
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-password-dialog.html?raw';
+import { UserApiService } from '../../api';
 
 export class ChangePasswordDialog extends Component {
-  form: IForm = {
+  private readonly _userApiService = new UserApiService();
+  private readonly _form: IForm = {
     controls: new Map<string, IFormControl>([
       [
         'oldPassword',
@@ -46,7 +48,7 @@ export class ChangePasswordDialog extends Component {
     ]),
     valid: false,
   };
-  selector = 'change-password-dialog';
+  readonly selector = 'change-password-dialog';
 
   constructor() {
     super(
@@ -60,23 +62,17 @@ export class ChangePasswordDialog extends Component {
       {
         onSubmit: (event: SubmitEvent) => {
           event.preventDefault();
-          const form = this.form;
-          if (isFormValid(form)) {
-            const formValue: Record<string, string> = {};
-            for (const [key, value] of form.controls) {
-              formValue[key] = value.value;
-            }
-            console.log(formValue);
-          }
+
+          this.submit();
         },
         onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
+          inputHandler(event, this._form.controls);
         },
         onBlur: (event: FocusEvent) => {
-          blurHandler(event, this.form, this.props, this.element);
+          blurHandler(event, this._form, this.props, this.element);
         },
         onDialogClose: () => {
-          this.element?.classList.remove('overlay_opened');
+          this.close();
         },
         onDialogNotClose: (event) => {
           event.stopPropagation();
@@ -87,5 +83,25 @@ export class ChangePasswordDialog extends Component {
 
   override componentDidMount() {
     super.componentDidMount();
+  }
+
+  close(): void {
+    this.element?.classList.remove('overlay_opened');
+  }
+
+  submit(): void {
+    const form = this._form;
+
+    if (isFormValid(form)) {
+      const formValue: any = {};
+
+      for (const [key, value] of form.controls) {
+        formValue[key] = value.value;
+      }
+
+      this._userApiService.updatePassword(formValue).then(() => {
+        this.close();
+      });
+    }
   }
 }

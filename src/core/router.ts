@@ -107,6 +107,10 @@ export class Router {
     return this.routes.find((route) => route.match(pathname));
   }
 
+  refresh(): void {
+    window.location.reload();
+  }
+
   private _onRoute(pathname: string) {
     const route = this.getRoute(pathname);
 

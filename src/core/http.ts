@@ -66,12 +66,18 @@ export class HTTPTransport {
     options: IHttpOptions = {},
     withCredentials?: boolean
   ): Promise<T> {
+    const headers = { ...options.headers };
+
+    if (!(options.data instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     return this.request<T>(
       url,
       {
         ...options,
         method: METHODS.PUT,
-        headers: { 'Content-Type': 'application/json', ...options.headers },
+        headers: headers,
       },
       options.timeout,
       withCredentials
@@ -135,6 +141,8 @@ export class HTTPTransport {
 
       if (method === METHODS.GET || !data) {
         xhr.send();
+      } else if (data instanceof FormData) {
+        xhr.send(data);
       } else {
         xhr.send(JSON.stringify(data));
       }

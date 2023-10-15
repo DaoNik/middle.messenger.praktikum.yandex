@@ -1,10 +1,18 @@
-<div class="overlay overlay-load-file" id="{{blockId}}">
-  <section class="dialog">
+<div class="overlay overlay-load-file" id="{{blockId}}" (click)="onDialogClose">
+  <section class="dialog" (click)="onDialogNotClose">
     <h3 class="dialog__title">Загрузите файл</h3>
-    <label class="dialog__load-label">
-      <input class="dialog__load-input" type="file" name="avatar" />
-      <span class="dialog__load-text">Выбрать файл на компьютере</span>
-    </label>
-    <button class="dialog__submit" type="submit">Поменять</button>
+    <form (submit)="onSubmit">
+      <label class="dialog__load-label">
+        <input
+          class="dialog__load-input"
+          type="file"
+          name="avatar"
+          accept="image/*"
+          (input)="onInput"
+        />
+        <span class="dialog__load-text">Выбрать файл на компьютере</span>
+      </label>
+      <button class="dialog__submit" type="submit" disabled>Поменять</button>
+    </form>
   </section>
 </div>
