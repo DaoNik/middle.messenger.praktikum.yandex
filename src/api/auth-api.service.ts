@@ -1,5 +1,6 @@
 import { HTTPTransport, Router } from '../core';
 import { BASE_HREF } from './constants.ts';
+import { joinUrlParts } from '../utils/joinUrlParts.ts';
 
 export interface IAuthUser {
   first_name: string;
@@ -24,7 +25,7 @@ export class AuthApiService {
   static __instance: AuthApiService;
 
   private readonly _http = new HTTPTransport();
-  private readonly _baseUrl = `${BASE_HREF}/auth`;
+  private readonly _baseUrl = joinUrlParts(BASE_HREF, 'auth');
   private readonly _router = Router.__instance;
 
   constructor() {
@@ -36,20 +37,23 @@ export class AuthApiService {
   }
 
   signUp(user: IAuthUser): Promise<{ id: number }> {
-    return this._http.post<{ id: number }>(`${this._baseUrl}/signup`, {
-      data: user,
-    });
+    return this._http.post<{ id: number }>(
+      joinUrlParts(this._baseUrl, 'signup'),
+      {
+        data: user,
+      }
+    );
   }
 
   signIn(credentials: IAuthCredentials): Promise<void> {
-    return this._http.post<void>(`${this._baseUrl}/signin`, {
+    return this._http.post<void>(joinUrlParts(this._baseUrl, 'signin'), {
       data: credentials,
     });
   }
 
   user(): Promise<IFullUserData | void> {
     return this._http
-      .get<IFullUserData>(`${this._baseUrl}/user`)
+      .get<IFullUserData>(joinUrlParts(this._baseUrl, 'user'))
       .then((user) => {
         localStorage.setItem('authUser', JSON.stringify(user));
 
@@ -64,9 +68,11 @@ export class AuthApiService {
   }
 
   logout(): Promise<void> {
-    return this._http.post<void>(`${this._baseUrl}/logout`).then(() => {
-      localStorage.clear();
-      this._router.go('/');
-    });
+    return this._http
+      .post<void>(joinUrlParts(this._baseUrl, 'logout'))
+      .then(() => {
+        localStorage.clear();
+        this._router.go('/');
+      });
   }
 }

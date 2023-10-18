@@ -1,6 +1,7 @@
 import { BASE_HREF } from './constants.ts';
 import { HTTPTransport } from '../core';
 import { IFullUserData } from './auth-api.service.ts';
+import { joinUrlParts } from '../utils/joinUrlParts.ts';
 
 export interface IMessage {
   user: Omit<IFullUserData, 'id'>;
@@ -58,7 +59,7 @@ export interface IChatUser extends Omit<IFullUserData, 'phone'> {
 }
 
 export class ChatsApiService {
-  private readonly _baseUrl = `${BASE_HREF}/chats`;
+  private readonly _baseUrl = joinUrlParts(BASE_HREF, 'chats');
   private readonly _http = new HTTPTransport();
 
   getChats(params?: IGetChatParams): Promise<IChatData[]> {
@@ -88,11 +89,13 @@ export class ChatsApiService {
   }
 
   getChatFiles(chatId: number): Promise<IChatFile> {
-    return this._http.get<IChatFile>(`${this._baseUrl}/${chatId}/files`);
+    return this._http.get<IChatFile>(
+      joinUrlParts(this._baseUrl, chatId, 'files')
+    );
   }
 
   getArchiveChats(params?: IGetChatParams): Promise<IChatData[]> {
-    let url = `${this._baseUrl}/archive`;
+    let url = joinUrlParts(this._baseUrl, 'archive');
 
     if (params) {
       const length = Object.keys(params).length;
@@ -106,26 +109,26 @@ export class ChatsApiService {
   }
 
   archiveChat(chatId: number): Promise<IChatData> {
-    return this._http.post(`${this._baseUrl}/archive`, {
+    return this._http.post(joinUrlParts(this._baseUrl, 'archive'), {
       data: { chatId },
     });
   }
 
   unarchiveChat(chatId: number): Promise<IChatData> {
-    return this._http.post(`${this._baseUrl}/unarchive`, {
+    return this._http.post(joinUrlParts(this._baseUrl, 'unarchive'), {
       data: { chatId },
     });
   }
 
   getCommonChatWithUser(chatId: number): Promise<IChatData[]> {
-    return this._http.get(`${this._baseUrl}/${chatId}/common`);
+    return this._http.get(joinUrlParts(this._baseUrl, chatId, 'common'));
   }
 
   getChatUsers(
     chatId: number,
     params?: IGetChatUsersParams
   ): Promise<IChatUser[]> {
-    let url = `${this._baseUrl}/${chatId}/users`;
+    let url = joinUrlParts(this._baseUrl, chatId, 'users');
 
     if (params) {
       const length = Object.keys(params).length;
@@ -140,7 +143,7 @@ export class ChatsApiService {
 
   getNewChatMessages(chatId: number): Promise<{ unread_count: number }> {
     return this._http.get<{ unread_count: number }>(
-      `${this._baseUrl}/new/${chatId}`
+      joinUrlParts(this._baseUrl, 'new', chatId)
     );
   }
 
@@ -149,13 +152,13 @@ export class ChatsApiService {
    * @param formData chatId and avatar file
    */
   changeChatAvatar(formData: FormData): Promise<IChatData> {
-    return this._http.put<IChatData>(`${this._baseUrl}/avatar`, {
+    return this._http.put<IChatData>(joinUrlParts(this._baseUrl, 'avatar'), {
       data: formData,
     });
   }
 
   addUsersToChat(users: number[], chatId: number): Promise<void> {
-    return this._http.put<void>(`${this._baseUrl}/users`, {
+    return this._http.put<void>(joinUrlParts(this._baseUrl, 'users'), {
       data: {
         users,
         chatId,
@@ -164,7 +167,7 @@ export class ChatsApiService {
   }
 
   deleteUsersFromChat(users: number[], chatId: number): Promise<void> {
-    return this._http.delete<void>(`${this._baseUrl}/users`, {
+    return this._http.delete<void>(joinUrlParts(this._baseUrl, 'users'), {
       data: {
         users,
         chatId,
@@ -176,7 +179,7 @@ export class ChatsApiService {
     chatId: number
   ): Promise<{ token: string }[]> {
     return this._http.post<{ token: string }[]>(
-      `${this._baseUrl}/token/${chatId}`
+      joinUrlParts(this._baseUrl, 'token', chatId)
     );
   }
 }
