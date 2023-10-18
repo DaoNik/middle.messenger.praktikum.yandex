@@ -21,7 +21,7 @@ function isArrayOrObject(value: unknown): value is [] | PlainObject {
   return isPlainObject(value) || isArray(value);
 }
 
-function queryStringify(data: StringIndexed): string | never {
+export function queryStringify(data: StringIndexed): string | never {
   if (!isPlainObject(data)) {
     throw new Error('input must be an object');
   }
@@ -94,44 +94,3 @@ function innerObjectToQueryString(parentKey: string, obj: PlainObject): string {
 
   return result;
 }
-
-// Author decision
-function authorQueryStringify(data: StringIndexed): string | never {
-  if (typeof data !== 'object') {
-    throw new Error('Data must be object');
-  }
-
-  const keys = Object.keys(data);
-  return keys.reduce((result, key, index) => {
-    const value = data[key];
-    const endLine = index < keys.length - 1 ? '&' : '';
-
-    if (Array.isArray(value)) {
-      const arrayValue = value.reduce<StringIndexed>(
-        (result, arrData, index) => ({
-          ...result,
-          [`${key}[${index}]`]: arrData,
-        }),
-        {}
-      );
-
-      return `${result}${queryStringify(arrayValue)}${endLine}`;
-    }
-
-    if (typeof value === 'object') {
-      const objValue = Object.keys(value || {}).reduce<StringIndexed>(
-        (result, objKey) => ({
-          ...result,
-          [`${key}[${objKey}]`]: value[objKey],
-        }),
-        {}
-      );
-
-      return `${result}${authorQueryStringify(objValue)}${endLine}`;
-    }
-
-    return `${result}${key}=${value}${endLine}`;
-  }, '');
-}
-
-export default queryStringify;

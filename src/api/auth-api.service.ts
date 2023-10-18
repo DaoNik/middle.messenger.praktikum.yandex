@@ -1,6 +1,6 @@
 import { HTTPTransport, Router } from '../core';
 import { BASE_HREF } from './constants.ts';
-import { joinUrlParts } from '../utils/joinUrlParts.ts';
+import { joinUrlParts } from '../utils';
 
 export interface IAuthUser {
   first_name: string;

@@ -1,7 +1,7 @@
 import { BASE_HREF } from './constants.ts';
 import { HTTPTransport } from '../core';
 import { IFullUserData } from './auth-api.service.ts';
-import { joinUrlParts } from '../utils/joinUrlParts.ts';
+import { joinUrlParts, queryStringify } from '../utils';
 
 export interface IMessage {
   user: Omit<IFullUserData, 'id'>;

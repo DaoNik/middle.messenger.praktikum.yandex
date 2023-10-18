@@ -1,7 +1,7 @@
 import { BASE_HREF } from './constants.ts';
 import { HTTPTransport } from '../core';
 import { IAuthUser, IFullUserData } from './auth-api.service.ts';
-import { joinUrlParts } from '../utils/joinUrlParts.ts';
+import { joinUrlParts } from '../utils';
 
 export interface IUpdateUserPasswordData {
   oldPassword: string;

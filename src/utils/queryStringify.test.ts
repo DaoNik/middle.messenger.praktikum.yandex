@@ -1,4 +1,4 @@
-const queryStringify = require('./queryStringify').default;
+import { queryStringify } from './queryStringify.ts';
 
 describe('queryStringify', () => {
   it('should return correct value', () => {
