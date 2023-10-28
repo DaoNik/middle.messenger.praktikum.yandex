@@ -77,8 +77,10 @@ export abstract class Block {
 
   private _componentDidMount(): void {
     this.element = document.getElementById(this.blockId)!;
+    this.templater.addDirectives(this.props, this.element);
     this.templater.addEvents(this.element, this.events);
     this.componentDidMount();
+    console.log(this);
   }
 
   componentDidMount(): void {

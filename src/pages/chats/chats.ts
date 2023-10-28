@@ -40,7 +40,9 @@ export class Chats extends Block {
         new AddUserDialog(),
         new RemoveUserDialog(),
       ],
-      {},
+      {
+        chats: [{ userName: 'testUser' }, { userName: 'testUser2' }],
+      },
       {
         onSubmit: (event: SubmitEvent) => {
           event.preventDefault();
