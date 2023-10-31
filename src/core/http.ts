@@ -155,14 +155,11 @@ export class HTTPTransport {
         return data;
       })
       .then((data) => {
-        if (
-          typeof data.response !== 'string' ||
-          !data.response.startsWith('{')
-        ) {
+        try {
+          return JSON.parse(data.response);
+        } catch (e) {
           return undefined;
         }
-
-        return JSON.parse(data.response);
       });
   }
 }
