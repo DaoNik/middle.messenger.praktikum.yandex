@@ -12,10 +12,10 @@ export interface IMessage {
 export interface IChatData {
   id: number;
   title: string;
-  avatar: string;
+  avatar: string | null;
   unread_count: number;
   created_by: number;
-  last_message: IMessage;
+  last_message: IMessage | null;
 }
 
 export interface IChat {

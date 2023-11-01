@@ -4,120 +4,123 @@
       >Профиль<span class="chats__profile-arrow"> > </span></router-link
     >
     <input class="chats__search" placeholder="Поиск" type="text" />
-    <ul class="chats__list">
-      <li class="chats__list-item" [forOf]="chats" [forLet]="chat">
-        <h3 class="chats__item-title">{{userName}}</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus et
-          inventore placeat quaerat, sunt vero?
-        </p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
+    <ul class="chats__list" [forOf]="chats" [forLet]="chat">
+      <template id="chat-list-item-template">
+        <li class="chats__list-item">
+          <h3 class="chats__item-title">{{title}}</h3>
+          <img
+            class="chats__item-image"
+            src="/assets/no-avatar.svg"
+            alt="аватар"
+          />
+          <p class="chats__item-message">{{last_message.content}}</p>
+          <span class="chats__item-time">{{last_message.time}}</span>
+          <span class="chats__message-num">{{unread_count}}</span>
+        </li>
+      </template>
+
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">-->
+      <!--          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus et-->
+      <!--          inventore placeat quaerat, sunt vero?-->
+      <!--        </p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
+      <!--      <li class="chats__list-item">-->
+      <!--        <h3 class="chats__item-title">User name</h3>-->
+      <!--        <img-->
+      <!--          class="chats__item-image"-->
+      <!--          src="/assets/no-avatar.svg"-->
+      <!--          alt="аватар"-->
+      <!--        />-->
+      <!--        <p class="chats__item-message">Последнее сообщение</p>-->
+      <!--        <span class="chats__item-time">10:49</span>-->
+      <!--        <span class="chats__message-num">2</span>-->
+      <!--      </li>-->
     </ul>
   </aside>
   <section class="chat">

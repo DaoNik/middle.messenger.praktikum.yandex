@@ -77,7 +77,7 @@ export abstract class Block {
 
   private _componentDidMount(): void {
     this.element = document.getElementById(this.blockId)!;
-    this.templater.addDirectives(this.props, this.element);
+    // this.templater.addDirectives(this.props, this.element);
     this.templater.addEvents(this.element, this.events);
     this.componentDidMount();
     console.log(this);
@@ -97,9 +97,9 @@ export abstract class Block {
     this.render();
   }
 
-  render(): void {
+  render(properties?: PropertiesT): void {
     if (this.content && this.element) {
-      this.templater.compile(this.props, this.element);
+      this.templater.compile(properties ?? this.props, this.element);
     }
   }
 
@@ -110,7 +110,7 @@ export abstract class Block {
     const response = this.componentDidUpdate(oldProperties, newProperties);
 
     if (response) {
-      this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
+      this.eventBus.emit(Block.EVENTS.FLOW_RENDER, newProperties);
     }
   }
 

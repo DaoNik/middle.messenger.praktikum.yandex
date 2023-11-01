@@ -1,7 +1,6 @@
 import { Component } from '../types.ts';
 import { EventsT, PropertiesT } from './block.ts';
 
-// key : testProperty, key: messages.1.userName
 const getPropertyValue = (property: PropertiesT, key: string): any => {
   const paths = key.split('.');
 
@@ -12,7 +11,17 @@ const getPropertyValue = (property: PropertiesT, key: string): any => {
   let result: any = property;
 
   for (const path of paths) {
-    result = result[path];
+    if (
+      (typeof result === 'object' &&
+        result !== null &&
+        Object.getOwnPropertyNames(result).includes(path)) ||
+      (Array.isArray(result) &&
+        Number.isNaN(Number(path)) &&
+        Number(path) >= 0 &&
+        result.length > Number(path))
+    ) {
+      result = result[path];
+    }
   }
 
   return result;
@@ -52,69 +61,22 @@ export class Template {
 
   compile(
     properties: PropertiesT,
-    block: HTMLElement | Node,
+    block: HTMLElement,
+    isSave: boolean = true,
     propertyKey?: string
   ): void {
-    if (block instanceof HTMLElement) {
-      if (block.children.length > 0) {
-        this._replaceTextContentChildNode(
-          block.children,
-          properties,
-          propertyKey
-        );
-      } else {
-        this._replaceTextContent(block, properties, propertyKey);
-      }
-
-      return;
-    }
-
-    if (block.childNodes.length > 0) {
+    if (block.children.length > 0) {
       this._replaceTextContentChildNode(
-        block.childNodes,
+        block.children,
         properties,
+        isSave,
         propertyKey
       );
     } else {
-      this._replaceTextContent(block, properties, propertyKey);
-    }
-  }
-
-  addDirectives(properties: PropertiesT, block: Element): void {
-    for (const element of block.children) {
-      this._addDirectives(properties, element);
-    }
-  }
-
-  private _addDirectives(properties: PropertiesT, element: Element): void {
-    const forOf = element.attributes.getNamedItem('[forOf]');
-    const forLet = element.attributes.getNamedItem('[forLet]');
-
-    if (forOf && forLet) {
-      element.attributes.removeNamedItem('[forOf]');
-      element.attributes.removeNamedItem('[forLet]');
-      const arr = properties[forOf.value] as any[];
-
-      for (let i = arr.length - 1; i >= 0; i--) {
-        if (i === 0) {
-          this.compile(arr[i], element, `${forOf.value}.${i}`);
-        } else {
-          const newElement = element.cloneNode(true);
-
-          this.compile(arr[i], newElement, `${forOf.value}.${i}`);
-
-          element.after(newElement);
-        }
-      }
-
-      return;
+      this._replaceTextContent(block, properties, isSave, propertyKey);
     }
 
-    if (element.children.length > 0) {
-      for (const childElement of element.children) {
-        this._addDirectives(properties, childElement);
-      }
-    }
+    return;
   }
 
   addEvents(block: HTMLElement, functions: EventsT) {
@@ -172,33 +134,23 @@ export class Template {
   }
 
   private _replaceTextContentChildNode(
-    children: HTMLCollection | NodeListOf<Node>,
+    children: HTMLCollection,
     properties: PropertiesT,
+    isSave: boolean,
     propertyKey?: string
   ) {
     if (children.length > 0) {
       for (const node of children) {
         // TODO: добавить проверку на наличие blockId
-        if (node instanceof Element) {
-          if (node.children.length > 0) {
-            this._replaceTextContentChildNode(
-              node.children,
-              properties,
-              propertyKey
-            );
-          } else {
-            this._replaceTextContent(node, properties, propertyKey);
-          }
+        if (node.children.length > 0) {
+          this._replaceTextContentChildNode(
+            node.children,
+            properties,
+            isSave,
+            propertyKey
+          );
         } else {
-          if (node.childNodes.length > 0) {
-            this._replaceTextContentChildNode(
-              node.childNodes,
-              properties,
-              propertyKey
-            );
-          } else {
-            this._replaceTextContent(node, properties, propertyKey);
-          }
+          this._replaceTextContent(node, properties, isSave, propertyKey);
         }
       }
     }
@@ -207,21 +159,17 @@ export class Template {
   private _replaceTextContent(
     element: Element | Node,
     properties: PropertiesT,
+    isSave: boolean,
     propertyKey?: string
   ): void {
     const content = element.textContent;
 
-    for (const key in properties) {
-      if (this.elementsContentMap.has(key)) {
-        const elements = this.elementsContentMap.get(key)!;
+    for (const [key, elements] of this.elementsContentMap.entries()) {
+      const value = getPropertyValue(properties, key);
+      const textContent = value ? String(value) : '';
 
-        for (const element of elements) {
-          const value = getPropertyValue(properties, key);
-
-          if (typeof value === 'string') {
-            element.textContent = value;
-          }
-        }
+      for (const element of elements) {
+        element.textContent = textContent;
       }
     }
 
@@ -234,15 +182,19 @@ export class Template {
 
       for (const key of keys.map((key) => key.slice(2, -2))) {
         const regExp = new RegExp(`{{${key}}}`, 'gm');
-        const value = properties[key];
+        const value = getPropertyValue(properties, key) ?? '';
 
-        if (typeof value === 'string') {
-          const fullKey = propertyKey ? `${propertyKey}.${key}` : key;
-          const elements = this.elementsContentMap.get(fullKey) ?? new Set();
+        if (typeof value === 'string' || typeof value === 'number') {
+          if (isSave) {
+            const fullKey = propertyKey ? `${propertyKey}.${key}` : key;
 
-          elements.add(element);
-          this.elementsContentMap.set(fullKey, elements);
-          element.textContent = content.replace(regExp, value);
+            const elements = this.elementsContentMap.get(fullKey) ?? new Set();
+
+            elements.add(element);
+            this.elementsContentMap.set(fullKey, elements);
+          }
+
+          element.textContent = content.replace(regExp, String(value));
         }
       }
     }

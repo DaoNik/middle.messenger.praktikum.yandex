@@ -14,8 +14,11 @@ import {
   Block,
 } from '../../core';
 import template from './chats.html?raw';
+import { ChatsApiService } from '../../api';
 
 export class Chats extends Block {
+  private readonly _chatsApiService = new ChatsApiService();
+
   form: IForm = {
     controls: new Map<string, IFormControl>([
       [
@@ -41,7 +44,7 @@ export class Chats extends Block {
         new RemoveUserDialog(),
       ],
       {
-        chats: [{ userName: 'testUser' }, { userName: 'testUser2' }],
+        chats: [],
       },
       {
         onSubmit: (event: SubmitEvent) => {
@@ -70,5 +73,49 @@ export class Chats extends Block {
       },
       { display: 'grid' }
     );
+  }
+
+  override componentDidMount() {
+    this._chatsApiService
+      .getChats()
+      .then((chats) => chats ?? [])
+      .then((chats) => {
+        console.log(chats);
+        this.props['chats'] = chats;
+        const chatsList = document.querySelector('.chats__list')!;
+
+        if (chats.length === 0) {
+          chatsList.innerHTML = '';
+          return;
+        }
+
+        const templateContent = (
+          document.getElementById(
+            'chat-list-item-template'
+          ) as HTMLTemplateElement
+        ).content;
+        let i = 0;
+
+        for (const chat of chats) {
+          const template = templateContent.cloneNode(true) as DocumentFragment;
+          const item = template.children[0] as HTMLLIElement;
+
+          const formattedChat = {
+            ...chat,
+            avatar: chat.avatar ?? '/assets/no-avatar.svg',
+            last_message: chat.last_message ?? {
+              content: 'Ещё нет сообщений',
+              time: '',
+            },
+          };
+
+          this.templater.compile(formattedChat as any, item, false);
+
+          chatsList.append(item);
+          i++;
+        }
+      });
+
+    super.componentDidMount();
   }
 }
