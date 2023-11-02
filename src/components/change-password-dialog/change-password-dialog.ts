@@ -51,57 +51,48 @@ export class ChangePasswordDialog extends Component {
   readonly selector = 'change-password-dialog';
 
   constructor() {
-    super(
-      template,
-      [],
-      {
-        oldPassword_error: '',
-        newPassword_error: '',
-        password_repeat_error: '',
-      },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-
-          this.submit();
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this._form.controls);
-        },
-        onBlur: (event: FocusEvent) => {
-          blurHandler(event, this._form, this.props, this.element);
-        },
-        onDialogClose: () => {
-          this.close();
-        },
-        onDialogNotClose: (event) => {
-          event.stopPropagation();
-        },
-      }
-    );
+    super(template, [], {
+      oldPassword_error: '',
+      newPassword_error: '',
+      password_repeat_error: '',
+    });
   }
 
   override componentDidMount() {
     super.componentDidMount();
   }
 
-  close(): void {
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    const form = this._form;
+
+    if (!isFormValid(form)) return;
+
+    const formValue: any = {};
+
+    for (const [key, value] of form.controls) {
+      formValue[key] = value.value;
+    }
+
+    this._userApiService.updatePassword(formValue).then(() => {
+      this.onDialogClose();
+    });
+  }
+
+  onInput(event: InputEvent) {
+    inputHandler(event, this._form.controls);
+  }
+
+  onBlur(event: FocusEvent) {
+    blurHandler(event, this._form, this.props, this.element);
+  }
+
+  onDialogClose() {
     this.element?.classList.remove('overlay_opened');
   }
 
-  submit(): void {
-    const form = this._form;
-
-    if (isFormValid(form)) {
-      const formValue: any = {};
-
-      for (const [key, value] of form.controls) {
-        formValue[key] = value.value;
-      }
-
-      this._userApiService.updatePassword(formValue).then(() => {
-        this.close();
-      });
-    }
+  onDialogNotClose(event: MouseEvent) {
+    event.stopPropagation();
   }
 }

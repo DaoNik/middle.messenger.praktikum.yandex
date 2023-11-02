@@ -10,7 +10,7 @@ import {
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
-import { AuthApiService, IAuthCredentials } from '../../api';
+import { AuthApiService } from '../../api';
 
 export class LoginForm extends Component {
   form: IForm = {
@@ -43,36 +43,24 @@ export class LoginForm extends Component {
   private readonly _router = Router.__instance;
 
   constructor() {
-    super(
-      template,
-      [],
-      {
-        login_error: '',
-        password_error: '',
-      },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-          const form = this.form;
-          if (isFormValid(form)) {
-            const formValue = {} as any;
-            for (const [key, value] of form.controls) {
-              formValue[key] = value.value;
-            }
-            this.submitHandler(formValue);
-          }
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
-        },
-        onBlur: (event: FocusEvent) => {
-          blurHandler(event, this.form, this.props, this.element);
-        },
-      }
-    );
+    super(template, [], {
+      login_error: '',
+      password_error: '',
+    });
   }
 
-  submitHandler(credentials: IAuthCredentials) {
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    const form = this.form;
+
+    if (!isFormValid(form)) return;
+
+    const credentials = {} as any;
+
+    for (const [key, value] of form.controls) {
+      credentials[key] = value.value;
+    }
+
     this._authApiService
       .signIn(credentials)
       .then(() => {
@@ -83,5 +71,13 @@ export class LoginForm extends Component {
           this._router.go('/messenger');
         }
       });
+  }
+
+  onInput(event: InputEvent) {
+    inputHandler(event, this.form.controls);
+  }
+
+  onBlur(event: FocusEvent) {
+    blurHandler(event, this.form, this.props, this.element);
   }
 }

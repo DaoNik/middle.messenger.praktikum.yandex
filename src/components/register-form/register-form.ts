@@ -12,7 +12,7 @@ import {
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
-import { AuthApiService, IAuthUser } from '../../api';
+import { AuthApiService } from '../../api';
 
 export class RegisterForm extends Component {
   form: IForm = {
@@ -95,43 +95,31 @@ export class RegisterForm extends Component {
   private readonly _router = Router.__instance;
 
   constructor() {
-    super(
-      template,
-      [],
-      {
-        email_error: '',
-        login_error: '',
-        first_name_error: '',
-        second_name_error: '',
-        phone_error: '',
-        password_error: '',
-        password_repeat_error: '',
-      },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-          const form = this.form;
-          if (isFormValid(form)) {
-            const formValue = {} as any;
-            for (const [key, value] of form.controls) {
-              if (key !== 'password_repeat') {
-                formValue[key] = value.value;
-              }
-            }
-            this.submitHandler(formValue);
-          }
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
-        },
-        onBlur: (event: FocusEvent) => {
-          blurHandler(event, this.form, this.props, this.element);
-        },
-      }
-    );
+    super(template, [], {
+      email_error: '',
+      login_error: '',
+      first_name_error: '',
+      second_name_error: '',
+      phone_error: '',
+      password_error: '',
+      password_repeat_error: '',
+    });
   }
 
-  submitHandler(authUser: IAuthUser) {
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    const form = this.form;
+
+    if (!isFormValid(form)) return;
+
+    const authUser = {} as any;
+
+    for (const [key, value] of form.controls) {
+      if (key !== 'password_repeat') {
+        authUser[key] = value.value;
+      }
+    }
+
     this._authApiService
       .signUp(authUser)
       .then(() => {
@@ -142,5 +130,13 @@ export class RegisterForm extends Component {
           this._router.go('/messenger');
         }
       });
+  }
+
+  onInput(event: InputEvent) {
+    inputHandler(event, this.form.controls);
+  }
+
+  onBlur(event: FocusEvent) {
+    blurHandler(event, this.form, this.props, this.element);
   }
 }

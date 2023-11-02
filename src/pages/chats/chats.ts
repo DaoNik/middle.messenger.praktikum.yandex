@@ -46,31 +46,6 @@ export class Chats extends Block {
       {
         chats: [],
       },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-          const form = this.form;
-          if (isFormValid(form)) {
-            const formValue: Record<string, string> = {};
-            for (const [key, value] of form.controls) {
-              formValue[key] = value.value;
-            }
-            console.log(formValue);
-          }
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
-        },
-        onBlur: (event) => {
-          blurHandler(event, this.form, this.props, this.element);
-        },
-        onChatMenuToggled: () => {
-          document.querySelector('.chat-menu')?.classList.toggle('opened');
-        },
-        onClipMenuToggled: () => {
-          document.querySelector('.clip-menu')?.classList.toggle('opened');
-        },
-      },
       { display: 'grid' }
     );
   }
@@ -117,5 +92,33 @@ export class Chats extends Block {
       });
 
     super.componentDidMount();
+  }
+
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    const form = this.form;
+    if (isFormValid(form)) {
+      const formValue: Record<string, string> = {};
+      for (const [key, value] of form.controls) {
+        formValue[key] = value.value;
+      }
+      console.log(formValue);
+    }
+  }
+
+  onInput(event: InputEvent) {
+    inputHandler(event, this.form.controls);
+  }
+
+  onBlur(event: FocusEvent) {
+    blurHandler(event, this.form, this.props, this.element);
+  }
+
+  onChatMenuToggled() {
+    document.querySelector('.chat-menu')?.classList.toggle('opened');
+  }
+
+  onClipMenuToggled() {
+    document.querySelector('.clip-menu')?.classList.toggle('opened');
   }
 }

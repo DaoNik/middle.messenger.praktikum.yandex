@@ -28,28 +28,6 @@ export class Profile extends Block {
         display_name: '',
       },
       {
-        onAvatarClicked: () => {
-          document
-            .querySelector('.overlay-load-file')!
-            .classList.add('overlay_opened');
-        },
-        onChangeDataDialogOpened: () => {
-          document
-            .querySelector('.overlay-change-data')!
-            .classList.add('overlay_opened');
-        },
-        onChangePasswordDialogOpened: () => {
-          document
-            .querySelector('.overlay-change-password')!
-            .classList.add('overlay_opened');
-        },
-        onLogout: () => {
-          this._authApiService.logout().then(() => {
-            this._router.go('/');
-          });
-        },
-      },
-      {
         display: 'flex',
       }
     );
@@ -78,5 +56,29 @@ export class Profile extends Block {
     }
 
     super.componentDidMount();
+  }
+
+  onAvatarClicked() {
+    document
+      .querySelector('.overlay-load-file')!
+      .classList.add('overlay_opened');
+  }
+
+  onChangeDataDialogOpened() {
+    document
+      .querySelector('.overlay-change-data')!
+      .classList.add('overlay_opened');
+  }
+
+  onChangePasswordDialogOpened() {
+    document
+      .querySelector('.overlay-change-password')!
+      .classList.add('overlay_opened');
+  }
+
+  onLogout() {
+    this._authApiService.logout().then(() => {
+      this._router.go('/');
+    });
   }
 }

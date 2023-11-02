@@ -10,45 +10,25 @@ export class LoadFileDialog extends Component {
   readonly selector = 'load-file-dialog';
 
   constructor() {
-    super(
-      template,
-      [],
-      {},
-      {
-        onInput: (event: InputEvent) => {
-          const fileList = (event.target as any).files as FileList;
-
-          if (fileList.length > 0) {
-            this.element!.querySelector('.dialog__load-text')!.textContent =
-              fileList[0].name;
-            (
-              this.element!.querySelector(
-                '.dialog__submit'
-              ) as HTMLButtonElement
-            ).disabled = false;
-            this.formData.append('avatar', fileList[0], fileList[0].name);
-          }
-        },
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-
-          this.submit();
-        },
-        onDialogClose: () => {
-          this.close();
-        },
-        onDialogNotClose: (event) => {
-          event.stopPropagation();
-        },
-      }
-    );
+    super(template);
   }
 
-  close(): void {
-    this.element?.classList.remove('overlay_opened');
+  onInput(event: InputEvent) {
+    const fileList = (event.target as any).files as FileList;
+
+    if (fileList.length === 0) return;
+
+    this.element!.querySelector('.dialog__load-text')!.textContent =
+      fileList[0].name;
+    (
+      this.element!.querySelector('.dialog__submit') as HTMLButtonElement
+    ).disabled = false;
+    this.formData.append('avatar', fileList[0], fileList[0].name);
   }
 
-  submit(): void {
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
     this._userApiService.updateAvatar(this.formData).then((user) => {
       if (user) {
         localStorage.setItem('authUser', JSON.stringify(user));
@@ -56,5 +36,17 @@ export class LoadFileDialog extends Component {
         this._router.refresh();
       }
     });
+  }
+
+  onDialogClose() {
+    this.element?.classList.remove('overlay_opened');
+  }
+
+  close(): void {
+    this.element?.classList.remove('overlay_opened');
+  }
+
+  onDialogNotClose(event: MouseEvent) {
+    event.stopPropagation();
   }
 }

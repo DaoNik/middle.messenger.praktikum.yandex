@@ -12,7 +12,7 @@ import {
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
-import { IFullUserData, UserApiService } from '../../api';
+import { UserApiService } from '../../api';
 
 export class ChangeUserDataDialog extends Component {
   private readonly _userApiService = new UserApiService();
@@ -86,58 +86,51 @@ export class ChangeUserDataDialog extends Component {
   selector = 'change-user-data-dialog';
 
   constructor() {
-    super(
-      template,
-      [],
-      {
-        email_error: '',
-        login_error: '',
-        first_name_error: '',
-        second_name_error: '',
-        phone_error: '',
-        display_name_error: '',
-      },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-
-          this.submit();
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
-        },
-        onBlur: (event: FocusEvent) => {
-          blurHandler(event, this.form, this.props, this.element);
-        },
-        onDialogClose: () => {
-          this.close();
-        },
-        onDialogNotClose: (event) => {
-          event.stopPropagation();
-        },
-      }
-    );
+    super(template, [], {
+      email_error: '',
+      login_error: '',
+      first_name_error: '',
+      second_name_error: '',
+      phone_error: '',
+      display_name_error: '',
+    });
   }
 
-  close(): void {
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    const form = this.form;
+
+    if (!isFormValid(form)) return;
+
+    const formValue: any = {};
+
+    for (const [key, value] of form.controls) {
+      formValue[key] = value.value;
+    }
+
+    this._userApiService.updateUserData(formValue).then((user) => {
+      localStorage.setItem('authUser', JSON.stringify(user));
+
+      this._router.refresh();
+    });
+  }
+
+  onInput(event: InputEvent) {
+    console.log(this.form.controls);
+    inputHandler(event, this.form.controls);
+  }
+
+  onBlur(event: FocusEvent) {
+    console.log(this, this.form, this.props, this.element);
+    blurHandler(event, this.form, this.props, this.element);
+  }
+
+  onDialogClose() {
     this.element?.classList.remove('overlay_opened');
   }
 
-  submit(): void {
-    const form = this.form;
-
-    if (isFormValid(form)) {
-      const formValue: any = {};
-
-      for (const [key, value] of form.controls) {
-        formValue[key] = value.value;
-      }
-
-      this._userApiService.updateUserData(formValue).then((user) => {
-        localStorage.setItem('authUser', JSON.stringify(user));
-
-        this._router.refresh();
-      });
-    }
+  onDialogNotClose(event: MouseEvent) {
+    event.stopPropagation();
   }
 }

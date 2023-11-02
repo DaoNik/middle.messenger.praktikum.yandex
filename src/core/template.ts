@@ -1,5 +1,5 @@
 import { Component } from '../types.ts';
-import { EventsT, PropertiesT } from './block.ts';
+import { Block, PropertiesT } from './block.ts';
 
 const getPropertyValue = (property: PropertiesT, key: string): any => {
   const paths = key.split('.');
@@ -79,39 +79,39 @@ export class Template {
     return;
   }
 
-  addEvents(block: HTMLElement, functions: EventsT) {
-    this._addOrRemoveEvents(block, functions, false);
+  addEvents(block: HTMLElement, blockClass: Block) {
+    this._addOrRemoveEvents(block, blockClass, false);
 
     if (block.children.length > 0) {
-      this._registerEvents(block.children, functions, false);
+      this._registerEvents(block.children, blockClass, false);
     }
   }
 
-  removeEvents(block: HTMLElement, functions: EventsT) {
-    this._addOrRemoveEvents(block, functions, true);
+  removeEvents(block: HTMLElement, blockClass: Block) {
+    this._addOrRemoveEvents(block, blockClass, true);
 
     if (block.children.length > 0) {
-      this._registerEvents(block.children, functions, true);
+      this._registerEvents(block.children, blockClass, true);
     }
   }
 
   private _registerEvents(
     elements: HTMLCollection,
-    functions: EventsT,
+    blockClass: Block,
     isRemove: boolean
   ) {
     for (const element of elements) {
-      this._addOrRemoveEvents(element, functions, isRemove);
+      this._addOrRemoveEvents(element, blockClass, isRemove);
 
       if (element.children.length > 0) {
-        this._registerEvents(element.children, functions, isRemove);
+        this._registerEvents(element.children, blockClass, isRemove);
       }
     }
   }
 
   private _addOrRemoveEvents(
     element: Element,
-    functions: EventsT,
+    blockClass: Block,
     isRemove: boolean
   ) {
     const reg = /^\(.*\)$/;
@@ -120,13 +120,14 @@ export class Template {
       if (reg.test(attribute.name)) {
         const eventName = attribute.name.slice(1, -1);
 
-        const callback = functions[attribute.value];
+        // @ts-ignore
+        const callback = blockClass[attribute.value];
 
-        if (callback) {
+        if (callback && typeof callback === 'function') {
           if (isRemove) {
-            element.removeEventListener(eventName, callback);
+            element.removeEventListener(eventName, callback.bind(blockClass));
           } else {
-            element.addEventListener(eventName, callback);
+            element.addEventListener(eventName, callback.bind(blockClass));
           }
         }
       }

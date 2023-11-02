@@ -27,7 +27,6 @@ export abstract class Block {
   content: string;
   templater = new Template();
   declarations: Component[];
-  events: EventsT;
   hostStyles: Record<string, string>;
   element: HTMLElement | null = null;
 
@@ -35,12 +34,10 @@ export abstract class Block {
     content: string,
     declarations: Component[] = [],
     properties: PropertiesT = {},
-    events: EventsT = {},
     hostStyles: Record<string, string> = {}
   ) {
     this.content = content;
     this.declarations = declarations;
-    this.events = events;
     this.hostStyles = hostStyles;
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
@@ -77,10 +74,8 @@ export abstract class Block {
 
   private _componentDidMount(): void {
     this.element = document.getElementById(this.blockId)!;
-    // this.templater.addDirectives(this.props, this.element);
-    this.templater.addEvents(this.element, this.events);
+    this.templater.addEvents(this.element, this);
     this.componentDidMount();
-    console.log(this);
   }
 
   componentDidMount(): void {
@@ -141,7 +136,7 @@ export abstract class Block {
 
   private _componentDidUnmount() {
     if (this.element) {
-      this.templater.removeEvents(this.element, this.events);
+      this.templater.removeEvents(this.element, this);
     }
   }
 
