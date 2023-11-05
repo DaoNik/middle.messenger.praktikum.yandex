@@ -15,6 +15,7 @@ import {
 } from '../../core';
 import template from './chats.html?raw';
 import { ChatsApiService } from '../../api';
+import { AddChatDialog } from '../../components/add-chat-dialog/add-chat-dialog.ts';
 
 export class Chats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
@@ -42,6 +43,7 @@ export class Chats extends Block {
         new ClipMenu(),
         new AddUserDialog(),
         new RemoveUserDialog(),
+        new AddChatDialog(),
       ],
       {
         chats: [],
@@ -120,5 +122,11 @@ export class Chats extends Block {
 
   onClipMenuToggled() {
     document.querySelector('.clip-menu')?.classList.toggle('opened');
+  }
+
+  onAddChatOpened() {
+    document
+      .querySelector('.overlay-add-chat')
+      ?.classList.add('overlay_opened');
   }
 }

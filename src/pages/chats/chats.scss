@@ -14,8 +14,24 @@
   display: grid;
   grid-template-rows: auto auto 1fr;
 
+  &__actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 0 10px;
+  }
+
+  &__add-chat {
+    border: none;
+    background: none;
+    color: var(--green);
+    font-size: 12px;
+    line-height: 12px;
+    cursor: pointer;
+  }
+
   &__profile-link {
-    margin: 21px 10px 0;
     text-align: right;
     text-decoration: none;
     color: var(--green);

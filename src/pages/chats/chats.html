@@ -1,8 +1,13 @@
 <div class="wrapper" id="{{blockId}}">
   <aside class="chats">
-    <router-link class="chats__profile-link" link="/settings"
-      >Профиль<span class="chats__profile-arrow"> > </span></router-link
-    >
+    <div class="chats__actions">
+      <button class="chats__add-chat" (click)="onAddChatOpened">
+        Добавить чат
+      </button>
+      <router-link class="chats__profile-link" link="/settings"
+        >Профиль<span class="chats__profile-arrow"> > </span></router-link
+      >
+    </div>
     <input class="chats__search" placeholder="Поиск" type="text" />
     <ul class="chats__list" [forOf]="chats" [forLet]="chat">
       <template id="chat-list-item-template">
@@ -204,4 +209,5 @@
     </form>
   </section>
   {{>chat-menu}} {{>clip-menu}} {{>add-user-dialog}} {{>remove-user-dialog}}
+  {{>add-chat-dialog}}
 </div>
