@@ -82,3 +82,9 @@ button[type='submit'][disabled] {
 router-link {
   cursor: pointer;
 }
+
+.button {
+  &__warn {
+    background: red;
+  }
+}

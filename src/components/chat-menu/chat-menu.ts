@@ -19,4 +19,8 @@ export class ChatMenu extends Component {
       .querySelector('.overlay-remove-user')!
       .classList.add('overlay_opened');
   }
+
+  onRemoveChatDialogOpened() {
+    document.querySelector('.overlay-confirm')!.classList.add('overlay_opened');
+  }
 }

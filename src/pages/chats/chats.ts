@@ -16,6 +16,7 @@ import {
 import template from './chats.html?raw';
 import { ChatsApiService } from '../../api';
 import { AddChatDialog } from '../../components/add-chat-dialog/add-chat-dialog.ts';
+import { ConfirmDialog } from '../../common/confirm-dialog/confirm-dialog.ts';
 
 export class Chats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
@@ -44,6 +45,7 @@ export class Chats extends Block {
         new AddUserDialog(),
         new RemoveUserDialog(),
         new AddChatDialog(),
+        new ConfirmDialog(),
       ],
       {
         chats: [],

@@ -1,0 +1,17 @@
+<div class="overlay overlay-confirm" id="{{blockId}}" (click)="onDialogClose">
+  <section class="dialog" (click)="onDialogNotClose">
+    <h3 class="dialog__title">Вы уверены, что хотите удалить чат?</h3>
+    <div class="dialog__actions">
+      <button
+        class="dialog__submit button__warn"
+        type="button"
+        (click)="onSaveChanges"
+      >
+        Да
+      </button>
+      <button class="dialog__submit" type="button" (click)="onDialogClose">
+        Нет
+      </button>
+    </div>
+  </section>
+</div>

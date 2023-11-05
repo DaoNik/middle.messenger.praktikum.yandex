@@ -25,6 +25,12 @@
   border-radius: 12px;
   cursor: auto;
 
+  &__actions {
+    display: flex;
+    width: 100%;
+    column-gap: 20px;
+  }
+
   &__title {
     margin: 0 0 24px;
     font-weight: 500;
