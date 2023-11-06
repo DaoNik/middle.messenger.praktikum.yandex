@@ -5,35 +5,53 @@ import { AuthApiService } from './api';
 export interface IRoute {
   path: string;
   component: any;
+  canActivate?: () => boolean;
+}
+
+function canActivate(): boolean {
+  const user = localStorage.getItem('authUser');
+
+  return Boolean(user);
+}
+
+enum MainRoutes {
+  MESSENGER = '/messenger',
+  NOT_FOUND = '/404',
+  ERROR_PAGE = '/500',
+  SIGN_UP = '/sign-up',
+  SETTINGS = '/settings',
+  LOGIN = '/',
 }
 
 const routes: IRoute[] = [
-  { path: '/messenger', component: Chats },
-  { path: '/404', component: Page404 },
-  { path: '/500', component: Page500 },
-  { path: '/', component: Login },
-  { path: '/sign-up', component: Register },
-  { path: '/settings', component: Profile },
+  { path: MainRoutes.MESSENGER, component: Chats, canActivate },
+  { path: MainRoutes.NOT_FOUND, component: Page404 },
+  { path: MainRoutes.ERROR_PAGE, component: Page500 },
+  { path: MainRoutes.LOGIN, component: Login },
+  { path: MainRoutes.SIGN_UP, component: Register, canActivate },
+  { path: MainRoutes.SETTINGS, component: Profile, canActivate },
 ];
 
 const router = new Router('#root');
 
-for (const { path, component } of routes) {
-  router.use(path, component);
-}
-
-router.start();
-
-const authService = new AuthApiService();
-
-authService.user().then((data) => {
-  if (
-    data &&
-    (document.location.pathname === '/' ||
-      document.location.pathname === '/sign-up')
-  ) {
-    router.go('/messenger');
+window.addEventListener('DOMContentLoaded', async () => {
+  for (const route of routes) {
+    router.use(route);
   }
-});
 
-customElements.define('router-link', RouterLink);
+  router.start();
+
+  const authService = new AuthApiService();
+
+  authService.user().then((data) => {
+    if (
+      data &&
+      (document.location.pathname === MainRoutes.LOGIN ||
+        document.location.pathname === MainRoutes.SIGN_UP)
+    ) {
+      router.go(MainRoutes.MESSENGER);
+    }
+  });
+
+  customElements.define('router-link', RouterLink);
+});

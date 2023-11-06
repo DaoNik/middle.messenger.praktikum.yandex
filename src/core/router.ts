@@ -1,4 +1,5 @@
 import { Block } from './block.ts';
+import { IRoute } from '../index.ts';
 
 function isEqual(lhs: string, rhs: string) {
   return lhs === rhs;
@@ -11,11 +12,19 @@ class Route {
   private _query: string;
   private _pathname: string;
 
-  constructor(pathname: string, view: any, query: string) {
+  canActivate: (() => boolean) | null;
+
+  constructor(
+    pathname: string,
+    view: any,
+    query: string,
+    canActivate?: () => boolean
+  ) {
     this._pathname = pathname;
     this._blockClass = view;
     this._block = null;
     this._query = query;
+    this.canActivate = canActivate ?? null;
   }
 
   navigate(pathname: string) {
@@ -71,8 +80,8 @@ export class Router {
     Router.__instance = this;
   }
 
-  use(pathname: string, block: Block) {
-    const route = new Route(pathname, block, this._rootQuery);
+  use({ path, component, canActivate }: IRoute) {
+    const route = new Route(path, component, this._rootQuery, canActivate);
 
     this.routes.push(route);
 
@@ -115,6 +124,11 @@ export class Router {
     const route = this.getRoute(pathname);
 
     if (!route || this._currentRoute?.match(route['_pathname'])) {
+      return;
+    }
+
+    if (route.canActivate && !route.canActivate()) {
+      console.error(`you do not have access to ${pathname} page`);
       return;
     }
 
