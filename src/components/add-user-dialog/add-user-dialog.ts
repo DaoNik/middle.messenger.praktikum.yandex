@@ -2,8 +2,12 @@ import { isFormValid, isMinimalLength, isNotEmptyValidator } from '../../core';
 import { blurHandler, IForm, IFormControl, inputHandler } from '../../core';
 import { Component } from '../../types.ts';
 import template from './add-user-dialog.html?raw';
+import { ChatsApiService, UserApiService } from '../../api';
 
 export class AddUserDialog extends Component {
+  private readonly _chatsApi = new ChatsApiService();
+  private readonly _userApi = new UserApiService();
+
   form: IForm = {
     controls: new Map<string, IFormControl>([
       [
@@ -34,13 +38,23 @@ export class AddUserDialog extends Component {
 
     if (!isFormValid(form)) return;
 
-    const formValue: Record<string, string> = {};
+    const login = form.controls.get('login')!;
 
-    for (const [key, value] of form.controls) {
-      formValue[key] = value.value;
-    }
+    const urls = document.location.pathname.split('/');
 
-    console.log(formValue);
+    if (urls.length !== 2) return;
+
+    this._userApi
+      .searchUserByLogin(login.value)
+      .then((user) => {
+        return user[0].id;
+      })
+      .then((id) => {
+        return this._chatsApi.addUsersToChat([id], Number(urls[1]));
+      })
+      .then(() => {
+        document.location.reload();
+      });
   }
 
   onInput(event: InputEvent) {
