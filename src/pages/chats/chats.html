@@ -9,7 +9,12 @@
       >
     </div>
     <input class="chats__search" placeholder="Поиск" type="text" />
-    <ul class="chats__list" [forOf]="chats" [forLet]="chat">
+    <ul
+      class="chats__list"
+      [forOf]="chats"
+      [forLet]="chat"
+      (click)="onChatClicked"
+    >
       <template id="chat-list-item-template">
         <li class="chats__list-item">
           <h3 class="chats__item-title">{{title}}</h3>

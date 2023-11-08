@@ -12,14 +12,19 @@ import {
   inputHandler,
   blurHandler,
   Block,
+  Router,
 } from '../../core';
 import template from './chats.html?raw';
 import { ChatsApiService } from '../../api';
 import { AddChatDialog } from '../../components/add-chat-dialog/add-chat-dialog.ts';
 import { ConfirmDialog } from '../../common/confirm-dialog/confirm-dialog.ts';
+import { joinUrlParts } from '../../utils';
+import * as path from 'path';
+import { MainRoutes } from '../../index.ts';
 
 export class Chats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
+  private readonly _router = Router.__instance;
 
   form: IForm = {
     controls: new Map<string, IFormControl>([
@@ -79,6 +84,11 @@ export class Chats extends Block {
           const template = templateContent.cloneNode(true) as DocumentFragment;
           const item = template.children[0] as HTMLLIElement;
 
+          const chatIdAttr = document.createAttribute('chatId');
+
+          chatIdAttr.value = String(chat.id);
+          item.attributes.setNamedItem(chatIdAttr);
+
           const formattedChat = {
             ...chat,
             avatar: chat.avatar ?? '/assets/no-avatar.svg',
@@ -130,5 +140,19 @@ export class Chats extends Block {
     document
       .querySelector('.overlay-add-chat')
       ?.classList.add('overlay_opened');
+  }
+
+  onChatClicked(event: MouseEvent) {
+    if (!event.target) return;
+
+    const target = event.target as HTMLElement;
+    const listItem = (
+      target.tagName === 'LI' ? target : target.parentElement
+    ) as HTMLLIElement;
+    const chatId = listItem.getAttribute('chatId');
+
+    if (!chatId) return;
+
+    this._router.go(joinUrlParts(MainRoutes.MESSENGER, chatId));
   }
 }

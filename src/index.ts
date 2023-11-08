@@ -14,7 +14,7 @@ function canActivate(): boolean {
   return Boolean(user);
 }
 
-enum MainRoutes {
+export enum MainRoutes {
   MESSENGER = '/messenger',
   NOT_FOUND = '/404',
   ERROR_PAGE = '/500',
