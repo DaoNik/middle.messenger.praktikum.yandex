@@ -9,8 +9,12 @@ import {
 } from '../../core';
 import template from './remove-user-dialog.html?raw';
 import { Component } from '../../types.ts';
+import { ChatsApiService, UserApiService } from '../../api';
 
 export class RemoveUserDialog extends Component {
+  private readonly _userApi = new UserApiService();
+  private readonly _chatsApi = new ChatsApiService();
+
   form: IForm = {
     controls: new Map<string, IFormControl>([
       [
@@ -36,14 +40,28 @@ export class RemoveUserDialog extends Component {
 
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
+
     const form = this.form;
-    if (isFormValid(form)) {
-      const formValue: Record<string, string> = {};
-      for (const [key, value] of form.controls) {
-        formValue[key] = value.value;
-      }
-      console.log(formValue);
-    }
+
+    if (!isFormValid(form)) return;
+
+    const login = form.controls.get('login')!;
+
+    const urls = document.location.pathname.split('/');
+
+    if (urls.length !== 2) return;
+
+    this._userApi
+      .searchUserByLogin(login.value)
+      .then((user) => {
+        return user[0].id;
+      })
+      .then((id) => {
+        return this._chatsApi.deleteUsersFromChat([id], Number(urls[1]));
+      })
+      .then(() => {
+        document.location.reload();
+      });
   }
 
   onInput(event: InputEvent) {
