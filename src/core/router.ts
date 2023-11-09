@@ -1,5 +1,5 @@
 import { Block } from './block.ts';
-import { IRoute } from '../index.ts';
+import { IRoute, MainRoutes } from '../index.ts';
 
 function isEqual(lhs: string, rhs: string) {
   return lhs === rhs;
@@ -41,6 +41,13 @@ class Route {
   }
 
   match(pathname: string) {
+    if (
+      pathname.includes(MainRoutes.MESSENGER) &&
+      this._pathname === MainRoutes.MESSENGER
+    ) {
+      return true;
+    }
+
     return isEqual(pathname, this._pathname);
   }
 

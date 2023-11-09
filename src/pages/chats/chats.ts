@@ -19,7 +19,6 @@ import { ChatsApiService } from '../../api';
 import { AddChatDialog } from '../../components/add-chat-dialog/add-chat-dialog.ts';
 import { ConfirmDialog } from '../../common/confirm-dialog/confirm-dialog.ts';
 import { joinUrlParts } from '../../utils';
-import * as path from 'path';
 import { MainRoutes } from '../../index.ts';
 
 export class Chats extends Block {

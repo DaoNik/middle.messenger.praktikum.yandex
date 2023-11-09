@@ -23,18 +23,18 @@ export enum MainRoutes {
   LOGIN = '/',
 }
 
-const routes: IRoute[] = [
-  { path: MainRoutes.MESSENGER, component: Chats, canActivate },
-  { path: MainRoutes.NOT_FOUND, component: Page404 },
-  { path: MainRoutes.ERROR_PAGE, component: Page500 },
-  { path: MainRoutes.LOGIN, component: Login },
-  { path: MainRoutes.SIGN_UP, component: Register, canActivate },
-  { path: MainRoutes.SETTINGS, component: Profile, canActivate },
-];
-
-const router = new Router('#root');
-
 window.addEventListener('DOMContentLoaded', async () => {
+  const routes: IRoute[] = [
+    { path: MainRoutes.MESSENGER, component: Chats, canActivate },
+    { path: MainRoutes.NOT_FOUND, component: Page404 },
+    { path: MainRoutes.ERROR_PAGE, component: Page500 },
+    { path: MainRoutes.LOGIN, component: Login },
+    { path: MainRoutes.SIGN_UP, component: Register, canActivate },
+    { path: MainRoutes.SETTINGS, component: Profile, canActivate },
+  ];
+
+  const router = new Router('#root');
+
   for (const route of routes) {
     router.use(route);
   }
