@@ -2,6 +2,7 @@ import { Component } from '../../types.ts';
 import template from './load-file-dialog.html?raw';
 import { Router } from '../../core';
 import { UserApiService } from '../../api';
+import { AUTH_USER } from '../../constants.ts';
 
 export class LoadFileDialog extends Component {
   private readonly _userApiService = new UserApiService();
@@ -31,7 +32,7 @@ export class LoadFileDialog extends Component {
 
     this._userApiService.updateAvatar(this.formData).then((user) => {
       if (user) {
-        localStorage.setItem('authUser', JSON.stringify(user));
+        localStorage.setItem(AUTH_USER, JSON.stringify(user));
 
         this._router.refresh();
       }

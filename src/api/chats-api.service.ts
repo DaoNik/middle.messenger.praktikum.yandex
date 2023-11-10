@@ -59,8 +59,17 @@ export interface IChatUser extends Omit<IFullUserData, 'phone'> {
 }
 
 export class ChatsApiService {
+  static __instance: ChatsApiService;
   private readonly _baseUrl = joinUrlParts(BASE_HREF, 'chats');
   private readonly _http = new HTTPTransport();
+
+  constructor() {
+    if (ChatsApiService.__instance) {
+      return ChatsApiService.__instance;
+    }
+
+    ChatsApiService.__instance = this;
+  }
 
   getChats(params?: IGetChatParams): Promise<IChatData[]> {
     let url = this._baseUrl;
@@ -175,10 +184,8 @@ export class ChatsApiService {
     });
   }
 
-  getTokenForConnectMessagesServer(
-    chatId: number
-  ): Promise<{ token: string }[]> {
-    return this._http.post<{ token: string }[]>(
+  getTokenForConnectMessagesServer(chatId: number): Promise<{ token: string }> {
+    return this._http.post<{ token: string }>(
       joinUrlParts(this._baseUrl, 'token', chatId)
     );
   }

@@ -20,10 +20,12 @@ import { AddChatDialog } from '../../components/add-chat-dialog/add-chat-dialog.
 import { ConfirmDialog } from '../../common/confirm-dialog/confirm-dialog.ts';
 import { joinUrlParts } from '../../utils';
 import { MainRoutes } from '../../index.ts';
+import { WebSocketApiService } from '../../api/web-socket-api.service.ts';
 
 export class Chats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
   private readonly _router = Router.__instance;
+  private readonly _webSocketApi = new WebSocketApiService();
 
   form: IForm = {
     controls: new Map<string, IFormControl>([
@@ -153,5 +155,7 @@ export class Chats extends Block {
     if (!chatId) return;
 
     this._router.go(joinUrlParts(MainRoutes.MESSENGER, chatId));
+
+    this._webSocketApi.connect(chatId);
   }
 }

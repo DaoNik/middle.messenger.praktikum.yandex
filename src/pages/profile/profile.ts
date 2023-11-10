@@ -6,6 +6,7 @@ import {
 import template from './profile.html?raw';
 import { Block, Router } from '../../core';
 import { AuthApiService, BASE_HREF, IFullUserData } from '../../api';
+import { AUTH_USER } from '../../constants.ts';
 
 export class Profile extends Block {
   private readonly _authApiService = new AuthApiService();
@@ -34,7 +35,7 @@ export class Profile extends Block {
   }
 
   override componentDidMount() {
-    const user = localStorage.getItem('authUser');
+    const user = localStorage.getItem(AUTH_USER);
     const image = document.querySelector(
       '.profile__image'
     ) as HTMLImageElement | null;

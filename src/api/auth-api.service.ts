@@ -1,6 +1,7 @@
 import { HTTPTransport, Router } from '../core';
 import { BASE_HREF } from './constants.ts';
 import { joinUrlParts } from '../utils';
+import { AUTH_USER } from '../constants.ts';
 
 export interface IAuthUser {
   first_name: string;
@@ -55,7 +56,7 @@ export class AuthApiService {
     return this._http
       .get<IFullUserData>(joinUrlParts(this._baseUrl, 'user'))
       .then((user) => {
-        localStorage.setItem('authUser', JSON.stringify(user));
+        localStorage.setItem(AUTH_USER, JSON.stringify(user));
 
         return user;
       })

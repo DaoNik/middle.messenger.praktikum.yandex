@@ -13,6 +13,7 @@ import {
 import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 import { UserApiService } from '../../api';
+import { AUTH_USER } from '../../constants.ts';
 
 export class ChangeUserDataDialog extends Component {
   private readonly _userApiService = new UserApiService();
@@ -110,7 +111,7 @@ export class ChangeUserDataDialog extends Component {
     }
 
     this._userApiService.updateUserData(formValue).then((user) => {
-      localStorage.setItem('authUser', JSON.stringify(user));
+      localStorage.setItem(AUTH_USER, JSON.stringify(user));
 
       this._router.refresh();
     });

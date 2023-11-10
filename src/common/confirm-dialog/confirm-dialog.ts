@@ -14,6 +14,8 @@ export class ConfirmDialog extends Component {
   onSaveChanges() {
     const urls = document.location.pathname.split('/');
 
+    console.log(urls);
+
     if (urls.length === 2) {
       this._chatsApi.deleteChat(Number(urls[1])).then(() => {
         document.location.reload();

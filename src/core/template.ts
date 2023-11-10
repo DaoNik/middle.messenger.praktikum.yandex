@@ -123,12 +123,12 @@ export class Template {
         // @ts-ignore
         const callback = blockClass[attribute.value];
 
-        if (callback && typeof callback === 'function') {
-          if (isRemove) {
-            element.removeEventListener(eventName, callback.bind(blockClass));
-          } else {
-            element.addEventListener(eventName, callback.bind(blockClass));
-          }
+        if (!callback || typeof callback !== 'function') return;
+
+        if (isRemove) {
+          element.removeEventListener(eventName, callback.bind(blockClass));
+        } else {
+          element.addEventListener(eventName, callback.bind(blockClass));
         }
       }
     }

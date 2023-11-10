@@ -23,6 +23,7 @@ export function inputHandler(
   event: InputEvent,
   controls: Map<string, IFormControl>
 ) {
+  console.log(controls);
   const target = event.target as HTMLInputElement;
 
   if (controls.has(target.name)) {
