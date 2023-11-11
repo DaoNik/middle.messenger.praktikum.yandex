@@ -101,10 +101,12 @@ export class Template {
     isRemove: boolean
   ) {
     for (const element of elements) {
-      this._addOrRemoveEvents(element, blockClass, isRemove);
+      if (!element.id) {
+        this._addOrRemoveEvents(element, blockClass, isRemove);
 
-      if (element.children.length > 0) {
-        this._registerEvents(element.children, blockClass, isRemove);
+        if (element.children.length > 0) {
+          this._registerEvents(element.children, blockClass, isRemove);
+        }
       }
     }
   }
@@ -140,9 +142,10 @@ export class Template {
     isSave: boolean,
     propertyKey?: string
   ) {
-    if (children.length > 0) {
-      for (const node of children) {
-        // TODO: добавить проверку на наличие blockId
+    if (children.length === 0) return;
+
+    for (const node of children) {
+      if (!node.id) {
         if (node.children.length > 0) {
           this._replaceTextContentChildNode(
             node.children,
