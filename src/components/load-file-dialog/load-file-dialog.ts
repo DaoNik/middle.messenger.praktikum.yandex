@@ -3,12 +3,16 @@ import template from './load-file-dialog.html?raw';
 import { Router } from '../../core';
 import { UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
+import { StorageService } from '../../services';
 
 export class LoadFileDialog extends Component {
   private readonly _userApiService = new UserApiService();
   private readonly _router = Router.__instance;
-  formData = new FormData(this.element?.querySelector('form')!);
+  private readonly _storageService = new StorageService();
+
   readonly selector = 'load-file-dialog';
+
+  formData = new FormData(this.element?.querySelector('form')!);
 
   constructor() {
     super(template);
@@ -31,7 +35,7 @@ export class LoadFileDialog extends Component {
 
     this._userApiService.updateAvatar(this.formData).then((user) => {
       if (user) {
-        localStorage.setItem(AUTH_USER, JSON.stringify(user));
+        this._storageService.setItem(AUTH_USER, user);
 
         this._router.refresh();
       }

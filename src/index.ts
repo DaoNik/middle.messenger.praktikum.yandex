@@ -2,6 +2,7 @@ import { Page500, Chats, Page404, Login, Register, Profile } from './pages';
 import { Router, RouterLink } from './core';
 import { AuthApiService } from './api';
 import { AUTH_USER } from './constants.ts';
+import { StorageService } from './services';
 
 export interface IRoute {
   path: string;
@@ -10,7 +11,8 @@ export interface IRoute {
 }
 
 function canActivate(): boolean {
-  const user = localStorage.getItem(AUTH_USER);
+  const storage = new StorageService();
+  const user = storage.getItem(AUTH_USER);
 
   return Boolean(user);
 }

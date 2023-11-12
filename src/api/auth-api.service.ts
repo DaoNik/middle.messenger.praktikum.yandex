@@ -2,6 +2,7 @@ import { HTTPTransport, Router } from '../core';
 import { BASE_HREF } from './constants.ts';
 import { joinUrlParts } from '../utils';
 import { AUTH_USER } from '../constants.ts';
+import { StorageService } from '../services';
 
 export interface IAuthUser {
   first_name: string;
@@ -28,6 +29,7 @@ export class AuthApiService {
   private readonly _http = new HTTPTransport();
   private readonly _baseUrl = joinUrlParts(BASE_HREF, 'auth');
   private readonly _router = Router.__instance;
+  private readonly _storageService = new StorageService();
 
   constructor() {
     if (AuthApiService.__instance) {
@@ -56,13 +58,13 @@ export class AuthApiService {
     return this._http
       .get<IFullUserData>(joinUrlParts(this._baseUrl, 'user'))
       .then((user) => {
-        localStorage.setItem(AUTH_USER, JSON.stringify(user));
+        this._storageService.setItem(AUTH_USER, user);
 
         return user;
       })
       .catch((err) => {
         console.error(err);
-        localStorage.clear();
+        this._storageService.clear();
 
         this._router.go('/');
       });
@@ -72,7 +74,7 @@ export class AuthApiService {
     return this._http
       .post<void>(joinUrlParts(this._baseUrl, 'logout'))
       .then(() => {
-        localStorage.clear();
+        this._storageService.clear();
         this._router.go('/');
       });
   }

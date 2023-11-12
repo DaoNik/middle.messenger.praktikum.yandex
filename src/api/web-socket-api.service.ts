@@ -1,11 +1,13 @@
 import { ChatsApiService } from './chats-api.service.ts';
 import { AUTH_USER } from '../constants.ts';
+import { StorageService } from '../services';
 
 export class WebSocketApiService {
   private readonly _chatsApi = new ChatsApiService();
+  private readonly _storageService = new StorageService();
 
   connect(chatId: string) {
-    const user = localStorage.getItem(AUTH_USER);
+    const user = this._storageService.getItem(AUTH_USER);
 
     if (!user) return;
 

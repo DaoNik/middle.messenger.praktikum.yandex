@@ -13,10 +13,12 @@ import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 import { IUpdateUserData, UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
+import { StorageService } from '../../services';
 
 export class ChangeUserDataDialog extends Component {
   private readonly _userApiService = new UserApiService();
   private readonly _router = Router.__instance;
+  private readonly _storageService = new StorageService();
 
   readonly form = new FormGroup<IUpdateUserData>({
     email: new FormControl(
@@ -60,7 +62,7 @@ export class ChangeUserDataDialog extends Component {
     this._userApiService
       .updateUserData(this.form.getRawValue())
       .then((user) => {
-        localStorage.setItem(AUTH_USER, JSON.stringify(user));
+        this._storageService.setItem(AUTH_USER, user);
 
         this._router.refresh();
       });
