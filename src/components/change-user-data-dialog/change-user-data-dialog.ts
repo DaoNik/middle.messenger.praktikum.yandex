@@ -1,89 +1,44 @@
 import {
   isEmail,
-  isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
   isPhoneNumber,
-  IFormControl,
-  IForm,
   inputHandler,
   blurHandler,
   Router,
+  FormGroup,
+  FormControl,
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
-import { UserApiService } from '../../api';
+import { IUpdateUserData, UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
 
 export class ChangeUserDataDialog extends Component {
   private readonly _userApiService = new UserApiService();
   private readonly _router = Router.__instance;
 
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'email',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength, isEmail],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'login',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'display_name',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'first_name',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'second_name',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'phone',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength, isPhoneNumber],
-          minLength: 8,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+  readonly form = new FormGroup<IUpdateUserData>({
+    email: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength, isEmail],
+      4
+    ),
+    login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    display_name: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength],
+      4
+    ),
+    first_name: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    second_name: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    phone: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength, isPhoneNumber],
+      8
+    ),
+  });
+
   selector = 'change-user-data-dialog';
 
   constructor() {
@@ -100,30 +55,22 @@ export class ChangeUserDataDialog extends Component {
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    const form = this.form;
+    if (!this.form.valid) return;
 
-    if (!isFormValid(form)) return;
+    this._userApiService
+      .updateUserData(this.form.getRawValue())
+      .then((user) => {
+        localStorage.setItem(AUTH_USER, JSON.stringify(user));
 
-    const formValue: any = {};
-
-    for (const [key, value] of form.controls) {
-      formValue[key] = value.value;
-    }
-
-    this._userApiService.updateUserData(formValue).then((user) => {
-      localStorage.setItem(AUTH_USER, JSON.stringify(user));
-
-      this._router.refresh();
-    });
+        this._router.refresh();
+      });
   }
 
   onInput(event: InputEvent) {
-    console.log(this.form.controls);
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {
-    console.log(this, this.form, this.props, this.element);
     blurHandler(event, this.form, this.props, this.element);
   }
 

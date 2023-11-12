@@ -5,14 +5,13 @@ import {
   ChatMenu,
 } from '../../components';
 import {
-  isFormValid,
   isNotEmptyValidator,
-  IForm,
-  IFormControl,
   inputHandler,
   blurHandler,
   Block,
   Router,
+  FormGroup,
+  FormControl,
 } from '../../core';
 import template from './chats.html?raw';
 import { ChatsApiService } from '../../api';
@@ -27,20 +26,9 @@ export class Chats extends Block {
   private readonly _router = Router.__instance;
   private readonly _webSocketApi = new WebSocketApiService();
 
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'message',
-        {
-          value: '',
-          validators: [isNotEmptyValidator],
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+  readonly form = new FormGroup<{ message: string }>({
+    message: new FormControl('', [isNotEmptyValidator]),
+  });
 
   constructor() {
     super(
@@ -111,18 +99,14 @@ export class Chats extends Block {
 
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const form = this.form;
-    if (isFormValid(form)) {
-      const formValue: Record<string, string> = {};
-      for (const [key, value] of form.controls) {
-        formValue[key] = value.value;
-      }
-      console.log(formValue);
-    }
+
+    if (!this.form.valid) return;
+
+    console.log(this.form.getRawValue());
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {

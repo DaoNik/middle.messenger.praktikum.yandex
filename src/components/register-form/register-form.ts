@@ -3,96 +3,47 @@ import {
   isMinimalLength,
   isEmail,
   isPhoneNumber,
-  isFormValid,
   blurHandler,
-  IForm,
-  IFormControl,
   inputHandler,
   Router,
+  FormGroup,
+  FormControl,
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './register-form.html?raw';
-import { AuthApiService } from '../../api';
+import { AuthApiService, IAuthUser } from '../../api';
+
+interface IAuthUserFormData extends IAuthUser {
+  password_repeat: string;
+}
 
 export class RegisterForm extends Component {
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'email',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength, isEmail],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'login',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'first_name',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'second_name',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'phone',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength, isPhoneNumber],
-          minLength: 8,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'password',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'password_repeat',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
-  selector = 'register-form';
   private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
+
+  readonly form = new FormGroup<IAuthUserFormData>({
+    email: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength, isEmail],
+      4
+    ),
+    login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    first_name: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    second_name: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    phone: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength, isPhoneNumber],
+      8
+    ),
+    password: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+    password_repeat: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength],
+      6
+    ),
+  });
+
+  selector = 'register-form';
 
   constructor() {
     super(template, [], {
@@ -108,20 +59,11 @@ export class RegisterForm extends Component {
 
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const form = this.form;
 
-    if (!isFormValid(form)) return;
-
-    const authUser = {} as any;
-
-    for (const [key, value] of form.controls) {
-      if (key !== 'password_repeat') {
-        authUser[key] = value.value;
-      }
-    }
+    if (!this.form.valid) return;
 
     this._authApiService
-      .signUp(authUser)
+      .signUp(this.form.getRawValue())
       .then(() => {
         return this._authApiService.user();
       })
@@ -133,7 +75,7 @@ export class RegisterForm extends Component {
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {

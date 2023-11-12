@@ -16,14 +16,13 @@ export class LoadFileDialog extends Component {
 
   onInput(event: InputEvent) {
     const fileList = (event.target as any).files as FileList;
+    const element = this.element;
 
-    if (fileList.length === 0) return;
+    if (fileList.length === 0 || !element) return;
 
-    this.element!.querySelector('.dialog__load-text')!.textContent =
-      fileList[0].name;
-    (
-      this.element!.querySelector('.dialog__submit') as HTMLButtonElement
-    ).disabled = false;
+    element.querySelector('.dialog__load-text')!.textContent = fileList[0].name;
+    (element.querySelector('.dialog__submit') as HTMLButtonElement).disabled =
+      false;
     this.formData.append('avatar', fileList[0], fileList[0].name);
   }
 

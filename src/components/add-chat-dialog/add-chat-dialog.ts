@@ -1,5 +1,11 @@
-import { isFormValid, isMinimalLength, isNotEmptyValidator } from '../../core';
-import { blurHandler, IForm, IFormControl, inputHandler } from '../../core';
+import {
+  blurHandler,
+  FormControl,
+  FormGroup,
+  inputHandler,
+  isMinimalLength,
+  isNotEmptyValidator,
+} from '../../core';
 import { Component } from '../../types.ts';
 import template from './add-chat-dialog.html?raw';
 import { ChatsApiService } from '../../api';
@@ -7,21 +13,10 @@ import { ChatsApiService } from '../../api';
 export class AddChatDialog extends Component {
   private readonly _chatsApi = new ChatsApiService();
 
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'title',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+  readonly form = new FormGroup<{ title: string }>({
+    title: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+  });
+
   selector = 'add-chat-dialog';
 
   constructor() {
@@ -33,24 +28,18 @@ export class AddChatDialog extends Component {
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    const form = this.form;
+    if (!this.form.valid) return;
 
-    if (!isFormValid(form)) return;
+    const { title } = this.form.getRawValue();
 
-    const formValue: Record<string, string> = {};
-
-    for (const [key, value] of form.controls) {
-      formValue[key] = value.value;
-    }
-
-    this._chatsApi.createChat(formValue['title']).then(() => {
+    this._chatsApi.createChat(title).then(() => {
       // TODO: change to normal update
       document.location.reload();
     });
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {

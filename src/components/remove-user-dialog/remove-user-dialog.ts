@@ -1,11 +1,10 @@
 import {
-  isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
   blurHandler,
-  IForm,
-  IFormControl,
   inputHandler,
+  FormGroup,
+  FormControl,
 } from '../../core';
 import template from './remove-user-dialog.html?raw';
 import { Component } from '../../types.ts';
@@ -15,21 +14,10 @@ export class RemoveUserDialog extends Component {
   private readonly _userApi = new UserApiService();
   private readonly _chatsApi = new ChatsApiService();
 
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'login',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+  readonly form = new FormGroup<{ login: string }>({
+    login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+  });
+
   selector = 'remove-user-dialog';
 
   constructor() {
@@ -41,18 +29,16 @@ export class RemoveUserDialog extends Component {
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    const form = this.form;
+    if (!this.form.valid) return;
 
-    if (!isFormValid(form)) return;
-
-    const login = form.controls.get('login')!;
+    const { login } = this.form.getRawValue();
 
     const urls = document.location.pathname.split('/');
 
     if (urls.length !== 2) return;
 
     this._userApi
-      .searchUserByLogin(login.value)
+      .searchUserByLogin(login)
       .then((user) => {
         return user[0].id;
       })
@@ -65,7 +51,7 @@ export class RemoveUserDialog extends Component {
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {

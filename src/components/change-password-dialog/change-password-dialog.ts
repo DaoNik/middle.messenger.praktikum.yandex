@@ -1,53 +1,30 @@
 import {
-  isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-  IFormControl,
-  IForm,
-  inputHandler,
+  FormGroup,
+  FormControl,
   blurHandler,
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-password-dialog.html?raw';
-import { UserApiService } from '../../api';
+import { IUpdateUserPasswordData, UserApiService } from '../../api';
+
+interface IUpdateUserPasswordFormData extends IUpdateUserPasswordData {
+  password_repeat: string;
+}
 
 export class ChangePasswordDialog extends Component {
   private readonly _userApiService = new UserApiService();
-  private readonly _form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'oldPassword',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'newPassword',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'password_repeat',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+
+  readonly form = new FormGroup<IUpdateUserPasswordFormData>({
+    oldPassword: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+    newPassword: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+    password_repeat: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength],
+      6
+    ),
+  });
   readonly selector = 'change-password-dialog';
 
   constructor() {
@@ -65,27 +42,21 @@ export class ChangePasswordDialog extends Component {
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    const form = this._form;
+    if (!this.form.valid) return;
 
-    if (!isFormValid(form)) return;
-
-    const formValue: any = {};
-
-    for (const [key, value] of form.controls) {
-      formValue[key] = value.value;
-    }
-
-    this._userApiService.updatePassword(formValue).then(() => {
+    this._userApiService.updatePassword(this.form.getRawValue()).then(() => {
       this.onDialogClose();
     });
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this._form.controls);
+    const target = event.target as HTMLInputElement;
+
+    this.form.getControl(target.name)?.setValue(event);
   }
 
   onBlur(event: FocusEvent) {
-    blurHandler(event, this._form, this.props, this.element);
+    blurHandler(event, this.form, this.props, this.element);
   }
 
   onDialogClose() {

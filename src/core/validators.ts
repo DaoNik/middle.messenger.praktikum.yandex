@@ -1,4 +1,4 @@
-import { IForm, IFormControl, IValidatorValue } from './form';
+import { IValidatorValue, FormGroup } from './form';
 
 export function isNotEmptyValidator(value: string): IValidatorValue {
   return value.length > 0
@@ -10,7 +10,7 @@ export function isMinimalLength(
   value: string,
   minLength: number
 ): IValidatorValue {
-  return value.length > minLength
+  return value.length >= minLength
     ? { isValid: true, error: '' }
     : {
         isValid: false,
@@ -36,11 +36,11 @@ export function isPhoneNumber(value: string): IValidatorValue {
     : { isValid: false, error: 'строка должна быть номером телефона' };
 }
 
-export function isFormValid(form: IForm): boolean {
+export function isFormValid(form: FormGroup): boolean {
   let isValid = true;
 
-  for (const value of form.controls.values()) {
-    if (!value.valid) {
+  for (const control of Object.values(form.controls)) {
+    if (!control.valid) {
       isValid = false;
     }
   }
@@ -48,8 +48,11 @@ export function isFormValid(form: IForm): boolean {
   return isValid;
 }
 
-export function isControlValid(control: IFormControl): IValidatorValue {
-  const { value, minLength, validators } = control;
+export function isControlValid(
+  value: string,
+  validators: Array<(...parameters: never[]) => IValidatorValue>,
+  minLength?: number
+): IValidatorValue {
   const result: IValidatorValue = { isValid: true, error: '' };
 
   if (validators.includes(isNotEmptyValidator)) {

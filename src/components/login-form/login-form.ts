@@ -1,46 +1,26 @@
 import {
-  isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-  blurHandler,
-  IForm,
-  IFormControl,
-  inputHandler,
   Router,
+  inputHandler,
+  blurHandler,
+  FormGroup,
+  FormControl,
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
-import { AuthApiService } from '../../api';
+import { AuthApiService, IAuthCredentials } from '../../api';
 
 export class LoginForm extends Component {
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'login',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'password',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
-  selector = 'login-form';
   private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
+
+  readonly form = new FormGroup<IAuthCredentials>({
+    login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    password: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+  });
+
+  selector = 'login-form';
 
   constructor() {
     super(template, [], {
@@ -51,18 +31,11 @@ export class LoginForm extends Component {
 
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const form = this.form;
 
-    if (!isFormValid(form)) return;
-
-    const credentials = {} as any;
-
-    for (const [key, value] of form.controls) {
-      credentials[key] = value.value;
-    }
+    if (!this.form.valid) return;
 
     this._authApiService
-      .signIn(credentials)
+      .signIn(this.form.getRawValue())
       .then(() => {
         return this._authApiService.user();
       })
@@ -74,7 +47,7 @@ export class LoginForm extends Component {
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {

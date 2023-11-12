@@ -1,5 +1,11 @@
-import { isFormValid, isMinimalLength, isNotEmptyValidator } from '../../core';
-import { blurHandler, IForm, IFormControl, inputHandler } from '../../core';
+import {
+  blurHandler,
+  FormControl,
+  FormGroup,
+  inputHandler,
+  isMinimalLength,
+  isNotEmptyValidator,
+} from '../../core';
 import { Component } from '../../types.ts';
 import template from './add-user-dialog.html?raw';
 import { ChatsApiService, UserApiService } from '../../api';
@@ -8,21 +14,10 @@ export class AddUserDialog extends Component {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _userApi = new UserApiService();
 
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'login',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+  readonly form = new FormGroup<{ login: string }>({
+    login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+  });
+
   selector = 'add-user-dialog';
 
   constructor() {
@@ -36,9 +31,9 @@ export class AddUserDialog extends Component {
 
     const form = this.form;
 
-    if (!isFormValid(form)) return;
+    if (!form.valid) return;
 
-    const login = form.controls.get('login')!;
+    const login = form.controls['login'];
 
     const urls = document.location.pathname.split('/');
 
@@ -58,7 +53,7 @@ export class AddUserDialog extends Component {
   }
 
   onInput(event: InputEvent) {
-    inputHandler(event, this.form.controls);
+    inputHandler(event, this.form);
   }
 
   onBlur(event: FocusEvent) {
