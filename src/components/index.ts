@@ -1,3 +1,4 @@
+export * from './add-chat-dialog/add-chat-dialog.ts';
 export * from './add-user-dialog/add-user-dialog.ts';
 export * from './change-password-dialog/change-password-dialog.ts';
 export * from './change-user-data-dialog/change-user-data-dialog.ts';

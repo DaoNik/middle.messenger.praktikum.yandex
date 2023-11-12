@@ -3,6 +3,7 @@ import {
   RemoveUserDialog,
   ClipMenu,
   ChatMenu,
+  AddChatDialog,
 } from '../../components';
 import {
   isNotEmptyValidator,
@@ -14,12 +15,10 @@ import {
   FormControl,
 } from '../../core';
 import template from './chats.html?raw';
-import { ChatsApiService } from '../../api';
-import { AddChatDialog } from '../../components/add-chat-dialog/add-chat-dialog.ts';
-import { ConfirmDialog } from '../../common/confirm-dialog/confirm-dialog.ts';
+import { ChatsApiService, WebSocketApiService } from '../../api';
+import { ConfirmDialog } from '../../common';
 import { joinUrlParts } from '../../utils';
 import { MainRoutes } from '../../index.ts';
-import { WebSocketApiService } from '../../api/web-socket-api.service.ts';
 
 export class Chats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
