@@ -1,3 +1,5 @@
+import { isPrimitive } from '../utils';
+
 export class StorageService {
   static __instance: StorageService;
 
@@ -14,7 +16,9 @@ export class StorageService {
   }
 
   setItem(key: string, value: unknown): void {
-    localStorage.setItem(key, JSON.stringify(value));
+    let result = isPrimitive(value) ? String(value) : JSON.stringify(value);
+
+    localStorage.setItem(key, result);
   }
 
   removeItem(key: string): void {

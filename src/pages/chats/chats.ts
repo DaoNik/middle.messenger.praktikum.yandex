@@ -10,20 +10,19 @@ import {
   inputHandler,
   blurHandler,
   Block,
-  Router,
   FormGroup,
   FormControl,
 } from '../../core';
 import template from './chats.html?raw';
 import { ChatsApiService, WebSocketApiService } from '../../api';
 import { ConfirmDialog } from '../../common';
-import { joinUrlParts } from '../../utils';
-import { MainRoutes } from '../../index.ts';
+import { StorageService } from '../../services';
+import { CURRENT_CHAT_ID } from '../../constants.ts';
 
 export class Chats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
-  private readonly _router = Router.__instance;
   private readonly _webSocketApi = new WebSocketApiService();
+  private readonly _storageService = new StorageService();
 
   readonly form = new FormGroup<{ message: string }>({
     message: new FormControl('', [isNotEmptyValidator]),
@@ -137,7 +136,7 @@ export class Chats extends Block {
 
     if (!chatId) return;
 
-    this._router.go(joinUrlParts(MainRoutes.MESSENGER, chatId));
+    this._storageService.setItem(CURRENT_CHAT_ID, chatId);
 
     this._webSocketApi.connect(chatId);
   }

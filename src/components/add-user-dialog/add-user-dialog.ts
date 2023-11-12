@@ -9,10 +9,13 @@ import {
 import { Component } from '../../types.ts';
 import template from './add-user-dialog.html?raw';
 import { ChatsApiService, UserApiService } from '../../api';
+import { StorageService } from '../../services';
+import { CURRENT_CHAT_ID } from '../../constants.ts';
 
 export class AddUserDialog extends Component {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _userApi = new UserApiService();
+  private readonly _storageService = new StorageService();
 
   readonly form = new FormGroup<{ login: string }>({
     login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
@@ -34,10 +37,11 @@ export class AddUserDialog extends Component {
     if (!form.valid) return;
 
     const login = form.controls['login'];
+    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
 
-    const urls = document.location.pathname.split('/');
+    console.log(chatId);
 
-    if (urls.length !== 2) return;
+    if (!chatId) return;
 
     this._userApi
       .searchUserByLogin(login.value)
@@ -45,7 +49,7 @@ export class AddUserDialog extends Component {
         return user[0].id;
       })
       .then((id) => {
-        return this._chatsApi.addUsersToChat([id], Number(urls[1]));
+        return this._chatsApi.addUsersToChat([id], Number(chatId));
       })
       .then(() => {
         document.location.reload();

@@ -9,10 +9,13 @@ import {
 import template from './remove-user-dialog.html?raw';
 import { Component } from '../../types.ts';
 import { ChatsApiService, UserApiService } from '../../api';
+import { StorageService } from '../../services';
+import { CURRENT_CHAT_ID } from '../../constants.ts';
 
 export class RemoveUserDialog extends Component {
   private readonly _userApi = new UserApiService();
   private readonly _chatsApi = new ChatsApiService();
+  private readonly _storageService = new StorageService();
 
   readonly form = new FormGroup<{ login: string }>({
     login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
@@ -33,9 +36,9 @@ export class RemoveUserDialog extends Component {
 
     const { login } = this.form.getRawValue();
 
-    const urls = document.location.pathname.split('/');
+    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
 
-    if (urls.length !== 2) return;
+    if (!chatId) return;
 
     this._userApi
       .searchUserByLogin(login)
@@ -43,7 +46,7 @@ export class RemoveUserDialog extends Component {
         return user[0].id;
       })
       .then((id) => {
-        return this._chatsApi.deleteUsersFromChat([id], Number(urls[1]));
+        return this._chatsApi.deleteUsersFromChat([id], Number(chatId));
       })
       .then(() => {
         document.location.reload();
