@@ -68,21 +68,29 @@ export class Chats extends Block {
         let i = 0;
 
         for (const chat of chats) {
+          const { id, last_message, avatar } = chat;
           const template = templateContent.cloneNode(true) as DocumentFragment;
           const item = template.children[0] as HTMLLIElement;
 
           const chatIdAttr = document.createAttribute('chatId');
 
-          chatIdAttr.value = String(chat.id);
+          chatIdAttr.value = String(id);
           item.attributes.setNamedItem(chatIdAttr);
+
+          const correctLastMessage = last_message
+            ? {
+                ...last_message,
+                time: this._getTime(last_message.time),
+              }
+            : {
+                content: 'Ещё нет сообщений',
+                time: '',
+              };
 
           const formattedChat = {
             ...chat,
-            avatar: chat.avatar ?? '/assets/no-avatar.svg',
-            last_message: chat.last_message ?? {
-              content: 'Ещё нет сообщений',
-              time: '',
-            },
+            avatar: avatar ?? '/assets/no-avatar.svg',
+            last_message: correctLastMessage,
           };
 
           this.templater.compile(formattedChat as any, item, false);
@@ -139,5 +147,20 @@ export class Chats extends Block {
     this._storageService.setItem(CURRENT_CHAT_ID, chatId);
 
     this._webSocketApi.connect(chatId);
+  }
+
+  private _getTime(time: string): string {
+    const messageDate = new Date(Date.parse(time));
+    const now = new Date(Date.now());
+
+    if (
+      now.getFullYear() !== messageDate.getFullYear() ||
+      now.getMonth() !== messageDate.getMonth() ||
+      now.getDate() - messageDate.getDate() > 6
+    ) {
+      return `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
+    }
+
+    return `${messageDate.getHours()}:${messageDate.getMinutes()}`;
   }
 }
