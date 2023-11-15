@@ -6,11 +6,13 @@ import { BASE_WS_HREF } from './constants.ts';
 export class WebSocketApiService {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _storageService = new StorageService();
-
-  socket?: WebSocket;
+  private readonly _socketsMap = new Map<string, WebSocket>();
 
   connect(chatId: string): void {
-    if (this.socket && (this.socket.CONNECTING || this.socket.OPEN)) return;
+    const socketForChat = this._socketsMap.get(chatId);
+
+    if (socketForChat && (socketForChat.CONNECTING || socketForChat.OPEN))
+      return;
 
     const user = this._storageService.getItem(AUTH_USER);
 
@@ -21,16 +23,18 @@ export class WebSocketApiService {
     this._chatsApi
       .getTokenForConnectMessagesServer(Number(chatId))
       .then((token) => {
-        this.socket = new WebSocket(
+        const socket = new WebSocket(
           `${BASE_WS_HREF}/ws/chats/${authUser.id}/${chatId}/${token.token}`
         );
 
-        this._initListeners(this.socket);
-        console.log(this.socket);
+        this._socketsMap.set(chatId, socket);
+
+        this._initListeners(chatId, socket);
+        console.log(socket);
       });
   }
 
-  private _initListeners(socket: WebSocket): void {
+  private _initListeners(chatId: string, socket: WebSocket): void {
     socket.addEventListener('open', () => {
       console.log('Соединение установлено');
 
@@ -53,7 +57,7 @@ export class WebSocketApiService {
     });
 
     socket.addEventListener('message', (event) => {
-      console.log('Получены данные', event.data);
+      console.log('Получены данные', chatId, event.data);
     });
 
     socket.addEventListener('error', (event) => {

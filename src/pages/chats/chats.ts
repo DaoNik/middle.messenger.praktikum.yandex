@@ -144,7 +144,14 @@ export class Chats extends Block {
 
     if (!chatId) return;
 
+    if (this._storageService.getItem(CURRENT_CHAT_ID)) {
+      document
+        .querySelector('.chats__list-item-active')
+        ?.classList.remove('chats__list-item-active');
+    }
+
     this._storageService.setItem(CURRENT_CHAT_ID, chatId);
+    listItem.classList.add('chats__list-item-active');
 
     this._webSocketApi.connect(chatId);
   }
@@ -161,6 +168,9 @@ export class Chats extends Block {
       return `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
     }
 
-    return `${messageDate.getHours()}:${messageDate.getMinutes()}`;
+    const minutes = messageDate.getMinutes();
+    const formattedMinutes = minutes > 10 ? minutes : `0${minutes}`;
+
+    return `${messageDate.getHours()}:${formattedMinutes}`;
   }
 }
