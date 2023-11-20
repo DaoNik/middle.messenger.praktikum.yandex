@@ -1,4 +1,8 @@
-<div class="overlay overlay-add-chat" id="{{blockId}}" (click)="onDialogClose">
+<div
+  class="overlay overlay-add-chat"
+  blockId="{{blockId}}"
+  (click)="onDialogClose"
+>
   <section class="dialog" (click)="onDialogNotClose">
     <h3 class="dialog__title">Добавить чат</h3>
     <form name="add-chat" (submit)="onSubmit">

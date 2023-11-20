@@ -12,15 +12,15 @@ export interface IBlockProperties {
   events: EventsT;
 }
 
-export abstract class Block {
-  static EVENTS = {
-    INIT: 'init',
-    FLOW_CDM: 'flow:component-did-mount',
-    FLOW_RENDER: 'flow:render',
-    FLOW_CDU: 'flow:component-did-update',
-    DESTROY: 'destroy',
-  };
+export enum BlockEvents {
+  INIT = 'init',
+  FLOW_CDM = 'flow:component-did-mount',
+  FLOW_RENDER = 'flow:render',
+  FLOW_CDU = 'flow:component-did-update',
+  DESTROY = 'destroy',
+}
 
+export abstract class Block {
   eventBus = new EventBus();
   props: PropertiesT;
   blockId = uuidV4();
@@ -41,27 +41,21 @@ export abstract class Block {
     this.hostStyles = hostStyles;
     this.props = this._makePropsProxy(properties);
     this._registerEvents();
-    this.eventBus.emit(Block.EVENTS.INIT);
+    this.eventBus.emit(BlockEvents.INIT);
   }
 
   private _registerEvents(): void {
-    this.eventBus.on(Block.EVENTS.INIT, this._init.bind(this));
-    this.eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-    this.eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
-    this.eventBus.on(
-      Block.EVENTS.FLOW_CDU,
-      this._componentDidUpdate.bind(this)
-    );
-    this.eventBus.on(
-      Block.EVENTS.DESTROY,
-      this._componentDidUnmount.bind(this)
-    );
+    this.eventBus.on(BlockEvents.INIT, this._init.bind(this));
+    this.eventBus.on(BlockEvents.FLOW_CDM, this._componentDidMount.bind(this));
+    this.eventBus.on(BlockEvents.FLOW_RENDER, this._render.bind(this));
+    this.eventBus.on(BlockEvents.FLOW_CDU, this._componentDidUpdate.bind(this));
+    this.eventBus.on(BlockEvents.DESTROY, this._componentDidUnmount.bind(this));
   }
 
   private _init(): void {
     this.init();
 
-    this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
+    this.eventBus.emit(BlockEvents.FLOW_RENDER);
   }
 
   init(): void {
@@ -73,7 +67,7 @@ export abstract class Block {
   }
 
   private _componentDidMount(): void {
-    this.element = document.getElementById(this.blockId)!;
+    this.element = document.querySelector(`[blockId="${this.blockId}"]`)!;
     this.templater.addEvents(this.element, this);
     this.componentDidMount();
   }
@@ -81,7 +75,7 @@ export abstract class Block {
   componentDidMount(): void {
     if (this.declarations.length > 0) {
       for (const component of this.declarations) {
-        component.eventBus.emit(Block.EVENTS.FLOW_CDM);
+        component.eventBus.emit(BlockEvents.FLOW_CDM);
       }
     }
 
@@ -105,7 +99,7 @@ export abstract class Block {
     const response = this.componentDidUpdate(oldProperties, newProperties);
 
     if (response) {
-      this.eventBus.emit(Block.EVENTS.FLOW_RENDER, newProperties);
+      this.eventBus.emit(BlockEvents.FLOW_RENDER, newProperties);
     }
   }
 
@@ -128,7 +122,7 @@ export abstract class Block {
         const oldTarget = { ...target };
         target[property] = value;
 
-        eventBus.emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
+        eventBus.emit(BlockEvents.FLOW_CDU, oldTarget, target);
         return true;
       },
     });
@@ -150,5 +144,11 @@ export abstract class Block {
     if (this.element) {
       this.element.style.display = 'none';
     }
+  }
+
+  setProps(nextProps: PropertiesT): void {
+    if (!nextProps) return;
+
+    Object.assign(this.props, nextProps);
   }
 }

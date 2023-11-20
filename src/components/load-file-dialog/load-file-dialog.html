@@ -1,4 +1,8 @@
-<div class="overlay overlay-load-file" id="{{blockId}}" (click)="onDialogClose">
+<div
+  class="overlay overlay-load-file"
+  blockId="{{blockId}}"
+  (click)="onDialogClose"
+>
   <section class="dialog" (click)="onDialogNotClose">
     <h3 class="dialog__title">Загрузите файл</h3>
     <form (submit)="onSubmit">

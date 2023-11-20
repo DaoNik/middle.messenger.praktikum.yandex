@@ -1,4 +1,4 @@
-import { Block } from './block.ts';
+import { Block, BlockEvents } from './block.ts';
 import { IRoute, MainRoutes } from '../index.ts';
 
 function isEqual(lhs: string, rhs: string) {
@@ -57,7 +57,7 @@ class Route {
     if (!this._block) {
       this._block = new this._blockClass() as Block;
       root.innerHTML = this._block.content;
-      this._block.eventBus.emit(Block.EVENTS.FLOW_CDM);
+      this._block.eventBus.emit(BlockEvents.FLOW_CDM);
       return;
     }
 

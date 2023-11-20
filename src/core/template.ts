@@ -101,7 +101,7 @@ export class Template {
     isRemove: boolean
   ) {
     for (const element of elements) {
-      if (!element.id) {
+      if (!element.attributes.getNamedItem('blockId')) {
         this._addOrRemoveEvents(element, blockClass, isRemove);
 
         if (element.children.length > 0) {
@@ -145,7 +145,7 @@ export class Template {
     if (children.length === 0) return;
 
     for (const node of children) {
-      if (!node.id) {
+      if (!node.attributes.getNamedItem('blockId')) {
         if (node.children.length > 0) {
           this._replaceTextContentChildNode(
             node.children,
