@@ -82,13 +82,16 @@ export abstract class Block {
     this.templater.compile(this.props, this.element!);
   }
 
-  private _render(): void {
-    this.render();
+  private _render(
+    oldProperties?: PropertiesT,
+    newProperties?: PropertiesT
+  ): void {
+    this.render(oldProperties, newProperties);
   }
 
-  render(properties?: PropertiesT): void {
+  render(_oldProperties?: PropertiesT, newProperties?: PropertiesT): void {
     if (this.content && this.element) {
-      this.templater.compile(properties ?? this.props, this.element);
+      this.templater.compile(newProperties ?? this.props, this.element);
     }
   }
 
@@ -99,7 +102,7 @@ export abstract class Block {
     const response = this.componentDidUpdate(oldProperties, newProperties);
 
     if (response) {
-      this.eventBus.emit(BlockEvents.FLOW_RENDER, newProperties);
+      this.eventBus.emit(BlockEvents.FLOW_RENDER, oldProperties, newProperties);
     }
   }
 

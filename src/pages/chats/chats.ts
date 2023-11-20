@@ -1,25 +1,33 @@
 import {
-  AddUserDialog,
-  RemoveUserDialog,
-  ClipMenu,
-  ChatMenu,
   AddChatDialog,
+  AddUserDialog,
+  ChatMenu,
+  ClipMenu,
+  RemoveUserDialog,
 } from '../../components';
 import {
-  isNotEmptyValidator,
-  inputHandler,
-  blurHandler,
   Block,
-  FormGroup,
+  blurHandler,
   FormControl,
+  FormGroup,
+  inputHandler,
+  isNotEmptyValidator,
+  PropertiesT,
 } from '../../core';
 import template from './chats.html?raw';
-import { ChatsApiService, WebSocketApiService } from '../../api';
+import { BASE_HREF, ChatsApiService, WebSocketApiService } from '../../api';
 import { ConfirmDialog } from '../../common';
-import { StorageService } from '../../services';
+import {
+  IMessage,
+  IState,
+  MessageTypesEnum,
+  StorageService,
+  withStore,
+} from '../../services';
 import { CURRENT_CHAT_ID } from '../../constants.ts';
+import { isEmpty, isEqual } from '../../utils';
 
-export class Chats extends Block {
+class BaseChats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
   private readonly _webSocketApi = new WebSocketApiService();
   private readonly _storageService = new StorageService();
@@ -41,9 +49,16 @@ export class Chats extends Block {
       ],
       {
         chats: [],
+        chatMessages: {} as IState['chatMessages'],
       },
       { display: 'grid' }
     );
+  }
+
+  override render(oldProperties?: PropertiesT, newProperties?: PropertiesT) {
+    this.renderMessages(oldProperties, newProperties);
+
+    super.render(newProperties);
   }
 
   override componentDidMount() {
@@ -51,7 +66,6 @@ export class Chats extends Block {
       .getChats()
       .then((chats) => chats ?? [])
       .then((chats) => {
-        console.log(chats);
         this.props['chats'] = chats;
         const chatsList = document.querySelector('.chats__list')!;
 
@@ -65,7 +79,6 @@ export class Chats extends Block {
             'chat-list-item-template'
           ) as HTMLTemplateElement
         ).content;
-        let i = 0;
 
         for (const chat of chats) {
           const { id, last_message, avatar } = chat;
@@ -96,11 +109,89 @@ export class Chats extends Block {
           this.templater.compile(formattedChat as any, item, false);
 
           chatsList.append(item);
-          i++;
         }
       });
 
     super.componentDidMount();
+  }
+
+  renderMessages(
+    oldProperties?: PropertiesT,
+    newProperties?: PropertiesT
+  ): void {
+    if (!oldProperties && !newProperties) return;
+
+    const oldChatMessages = (
+      oldProperties ? oldProperties['chatMessages'] ?? {} : {}
+    ) as Record<string, IMessage[]>;
+    const newChatMessages = (
+      newProperties ? newProperties['chatMessages'] ?? {} : {}
+    ) as Record<string, IMessage[]>;
+
+    if (isEqual(oldChatMessages, newChatMessages)) return;
+
+    const messageWithTextTemplateContent = (
+      document.getElementById(
+        'chat-message-with-text-template'
+      ) as HTMLTemplateElement
+    ).content;
+    const messageWithPhotoTemplateContent = (
+      document.getElementById(
+        'chat-message-with-photo-template'
+      ) as HTMLTemplateElement
+    ).content;
+
+    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatMessages = document.querySelector('.chat__messages');
+
+    if (!chatId) return;
+
+    for (const message of newChatMessages[chatId]) {
+      if (
+        isEmpty(oldChatMessages) ||
+        !Object.getOwnPropertyNames(oldChatMessages).includes(chatId) ||
+        !oldChatMessages[chatId].includes(message)
+      ) {
+        let documentFragment: DocumentFragment;
+        let item: HTMLDivElement;
+
+        switch (message.type) {
+          case MessageTypesEnum.FILE:
+            documentFragment = messageWithPhotoTemplateContent.cloneNode(
+              true
+            ) as DocumentFragment;
+            item = documentFragment.children[0] as HTMLDivElement;
+            const image = item.querySelector(
+              '.chat__message-photo'
+            ) as HTMLImageElement;
+
+            image.src = `${BASE_HREF}/resources${message.file?.path ?? ''}`;
+            image.alt = message.file?.filename ?? '';
+
+            this.templater.compile(
+              { ...message, time: this._getTime(message.time) } as any,
+              item,
+              false
+            );
+
+            chatMessages?.append(item);
+            break;
+          default:
+            documentFragment = messageWithTextTemplateContent.cloneNode(
+              true
+            ) as DocumentFragment;
+            item = documentFragment.children[0] as HTMLDivElement;
+
+            this.templater.compile(
+              { ...message, time: this._getTime(message.time) } as any,
+              item,
+              false
+            );
+
+            chatMessages?.append(item);
+        }
+      }
+    }
   }
 
   onSubmit(event: SubmitEvent) {
@@ -141,13 +232,20 @@ export class Chats extends Block {
       target.tagName === 'LI' ? target : target.parentElement
     ) as HTMLLIElement;
     const chatId = listItem.getAttribute('chatId');
+    const chatMessages = document.querySelector('.chat__messages');
 
     if (!chatId) return;
 
-    if (this._storageService.getItem(CURRENT_CHAT_ID)) {
+    const currentChatId = this._storageService.getItem(CURRENT_CHAT_ID);
+
+    if (currentChatId && currentChatId !== chatId) {
       document
         .querySelector('.chats__list-item-active')
         ?.classList.remove('chats__list-item-active');
+
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+      }
     }
 
     this._storageService.setItem(CURRENT_CHAT_ID, chatId);
@@ -169,8 +267,14 @@ export class Chats extends Block {
     }
 
     const minutes = messageDate.getMinutes();
-    const formattedMinutes = minutes > 10 ? minutes : `0${minutes}`;
+    const formattedMinutes = minutes > 9 ? minutes : `0${minutes}`;
 
     return `${messageDate.getHours()}:${formattedMinutes}`;
   }
 }
+
+function mapStateToProps(state: IState) {
+  return { chatMessages: { ...state.chatMessages } };
+}
+
+export const Chats = withStore(mapStateToProps)(BaseChats);

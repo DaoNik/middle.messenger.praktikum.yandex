@@ -39,27 +39,10 @@
       </button>
     </div>
     <div class="chat__messages">
-      {{chatMessages}}
       <!--      <p class="chat__date">19 июля</p>-->
-      <template id="chat-message-with-text-template">
-        <div class="chat__message-container">
-          <div class="chat__message chat__message-with-text">
-            <p class="chat__message-content">{{content}}</p>
-            <div class="chat__message-time">{{time}}</div>
-          </div>
-        </div>
-      </template>
-      <template id="chat-message-with-photo-template">
-        <div class="chat__message-container">
-          <div class="chat__message chat__message-with-photo">
-            <img class="chat__message-photo" alt="" src="" />
-            <span class="chat__message-time">{{time}}</span>
-          </div>
-        </div>
-      </template>
     </div>
     <form class="chat__add-text" name="send-message" (submit)="onSubmit">
-      <buttton
+      <button
         class="chat__button-attach"
         type="button"
         (click)="onClipMenuToggled"
@@ -69,7 +52,7 @@
           alt="прикрепить файл"
           class="chat__image-clip"
         />
-      </buttton>
+      </button>
       <input
         type="text"
         placeholder="Сообщение"
@@ -83,6 +66,22 @@
       </button>
     </form>
   </section>
+  <template id="chat-message-with-text-template">
+    <div class="chat__message-container">
+      <div class="chat__message chat__message-with-text">
+        <p class="chat__message-content">{{content}}</p>
+        <div class="chat__message-time">{{time}}</div>
+      </div>
+    </div>
+  </template>
+  <template id="chat-message-with-photo-template">
+    <div class="chat__message-container">
+      <div class="chat__message chat__message-with-photo">
+        <img class="chat__message-photo" alt="" src="" />
+        <span class="chat__message-time">{{time}}</span>
+      </div>
+    </div>
+  </template>
   {{>chat-menu}} {{>clip-menu}} {{>add-user-dialog}} {{>remove-user-dialog}}
   {{>add-chat-dialog}} {{>confirm-dialog}}
 </div>

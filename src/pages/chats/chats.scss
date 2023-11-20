@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 310px 1fr;
   height: 100%;
+  width: 100%;
 }
 
 .chats {
@@ -273,6 +274,8 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    background: none;
+    border: none;
   }
 
   &__input {

@@ -39,8 +39,6 @@ export class AddUserDialog extends Component {
     const login = form.controls['login'];
     const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
 
-    console.log(chatId);
-
     if (!chatId) return;
 
     this._userApi

@@ -72,11 +72,9 @@ export class Template {
         isSave,
         propertyKey
       );
-    } else {
-      this._replaceTextContent(block, properties, isSave, propertyKey);
     }
 
-    return;
+    this._replaceTextContent(block, properties, isSave, propertyKey);
   }
 
   addEvents(block: HTMLElement, blockClass: Block) {
@@ -153,9 +151,9 @@ export class Template {
             isSave,
             propertyKey
           );
-        } else {
-          this._replaceTextContent(node, properties, isSave, propertyKey);
         }
+
+        this._replaceTextContent(node, properties, isSave, propertyKey);
       }
     }
   }
@@ -178,7 +176,7 @@ export class Template {
     }
 
     if (content) {
-      const keys = content.match(/{{[\w-.'()]*}}/gm);
+      const keys = content.match(/{{[\w\-.'()]*}}/gm);
 
       if (!keys || keys.length === 0 || properties['length'] === 0) {
         return;
@@ -188,17 +186,19 @@ export class Template {
         const regExp = new RegExp(`{{${key}}}`, 'gm');
         const value = getPropertyValue(properties, key) ?? '';
 
+        if (isSave) {
+          const fullKey = propertyKey ? `${propertyKey}.${key}` : key;
+
+          const elements = this.elementsContentMap.get(fullKey) ?? new Set();
+
+          elements.add(element);
+          this.elementsContentMap.set(fullKey, elements);
+        }
+
         if (typeof value === 'string' || typeof value === 'number') {
-          if (isSave) {
-            const fullKey = propertyKey ? `${propertyKey}.${key}` : key;
-
-            const elements = this.elementsContentMap.get(fullKey) ?? new Set();
-
-            elements.add(element);
-            this.elementsContentMap.set(fullKey, elements);
-          }
-
           element.textContent = content.replace(regExp, String(value));
+        } else if (Array.isArray(value)) {
+          element.textContent = content.replace(regExp, value.join(', '));
         }
       }
     }

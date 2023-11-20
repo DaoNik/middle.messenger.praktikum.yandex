@@ -1,6 +1,6 @@
 import { ChatsApiService } from './chats-api.service.ts';
 import { AUTH_USER } from '../constants.ts';
-import { StorageService } from '../services';
+import { IMessage, StorageService, storeService } from '../services';
 import { BASE_WS_HREF } from './constants.ts';
 
 export class WebSocketApiService {
@@ -40,8 +40,8 @@ export class WebSocketApiService {
 
       socket.send(
         JSON.stringify({
-          content: 'Моё первое сообщение миру!',
-          type: 'message',
+          content: '0',
+          type: 'get old',
         })
       );
     });
@@ -57,7 +57,16 @@ export class WebSocketApiService {
     });
 
     socket.addEventListener('message', (event) => {
-      console.log('Получены данные', chatId, event.data);
+      const serverData = JSON.parse(event.data) as IMessage | IMessage[];
+      const newMessages = Array.isArray(serverData) ? serverData : [serverData];
+      const chats = storeService.getState().chatMessages ?? {};
+      const messages = chats[chatId] ?? [];
+
+      chats[chatId] = [...messages, ...newMessages].sort((a, b) =>
+        a.time > b.time ? 1 : -1
+      );
+
+      storeService.set('chatMessages', chats);
     });
 
     socket.addEventListener('error', (event) => {

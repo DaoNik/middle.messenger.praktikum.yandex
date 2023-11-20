@@ -3,7 +3,7 @@ import { HTTPTransport } from '../core';
 import { IFullUserData } from './auth-api.service.ts';
 import { joinUrlParts, queryStringify } from '../utils';
 
-export interface IMessage {
+export interface ILastMessage {
   user: Omit<IFullUserData, 'id'>;
   time: string;
   content: string;
@@ -15,7 +15,7 @@ export interface IChatData {
   avatar: string | null;
   unread_count: number;
   created_by: number;
-  last_message: IMessage | null;
+  last_message: ILastMessage | null;
 }
 
 export interface IChat {
