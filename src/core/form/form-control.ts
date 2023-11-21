@@ -13,6 +13,12 @@ export class FormControl {
     public minLength?: number
   ) {}
 
+  clear(): void {
+    this.value = '';
+    this.error = '';
+    this.valid = false;
+  }
+
   setValue(event: InputEvent): void {
     const { value } = event.target as HTMLInputElement;
 

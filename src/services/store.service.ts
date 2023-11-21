@@ -6,6 +6,7 @@ import { IFullUserData } from '../api';
 export enum MessageTypesEnum {
   MESSAGE = 'message',
   FILE = 'file',
+  USER_CONNECTED = 'user connected',
 }
 
 export interface IFile {

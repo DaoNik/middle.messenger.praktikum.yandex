@@ -3,6 +3,11 @@ import { AUTH_USER } from '../constants.ts';
 import { IMessage, StorageService, storeService } from '../services';
 import { BASE_WS_HREF } from './constants.ts';
 
+export interface IWsMessage {
+  content: string;
+  type: 'file' | 'get old' | 'message';
+}
+
 export class WebSocketApiService {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _storageService = new StorageService();
@@ -34,16 +39,22 @@ export class WebSocketApiService {
       });
   }
 
+  sendMessage(chatId: string, message: IWsMessage) {
+    const socket = this._socketsMap.get(chatId);
+
+    if (!socket) return;
+
+    socket.send(JSON.stringify(message));
+  }
+
   private _initListeners(chatId: string, socket: WebSocket): void {
     socket.addEventListener('open', () => {
       console.log('Соединение установлено');
 
-      socket.send(
-        JSON.stringify({
-          content: '0',
-          type: 'get old',
-        })
-      );
+      this.sendMessage(chatId, {
+        content: '0',
+        type: 'get old',
+      });
     });
 
     socket.addEventListener('close', (event) => {

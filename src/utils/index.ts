@@ -1,3 +1,4 @@
+export * from './getTime.ts';
 export * from './isEmpty.ts';
 export * from './isEqual.ts';
 export * from './isPrimitive.ts';

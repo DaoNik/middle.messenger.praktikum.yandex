@@ -15,7 +15,12 @@ import {
   PropertiesT,
 } from '../../core';
 import template from './chats.html?raw';
-import { BASE_HREF, ChatsApiService, WebSocketApiService } from '../../api';
+import {
+  BASE_HREF,
+  ChatsApiService,
+  IFullUserData,
+  WebSocketApiService,
+} from '../../api';
 import { ConfirmDialog } from '../../common';
 import {
   IMessage,
@@ -24,8 +29,8 @@ import {
   StorageService,
   withStore,
 } from '../../services';
-import { CURRENT_CHAT_ID } from '../../constants.ts';
-import { isEmpty, isEqual } from '../../utils';
+import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
+import { getTime, isEmpty, isEqual } from '../../utils';
 
 class BaseChats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
@@ -90,10 +95,15 @@ class BaseChats extends Block {
           chatIdAttr.value = String(id);
           item.attributes.setNamedItem(chatIdAttr);
 
+          if (this._storageService.getItem(CURRENT_CHAT_ID) === String(id)) {
+            item.classList.add('chats__list-item-active');
+            this._loadMessages(String(id));
+          }
+
           const correctLastMessage = last_message
             ? {
                 ...last_message,
-                time: this._getTime(last_message.time),
+                time: getTime(last_message.time),
               }
             : {
                 content: 'Ещё нет сообщений',
@@ -146,16 +156,39 @@ class BaseChats extends Block {
 
     if (!chatId) return;
 
+    let date: Date | null = null;
+
+    const authUser = JSON.parse(
+      this._storageService.getItem(AUTH_USER)!
+    ) as IFullUserData;
+
     for (const message of newChatMessages[chatId]) {
       if (
-        isEmpty(oldChatMessages) ||
-        !Object.getOwnPropertyNames(oldChatMessages).includes(chatId) ||
-        !oldChatMessages[chatId].includes(message)
+        (isEmpty(oldChatMessages) ||
+          !Object.getOwnPropertyNames(oldChatMessages).includes(chatId) ||
+          !oldChatMessages[chatId].includes(message)) &&
+        message.type !== MessageTypesEnum.USER_CONNECTED
       ) {
+        const { time, type, user_id, file } = message;
+        const messageDate = new Date(Date.parse(time));
         let documentFragment: DocumentFragment;
         let item: HTMLDivElement;
 
-        switch (message.type) {
+        if (
+          !date ||
+          messageDate.getTime() > date.getTime() + 24 * 60 * 60 * 1000
+        ) {
+          const newDateParagraph = document.createElement('p');
+
+          newDateParagraph.classList.add('chat__date');
+          newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
+
+          chatMessages?.append(newDateParagraph);
+
+          date = messageDate;
+        }
+
+        switch (type) {
           case MessageTypesEnum.FILE:
             documentFragment = messageWithPhotoTemplateContent.cloneNode(
               true
@@ -165,31 +198,29 @@ class BaseChats extends Block {
               '.chat__message-photo'
             ) as HTMLImageElement;
 
-            image.src = `${BASE_HREF}/resources${message.file?.path ?? ''}`;
-            image.alt = message.file?.filename ?? '';
-
-            this.templater.compile(
-              { ...message, time: this._getTime(message.time) } as any,
-              item,
-              false
-            );
-
-            chatMessages?.append(item);
+            image.src = `${BASE_HREF}/resources${file?.path ?? ''}`;
+            image.alt = file?.filename ?? '';
             break;
           default:
             documentFragment = messageWithTextTemplateContent.cloneNode(
               true
             ) as DocumentFragment;
             item = documentFragment.children[0] as HTMLDivElement;
-
-            this.templater.compile(
-              { ...message, time: this._getTime(message.time) } as any,
-              item,
-              false
-            );
-
-            chatMessages?.append(item);
         }
+
+        item.children[0].classList.add(
+          authUser.id === user_id
+            ? 'chat__message_from-user'
+            : 'chat__message_to-user'
+        );
+
+        this.templater.compile(
+          { ...message, time: getTime(time) } as any,
+          item,
+          false
+        );
+
+        chatMessages?.append(item);
       }
     }
   }
@@ -197,9 +228,25 @@ class BaseChats extends Block {
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
+    console.log('onSubmit', this.form.valid);
+
     if (!this.form.valid) return;
 
-    console.log(this.form.getRawValue());
+    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+
+    if (!chatId) {
+      console.error('Чат не выбран');
+      return;
+    }
+
+    const message = this.form.getRawValue();
+
+    this._resetForm();
+
+    this._webSocketApi.sendMessage(chatId, {
+      content: message.message,
+      type: 'message',
+    });
   }
 
   onInput(event: InputEvent) {
@@ -251,25 +298,19 @@ class BaseChats extends Block {
     this._storageService.setItem(CURRENT_CHAT_ID, chatId);
     listItem.classList.add('chats__list-item-active');
 
+    this._loadMessages(chatId);
+  }
+
+  private _loadMessages(chatId: string): void {
     this._webSocketApi.connect(chatId);
   }
 
-  private _getTime(time: string): string {
-    const messageDate = new Date(Date.parse(time));
-    const now = new Date(Date.now());
+  private _resetForm(): void {
+    const form = document.querySelector(
+      'form[name="send-message"]'
+    ) as HTMLFormElement | null;
 
-    if (
-      now.getFullYear() !== messageDate.getFullYear() ||
-      now.getMonth() !== messageDate.getMonth() ||
-      now.getDate() - messageDate.getDate() > 6
-    ) {
-      return `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
-    }
-
-    const minutes = messageDate.getMinutes();
-    const formattedMinutes = minutes > 9 ? minutes : `0${minutes}`;
-
-    return `${messageDate.getHours()}:${formattedMinutes}`;
+    form?.reset();
   }
 }
 
