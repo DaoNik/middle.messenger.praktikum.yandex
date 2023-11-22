@@ -35,7 +35,7 @@ import {
 import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
 import { getTime, isEmpty, isEqual } from '../../utils';
 
-const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 100;
+const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 300;
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 class BaseChats extends Block {
@@ -194,7 +194,7 @@ class BaseChats extends Block {
           newDateParagraph.classList.add('chat__date');
           newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
 
-          this._messagesContainer?.append(newDateParagraph);
+          this._messagesContainer?.append(newDateParagraph); // TODO: remake it
 
           date = messageDate;
         }
@@ -231,7 +231,11 @@ class BaseChats extends Block {
           false
         );
 
-        this._messagesContainer?.append(item);
+        if (isEmpty(oldChatMessages)) {
+          this._messagesContainer?.append(item);
+        } else {
+          this._messagesContainer?.insertAdjacentElement('afterbegin', item);
+        }
       }
     }
 
@@ -335,6 +339,24 @@ class BaseChats extends Block {
     document
       .querySelector('.overlay-add-chat')
       ?.classList.add('overlay_opened');
+  }
+
+  onMessagesContainerScroll(): void {
+    if (this._messagesContainer?.scrollTop === 0) {
+      const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+
+      if (!chatId) return;
+
+      const chatMessages = (this.props['chatMessages'] ?? {}) as Record<
+        string,
+        IMessage[]
+      >;
+
+      this._webSocketApi.sendMessage(chatId, {
+        content: `${chatMessages[chatId]?.length ?? 0}`,
+        type: 'get old',
+      });
+    }
   }
 
   onChatClicked(event: MouseEvent) {

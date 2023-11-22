@@ -68,14 +68,17 @@ export class WebSocketApiService {
     });
 
     socket.addEventListener('message', (event) => {
+      console.log('message');
       const serverData = JSON.parse(event.data) as IMessage | IMessage[];
       const newMessages = Array.isArray(serverData) ? serverData : [serverData];
       const chats = storeService.getState().chatMessages ?? {};
       const messages = chats[chatId] ?? [];
 
-      chats[chatId] = [...messages, ...newMessages].sort((a, b) =>
+      chats[chatId] = [...newMessages, ...messages].sort((a, b) =>
         a.time > b.time ? 1 : -1
       );
+
+      console.log(chats[chatId]);
 
       storeService.set('chatMessages', chats);
     });
