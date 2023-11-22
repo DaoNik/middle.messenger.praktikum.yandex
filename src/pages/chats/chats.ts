@@ -50,6 +50,7 @@ class BaseChats extends Block {
   });
 
   clipFiles: IFile[] = [];
+  mapChatLastMessageDate = new Map<string, Date>();
 
   constructor() {
     super(
@@ -170,7 +171,7 @@ class BaseChats extends Block {
 
     if (!chatId) return;
 
-    let date: Date | null = null;
+    let date: Date | null = this.mapChatLastMessageDate.get(chatId) ?? null;
 
     const authUser = JSON.parse(
       this._storageService.getItem(AUTH_USER)!
@@ -194,9 +195,10 @@ class BaseChats extends Block {
           newDateParagraph.classList.add('chat__date');
           newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
 
-          this._messagesContainer?.append(newDateParagraph); // TODO: remake it
+          this._messagesContainer?.append(newDateParagraph);
 
           date = messageDate;
+          this.mapChatLastMessageDate.set(chatId, messageDate);
         }
 
         switch (type) {
@@ -234,7 +236,13 @@ class BaseChats extends Block {
         if (isEmpty(oldChatMessages)) {
           this._messagesContainer?.append(item);
         } else {
-          this._messagesContainer?.insertAdjacentElement('afterbegin', item);
+          if (date && messageDate.getTime() <= date.getTime() + ONE_DAY_IN_MS) {
+            document
+              .querySelector('p.chat__date')
+              ?.insertAdjacentElement('afterend', item);
+          } else {
+            this._messagesContainer?.insertAdjacentElement('afterbegin', item);
+          }
         }
       }
     }
