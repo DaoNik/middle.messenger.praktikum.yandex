@@ -25,6 +25,7 @@ import {
 } from '../../api';
 import { ConfirmDialog } from '../../common';
 import {
+  IFile,
   IMessage,
   IState,
   MessageTypesEnum,
@@ -43,6 +44,8 @@ class BaseChats extends Block {
   readonly form = new FormGroup<{ message: string }>({
     message: new FormControl('', [isNotEmptyValidator]),
   });
+
+  clipFiles: IFile[] = [];
 
   constructor() {
     super(
@@ -238,9 +241,7 @@ class BaseChats extends Block {
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    console.log('onSubmit', this.form.valid);
-
-    if (!this.form.valid) return;
+    if (!this.form.valid && isEmpty(this.clipFiles)) return;
 
     const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
 
@@ -251,12 +252,30 @@ class BaseChats extends Block {
 
     const message = this.form.getRawValue();
 
-    this._resetForm();
+    if (!isEmpty(this.clipFiles)) {
+      for (const { id } of this.clipFiles) {
+        this._webSocketApi.sendMessage(chatId, {
+          content: String(id),
+          type: 'file',
+        });
+      }
 
-    this._webSocketApi.sendMessage(chatId, {
-      content: message.message,
-      type: 'message',
-    });
+      this.clipFiles = [];
+
+      const loadFilesContainer = document.querySelector('.chat__load-files')!;
+
+      loadFilesContainer.innerHTML = '';
+      loadFilesContainer.classList.add('chat__load-files_empty');
+    }
+
+    if (!isEmpty(message.message)) {
+      this._resetForm();
+
+      this._webSocketApi.sendMessage(chatId, {
+        content: message.message,
+        type: 'message',
+      });
+    }
   }
 
   onInput(event: InputEvent): void {
@@ -285,6 +304,12 @@ class BaseChats extends Block {
       }
 
       document.querySelector('.chat__load-files')?.append(image);
+
+      document.querySelector<HTMLButtonElement>(
+        'button.chat__button-send'
+      )!.disabled = false;
+
+      this.clipFiles.push(file);
     });
   }
 
@@ -346,6 +371,10 @@ class BaseChats extends Block {
     ) as HTMLFormElement | null;
 
     form?.reset();
+
+    document.querySelector<HTMLButtonElement>(
+      'button.chat__button-send'
+    )!.disabled = true;
   }
 }
 
