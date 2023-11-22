@@ -35,14 +35,14 @@ export class RouterLink extends HTMLElement {
     ];
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    // вызывается при изменении одного из перечисленных выше атрибутов
-  }
-
-  adoptedCallback() {
-    // вызывается, когда элемент перемещается в новый документ
-    // (происходит в document.adoptNode, используется очень редко)
-  }
+  // attributeChangedCallback(name, oldValue, newValue) {
+  //   // вызывается при изменении одного из перечисленных выше атрибутов
+  // }
+  //
+  // adoptedCallback() {
+  //   // вызывается, когда элемент перемещается в новый документ
+  //   // (происходит в document.adoptNode, используется очень редко)
+  // }
 
   // у элемента могут быть ещё другие методы и свойства
 }
