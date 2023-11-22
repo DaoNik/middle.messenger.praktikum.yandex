@@ -49,12 +49,18 @@ export class HTTPTransport {
     options: IHttpOptions = {},
     withCredentials?: boolean
   ): Promise<T> {
+    const headers = { ...options.headers };
+
+    if (!(options.data instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     return this.request<T>(
       url,
       {
         ...options,
         method: METHODS.POST,
-        headers: { 'Content-Type': 'application/json', ...options.headers },
+        headers: headers,
       },
       options.timeout,
       withCredentials

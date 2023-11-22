@@ -38,21 +38,21 @@
         <img class="chat__menu-image" src="/assets/menu.svg" alt="меню" />
       </button>
     </div>
-    <div class="chat__messages">
-      <!--      <p class="chat__date">19 июля</p>-->
-    </div>
+    <div class="chat__messages"></div>
     <form class="chat__add-text" name="send-message" (submit)="onSubmit">
-      <button
-        class="chat__button-attach"
-        type="button"
-        (click)="onClipMenuToggled"
-      >
-        <img
+      <input
+        type="file"
+        id="clip-file"
+        accept="image/*"
+        (input)="onInputFile"
+        hidden
+      />
+      <label for="clip-file" class="chat__button-attach"
+        ><img
           src="/assets/clip.svg"
           alt="прикрепить файл"
           class="chat__image-clip"
-        />
-      </button>
+      /></label>
       <input
         type="text"
         placeholder="Сообщение"
@@ -64,6 +64,7 @@
       <button class="chat__button-send" type="submit" disabled>
         <img src="/assets/exit.svg" alt="отправить" class="chat__image-send" />
       </button>
+      <div class="chat__load-files chat__load-files_empty"></div>
     </form>
   </section>
   <template id="chat-message-with-text-template">

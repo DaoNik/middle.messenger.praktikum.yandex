@@ -18,7 +18,9 @@ import template from './chats.html?raw';
 import {
   BASE_HREF,
   ChatsApiService,
+  IChatData,
   IFullUserData,
+  ResourcesApiService,
   WebSocketApiService,
 } from '../../api';
 import { ConfirmDialog } from '../../common';
@@ -36,6 +38,7 @@ class BaseChats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
   private readonly _webSocketApi = new WebSocketApiService();
   private readonly _storageService = new StorageService();
+  private readonly _resourcesApiService = new ResourcesApiService();
 
   readonly form = new FormGroup<{ message: string }>({
     message: new FormControl('', [isNotEmptyValidator]),
@@ -61,7 +64,7 @@ class BaseChats extends Block {
   }
 
   override render(oldProperties?: PropertiesT, newProperties?: PropertiesT) {
-    this.renderMessages(oldProperties, newProperties);
+    this._renderMessages(oldProperties, newProperties);
 
     super.render(newProperties);
   }
@@ -72,60 +75,63 @@ class BaseChats extends Block {
       .then((chats) => chats ?? [])
       .then((chats) => {
         this.props['chats'] = chats;
-        const chatsList = document.querySelector('.chats__list')!;
 
-        if (chats.length === 0) {
-          chatsList.innerHTML = '';
-          return;
-        }
-
-        const templateContent = (
-          document.getElementById(
-            'chat-list-item-template'
-          ) as HTMLTemplateElement
-        ).content;
-
-        for (const chat of chats) {
-          const { id, last_message, avatar } = chat;
-          const template = templateContent.cloneNode(true) as DocumentFragment;
-          const item = template.children[0] as HTMLLIElement;
-
-          const chatIdAttr = document.createAttribute('chatId');
-
-          chatIdAttr.value = String(id);
-          item.attributes.setNamedItem(chatIdAttr);
-
-          if (this._storageService.getItem(CURRENT_CHAT_ID) === String(id)) {
-            item.classList.add('chats__list-item-active');
-            this._loadMessages(String(id));
-          }
-
-          const correctLastMessage = last_message
-            ? {
-                ...last_message,
-                time: getTime(last_message.time),
-              }
-            : {
-                content: 'Ещё нет сообщений',
-                time: '',
-              };
-
-          const formattedChat = {
-            ...chat,
-            avatar: avatar ?? '/assets/no-avatar.svg',
-            last_message: correctLastMessage,
-          };
-
-          this.templater.compile(formattedChat as any, item, false);
-
-          chatsList.append(item);
-        }
+        this._renderChats(chats);
       });
 
     super.componentDidMount();
   }
 
-  renderMessages(
+  private _renderChats(chats: IChatData[]) {
+    const chatsList = document.querySelector('.chats__list')!;
+
+    if (chats.length === 0) {
+      chatsList.innerHTML = '';
+      return;
+    }
+
+    const templateContent = (
+      document.getElementById('chat-list-item-template') as HTMLTemplateElement
+    ).content;
+
+    for (const chat of chats) {
+      const { id, last_message, avatar } = chat;
+      const template = templateContent.cloneNode(true) as DocumentFragment;
+      const item = template.children[0] as HTMLLIElement;
+
+      const chatIdAttr = document.createAttribute('chatId');
+
+      chatIdAttr.value = String(id);
+      item.attributes.setNamedItem(chatIdAttr);
+
+      if (this._storageService.getItem(CURRENT_CHAT_ID) === String(id)) {
+        item.classList.add('chats__list-item-active');
+        this._loadMessages(String(id));
+      }
+
+      const correctLastMessage = last_message
+        ? {
+            ...last_message,
+            time: getTime(last_message.time),
+          }
+        : {
+            content: 'Ещё нет сообщений',
+            time: '',
+          };
+
+      const formattedChat = {
+        ...chat,
+        avatar: avatar ?? '/assets/no-avatar.svg',
+        last_message: correctLastMessage,
+      };
+
+      this.templater.compile(formattedChat as any, item, false);
+
+      chatsList.append(item);
+    }
+  }
+
+  private _renderMessages(
     oldProperties?: PropertiesT,
     newProperties?: PropertiesT
   ): void {
@@ -152,7 +158,7 @@ class BaseChats extends Block {
     ).content;
 
     const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
-    const chatMessages = document.querySelector('.chat__messages');
+    const messagesContainer = document.querySelector('.chat__messages');
 
     if (!chatId) return;
 
@@ -183,7 +189,7 @@ class BaseChats extends Block {
           newDateParagraph.classList.add('chat__date');
           newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
 
-          chatMessages?.append(newDateParagraph);
+          messagesContainer?.append(newDateParagraph);
 
           date = messageDate;
         }
@@ -220,8 +226,12 @@ class BaseChats extends Block {
           false
         );
 
-        chatMessages?.append(item);
+        messagesContainer?.append(item);
       }
+    }
+
+    if (isEmpty(oldChatMessages) && messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
 
@@ -249,8 +259,33 @@ class BaseChats extends Block {
     });
   }
 
-  onInput(event: InputEvent) {
+  onInput(event: InputEvent): void {
     inputHandler(event, this.form);
+  }
+
+  onInputFile(event: InputEvent): void {
+    const fileList = (event.target as any).files as FileList;
+
+    if (fileList.length === 0) return;
+
+    const formData = new FormData();
+
+    formData.append('resource', fileList[0], fileList[0].name);
+
+    this._resourcesApiService.loadFile(formData).then((file) => {
+      const image = document.createElement('IMG') as HTMLImageElement;
+
+      image.src = `${BASE_HREF}/resources${file.path}`;
+      image.alt = file.filename;
+
+      const loadFilesContainer = document.querySelector('.chat__load-files');
+
+      if (loadFilesContainer?.classList.contains('chat__load-files_empty')) {
+        loadFilesContainer?.classList.remove('chat__load-files_empty');
+      }
+
+      document.querySelector('.chat__load-files')?.append(image);
+    });
   }
 
   onBlur(event: FocusEvent) {
