@@ -4,9 +4,11 @@ import { IMessage, StorageService, storeService } from '../services';
 import { BASE_WS_HREF } from './constants.ts';
 
 export interface IWsMessage {
-  content: string;
-  type: 'file' | 'get old' | 'message';
+  content?: string;
+  type: 'file' | 'get old' | 'message' | 'ping';
 }
+
+const DEFAULT_SOCKET_UPDATE_INTERVAL = 10000;
 
 export class WebSocketApiService {
   private readonly _chatsApi = new ChatsApiService();
@@ -48,6 +50,12 @@ export class WebSocketApiService {
   }
 
   private _initListeners(chatId: string, socket: WebSocket): void {
+    setInterval(() => {
+      this.sendMessage(chatId, {
+        type: 'ping',
+      });
+    }, DEFAULT_SOCKET_UPDATE_INTERVAL);
+
     socket.addEventListener('open', () => {
       console.log('Соединение установлено');
 
@@ -68,7 +76,8 @@ export class WebSocketApiService {
     });
 
     socket.addEventListener('message', (event) => {
-      console.log('message');
+      if (JSON.parse(event.data).type === 'pong') return;
+
       const serverData = JSON.parse(event.data) as IMessage | IMessage[];
       const newMessages = Array.isArray(serverData) ? serverData : [serverData];
       const chats = storeService.getState().chatMessages ?? {};
@@ -77,8 +86,6 @@ export class WebSocketApiService {
       chats[chatId] = [...newMessages, ...messages].sort((a, b) =>
         a.time > b.time ? 1 : -1
       );
-
-      console.log(chats[chatId]);
 
       storeService.set('chatMessages', chats);
     });
