@@ -16,19 +16,19 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <script type="module" crossorigin src="/assets/index-38799915.js"></script>
-    <link rel="stylesheet" href="/assets/index-d6b58f7d.css">
+    <script type="module" crossorigin src="/assets/index-ac24ed0d.js"></script>
+    <link rel="stylesheet" href="/assets/index-a68d6b98.css">
   </head>
   <body>
     <h1 class="visually-hidden">Messenger</h1>
     <!--    TODO: удалить после подключения полноценного роутинга-->
     <nav class="nav-menu">
-      <a href="/404">page 404</a>
-      <a href="/500">page 500</a>
-      <a href="/chats">chats</a>
-      <a href="/login">login</a>
-      <a href="/profile">profile</a>
-      <a href="/register">register</a>
+      <router-link link="/404">page 404</router-link>
+      <router-link link="/500">page 500</router-link>
+      <router-link link="/messenger">chats</router-link>
+      <router-link link="/">login</router-link>
+      <router-link link="/settings">profile</router-link>
+      <router-link link="/sign-up">register</router-link>
     </nav>
     <main id="root"></main>
     
