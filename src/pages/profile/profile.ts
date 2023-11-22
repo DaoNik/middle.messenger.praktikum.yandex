@@ -4,7 +4,7 @@ import {
   LoadFileDialog,
 } from '../../components';
 import template from './profile.html?raw';
-import { Block, Router } from '../../core';
+import { Block, PropertiesT, Router } from '../../core';
 import { AuthApiService, BASE_HREF, IFullUserData } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
 import { StorageService } from '../../services';
@@ -45,9 +45,7 @@ export class Profile extends Block {
     if (user) {
       const userData: IFullUserData = JSON.parse(user);
 
-      for (const [key, value] of Object.entries(userData)) {
-        this.props[key] = value;
-      }
+      this.props = userData as unknown as PropertiesT;
 
       if (image) {
         const { avatar } = userData;
@@ -63,20 +61,20 @@ export class Profile extends Block {
 
   onAvatarClicked() {
     document
-      .querySelector('.overlay-load-file')!
-      .classList.add('overlay_opened');
+      .querySelector('.overlay-load-file')
+      ?.classList.add('overlay_opened');
   }
 
   onChangeDataDialogOpened() {
     document
-      .querySelector('.overlay-change-data')!
-      .classList.add('overlay_opened');
+      .querySelector('.overlay-change-data')
+      ?.classList.add('overlay_opened');
   }
 
   onChangePasswordDialogOpened() {
     document
-      .querySelector('.overlay-change-password')!
-      .classList.add('overlay_opened');
+      .querySelector('.overlay-change-password')
+      ?.classList.add('overlay_opened');
   }
 
   onLogout() {

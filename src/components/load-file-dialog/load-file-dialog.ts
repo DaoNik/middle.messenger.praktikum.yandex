@@ -46,10 +46,6 @@ export class LoadFileDialog extends Component {
     this.element?.classList.remove('overlay_opened');
   }
 
-  close(): void {
-    this.element?.classList.remove('overlay_opened');
-  }
-
   onDialogNotClose(event: MouseEvent) {
     event.stopPropagation();
   }
