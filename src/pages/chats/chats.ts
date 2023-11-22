@@ -35,11 +35,15 @@ import {
 import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
 import { getTime, isEmpty, isEqual } from '../../utils';
 
+const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 100;
+const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+
 class BaseChats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
   private readonly _webSocketApi = new WebSocketApiService();
   private readonly _storageService = new StorageService();
   private readonly _resourcesApiService = new ResourcesApiService();
+  private _messagesContainer: HTMLDivElement | null = null;
 
   readonly form = new FormGroup<{ message: string }>({
     message: new FormControl('', [isNotEmptyValidator]),
@@ -83,6 +87,8 @@ class BaseChats extends Block {
       });
 
     super.componentDidMount();
+
+    this._messagesContainer = document.querySelector('.chat__messages');
   }
 
   private _renderChats(chats: IChatData[]) {
@@ -161,7 +167,6 @@ class BaseChats extends Block {
     ).content;
 
     const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
-    const messagesContainer = document.querySelector('.chat__messages');
 
     if (!chatId) return;
 
@@ -183,16 +188,13 @@ class BaseChats extends Block {
         let documentFragment: DocumentFragment;
         let item: HTMLDivElement;
 
-        if (
-          !date ||
-          messageDate.getTime() > date.getTime() + 24 * 60 * 60 * 1000
-        ) {
+        if (!date || messageDate.getTime() > date.getTime() + ONE_DAY_IN_MS) {
           const newDateParagraph = document.createElement('p');
 
           newDateParagraph.classList.add('chat__date');
           newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
 
-          messagesContainer?.append(newDateParagraph);
+          this._messagesContainer?.append(newDateParagraph);
 
           date = messageDate;
         }
@@ -229,12 +231,14 @@ class BaseChats extends Block {
           false
         );
 
-        messagesContainer?.append(item);
+        this._messagesContainer?.append(item);
       }
     }
 
-    if (isEmpty(oldChatMessages) && messagesContainer) {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if (isEmpty(oldChatMessages)) {
+      setTimeout(() => {
+        this._scrollMessagesToBottom();
+      }, DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES);
     }
   }
 
@@ -260,8 +264,6 @@ class BaseChats extends Block {
         });
       }
 
-      this.clipFiles = [];
-
       const loadFilesContainer = document.querySelector('.chat__load-files')!;
 
       loadFilesContainer.innerHTML = '';
@@ -269,13 +271,17 @@ class BaseChats extends Block {
     }
 
     if (!isEmpty(message.message)) {
-      this._resetForm();
-
       this._webSocketApi.sendMessage(chatId, {
         content: message.message,
         type: 'message',
       });
     }
+
+    this._resetForm();
+
+    setTimeout(() => {
+      this._scrollMessagesToBottom();
+    }, DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES);
   }
 
   onInput(event: InputEvent): void {
@@ -371,10 +377,17 @@ class BaseChats extends Block {
     ) as HTMLFormElement | null;
 
     form?.reset();
+    this.clipFiles = [];
 
     document.querySelector<HTMLButtonElement>(
       'button.chat__button-send'
     )!.disabled = true;
+  }
+
+  private _scrollMessagesToBottom(): void {
+    if (this._messagesContainer) {
+      this._messagesContainer.scrollTop = this._messagesContainer.scrollHeight;
+    }
   }
 }
 

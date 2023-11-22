@@ -62,8 +62,6 @@ export function withStore(mapStateToProps: (state: IState) => any) {
         storeService.on(StorageEvent.UpdateState, () => {
           const propsFromState = mapStateToProps(storeService.getState());
 
-          console.log(propsFromState);
-
           this.setProps(propsFromState);
         });
       }
