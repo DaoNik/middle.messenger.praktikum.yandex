@@ -14,6 +14,7 @@ export class WebSocketApiService {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _storageService = new StorageService();
   private readonly _socketsMap = new Map<string, WebSocket>();
+  private readonly _intervalIdMap = new Map<string, NodeJS.Timeout>();
 
   connect(chatId: string): void {
     const socketForChat = this._socketsMap.get(chatId);
@@ -37,7 +38,6 @@ export class WebSocketApiService {
         this._socketsMap.set(chatId, socket);
 
         this._initListeners(chatId, socket);
-        console.log(socket);
       });
   }
 
@@ -46,15 +46,23 @@ export class WebSocketApiService {
 
     if (!socket) return;
 
-    socket.send(JSON.stringify(message));
+    try {
+      socket.send(JSON.stringify(message));
+    } catch (e) {
+      this.connect(chatId);
+    }
   }
 
   private _initListeners(chatId: string, socket: WebSocket): void {
-    setInterval(() => {
-      this.sendMessage(chatId, {
-        type: 'ping',
-      });
-    }, DEFAULT_SOCKET_UPDATE_INTERVAL);
+    if (!this._intervalIdMap.get(chatId)) {
+      const interval = setInterval(() => {
+        this.sendMessage(chatId, {
+          type: 'ping',
+        });
+      }, DEFAULT_SOCKET_UPDATE_INTERVAL);
+
+      this._intervalIdMap.set(chatId, interval);
+    }
 
     socket.addEventListener('open', () => {
       console.log('Соединение установлено');
