@@ -149,9 +149,9 @@ export abstract class Block {
     }
   }
 
-  setProps(nextProps: PropertiesT): void {
-    if (!nextProps) return;
+  setProps(nextProperties: PropertiesT): void {
+    if (!nextProperties) return;
 
-    Object.assign(this.props, nextProps);
+    Object.assign(this.props, nextProperties);
   }
 }

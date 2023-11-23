@@ -63,8 +63,8 @@ export class AuthApiService {
       await this._storageService.setItem(AUTH_USER, user);
 
       return user;
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       await this._storageService.clear();
 
       this._router.go('/');

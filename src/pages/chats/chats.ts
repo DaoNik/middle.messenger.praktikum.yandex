@@ -36,7 +36,6 @@ import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
 import { getTime, isEmpty, isEqual } from '../../utils';
 
 const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 300;
-const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 class BaseChats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
@@ -107,7 +106,7 @@ class BaseChats extends Block {
     }
 
     const templateContent = (
-      document.getElementById('chat-list-item-template') as HTMLTemplateElement
+      document.querySelector('#chat-list-item-template') as HTMLTemplateElement
     ).content;
 
     for (const chat of chats) {
@@ -115,10 +114,10 @@ class BaseChats extends Block {
       const template = templateContent.cloneNode(true) as DocumentFragment;
       const item = template.children[0] as HTMLLIElement;
 
-      const chatIdAttr = document.createAttribute('chatId');
+      const chatIdAttribute = document.createAttribute('chatId');
 
-      chatIdAttr.value = String(id);
-      item.attributes.setNamedItem(chatIdAttr);
+      chatIdAttribute.value = String(id);
+      item.attributes.setNamedItem(chatIdAttribute);
 
       if (this._currentChatId === String(id)) {
         item.classList.add('chats__list-item-active');
@@ -160,21 +159,28 @@ class BaseChats extends Block {
       newProperties ? newProperties['chatMessages'] ?? {} : {}
     ) as Record<string, IMessage[]>;
 
-    if (isEqual(oldChatMessages, newChatMessages)) return;
+    console.log(oldChatMessages, newChatMessages);
+
+    if (isEmpty(newChatMessages) || !this._messagesContainer) return;
+
+    const isEmptyMessagesContainer =
+      this._messagesContainer.children.length === 0;
+
+    if (isEqual(oldChatMessages, newChatMessages) && !isEmptyMessagesContainer)
+      return;
 
     const messageWithTextTemplateContent = (
-      document.getElementById(
-        'chat-message-with-text-template'
+      document.querySelector(
+        '#chat-message-with-text-template'
       ) as HTMLTemplateElement
     ).content;
     const messageWithPhotoTemplateContent = (
-      document.getElementById(
-        'chat-message-with-photo-template'
+      document.querySelector(
+        '#chat-message-with-photo-template'
       ) as HTMLTemplateElement
     ).content;
 
     const chatId = this._currentChatId;
-    console.log(chatId);
     const user = await this._storageService.getItem(AUTH_USER);
 
     if (!chatId || !user) return;
@@ -187,42 +193,46 @@ class BaseChats extends Block {
         Date.parse(oldChatMessages[chatId][0].time)
       );
       oldLastMessageDate = new Date(
-        Date.parse(
-          oldChatMessages[chatId][oldChatMessages[chatId].length - 1].time
-        )
+        Date.parse(oldChatMessages[chatId].at(-1)!.time)
       );
     }
 
-    let date: Date | null = this.mapChatLastMessageDate.get(chatId) ?? null;
+    let date: Date | null = isEmptyMessagesContainer
+      ? null
+      : this.mapChatLastMessageDate.get(chatId) ?? null;
 
     const authUser = JSON.parse(user) as IFullUserData;
 
+    console.log(newChatMessages[chatId], isEmptyMessagesContainer);
+
     for (const message of newChatMessages[chatId]) {
       if (
-        (isEmpty(oldChatMessages) ||
+        isEmptyMessagesContainer ||
+        ((isEmpty(oldChatMessages) ||
           !Object.getOwnPropertyNames(oldChatMessages).includes(chatId) ||
           !oldChatMessages[chatId].includes(message)) &&
-        message.type !== MessageTypesEnum.USER_CONNECTED
+          message.type !== MessageTypesEnum.USER_CONNECTED)
       ) {
+        console.log(date, message, isEmptyMessagesContainer);
         const { time, type, user_id, file } = message;
         const messageDate = new Date(Date.parse(time));
         let documentFragment: DocumentFragment;
         let item: HTMLDivElement;
 
-        if (!date || messageDate.getTime() > date.getTime() + ONE_DAY_IN_MS) {
+        if (!date || messageDate.getDate() > date.getDate()) {
           const newDateParagraph = document.createElement('p');
 
           newDateParagraph.classList.add('chat__date');
           newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
 
-          this._messagesContainer?.append(newDateParagraph);
+          this._messagesContainer.append(newDateParagraph);
 
           date = messageDate;
           this.mapChatLastMessageDate.set(chatId, messageDate);
         }
 
         switch (type) {
-          case MessageTypesEnum.FILE:
+          case MessageTypesEnum.FILE: {
             documentFragment = messageWithPhotoTemplateContent.cloneNode(
               true
             ) as DocumentFragment;
@@ -234,11 +244,13 @@ class BaseChats extends Block {
             image.src = `${BASE_HREF}/resources${file?.path ?? ''}`;
             image.alt = file?.filename ?? '';
             break;
-          default:
+          }
+          default: {
             documentFragment = messageWithTextTemplateContent.cloneNode(
               true
             ) as DocumentFragment;
             item = documentFragment.children[0] as HTMLDivElement;
+          }
         }
 
         item.children[0].classList.add(
@@ -254,9 +266,11 @@ class BaseChats extends Block {
         );
 
         if (!oldFirstMessageDate || !oldLastMessageDate) {
-          this._messagesContainer?.append(item);
+          this._messagesContainer.append(item);
         } else if (messageDate.getTime() >= oldLastMessageDate.getTime()) {
-          this._messagesContainer?.append(item);
+          this._messagesContainer.append(item);
+        } else if (isEmptyMessagesContainer) {
+          this._messagesContainer.append(item);
         } else {
           document
             .querySelector('p.chat__date')
@@ -288,7 +302,7 @@ class BaseChats extends Block {
 
     if (!isEmpty(this.clipFiles)) {
       for (const { id } of this.clipFiles) {
-        this._webSocketApi.sendMessage(chatId, {
+        await this._webSocketApi.sendMessage(chatId, {
           content: String(id),
           type: 'file',
         });
@@ -301,7 +315,7 @@ class BaseChats extends Block {
     }
 
     if (!isEmpty(message.message)) {
-      this._webSocketApi.sendMessage(chatId, {
+      await this._webSocketApi.sendMessage(chatId, {
         content: message.message,
         type: 'message',
       });
@@ -378,7 +392,7 @@ class BaseChats extends Block {
         IMessage[]
       >;
 
-      this._webSocketApi.sendMessage(chatId, {
+      await this._webSocketApi.sendMessage(chatId, {
         content: `${chatMessages[chatId]?.length ?? 0}`,
         type: 'get old',
       });
@@ -409,13 +423,15 @@ class BaseChats extends Block {
       chatMessages.innerHTML = '';
     }
 
-    console.log(chatId);
-
     this._currentChatId = chatId;
     await this._storageService.setItem(CURRENT_CHAT_ID, chatId);
     listItem.classList.add('chats__list-item-active');
 
-    await this._loadMessages(chatId);
+    if (!this._webSocketApi.isConnected(chatId)) {
+      await this._loadMessages(chatId);
+    } else {
+      await this._renderMessages({}, this.props);
+    }
   }
 
   private _loadMessages(chatId: string): Promise<void> {
@@ -442,8 +458,8 @@ class BaseChats extends Block {
   }
 }
 
-function mapStateToProps(state: IState) {
+function mapStateToProperties(state: IState) {
   return { chatMessages: { ...state.chatMessages } };
 }
 
-export const Chats = withStore(mapStateToProps)(BaseChats);
+export const Chats = withStore(mapStateToProperties)(BaseChats);

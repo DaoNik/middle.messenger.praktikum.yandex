@@ -96,11 +96,11 @@ export class Router {
   }
 
   start() {
-    window.onpopstate = ({ currentTarget }) => {
+    window.addEventListener('popstate', ({ currentTarget }) => {
       if (currentTarget instanceof Window) {
         this._onRoute(currentTarget.location.pathname);
       }
-    };
+    });
 
     this._onRoute(window.location.pathname);
   }

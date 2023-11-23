@@ -41,13 +41,13 @@ export interface IChatFile {
   };
 }
 
-export interface IGetChatParams {
+export interface IGetChatParameters {
   offset?: number;
   limit?: number;
   title?: string;
 }
 
-export interface IGetChatUsersParams {
+export interface IGetChatUsersParameters {
   offset?: number;
   limit?: number;
   name?: string;
@@ -71,14 +71,14 @@ export class ChatsApiService {
     ChatsApiService.__instance = this;
   }
 
-  getChats(params?: IGetChatParams): Promise<IChatData[]> {
+  getChats(parameters?: IGetChatParameters): Promise<IChatData[]> {
     let url = this._baseUrl;
 
-    if (params) {
-      const length = Object.keys(params).length;
+    if (parameters) {
+      const length = Object.keys(parameters).length;
 
       if (length > 0) {
-        url += `?${queryStringify(params)}`;
+        url += `?${queryStringify(parameters)}`;
       }
     }
 
@@ -103,14 +103,14 @@ export class ChatsApiService {
     );
   }
 
-  getArchiveChats(params?: IGetChatParams): Promise<IChatData[]> {
+  getArchiveChats(parameters?: IGetChatParameters): Promise<IChatData[]> {
     let url = joinUrlParts(this._baseUrl, 'archive');
 
-    if (params) {
-      const length = Object.keys(params).length;
+    if (parameters) {
+      const length = Object.keys(parameters).length;
 
       if (length > 0) {
-        url += `?${queryStringify(params)}`;
+        url += `?${queryStringify(parameters)}`;
       }
     }
 
@@ -135,15 +135,15 @@ export class ChatsApiService {
 
   getChatUsers(
     chatId: number,
-    params?: IGetChatUsersParams
+    parameters?: IGetChatUsersParameters
   ): Promise<IChatUser[]> {
     let url = joinUrlParts(this._baseUrl, chatId, 'users');
 
-    if (params) {
-      const length = Object.keys(params).length;
+    if (parameters) {
+      const length = Object.keys(parameters).length;
 
       if (length > 0) {
-        url += `?${queryStringify(params)}`;
+        url += `?${queryStringify(parameters)}`;
       }
     }
 

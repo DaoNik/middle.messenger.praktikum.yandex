@@ -1,17 +1,17 @@
-export const joinUrlParts = (...args: (string | number)[]): string => {
+export const joinUrlParts = (...arguments_: (string | number)[]): string => {
   let result = '';
 
-  args.forEach((arg, index) => {
-    result += String(arg);
+  for (const [index, argument] of arguments_.entries()) {
+    result += String(argument);
 
     if (
-      !String(arg).endsWith('/') &&
-      index !== args.length - 1 &&
-      !String(args[index + 1]).startsWith('/')
+      !String(argument).endsWith('/') &&
+      index !== arguments_.length - 1 &&
+      !String(arguments_[index + 1]).startsWith('/')
     ) {
       result += '/';
     }
-  });
+  }
 
   return result;
 };

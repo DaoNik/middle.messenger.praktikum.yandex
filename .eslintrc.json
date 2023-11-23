@@ -25,7 +25,8 @@
     "no-var": "error",
     "no-use-before-define": "error",
     "unicorn/no-null": "off",
-    "complexity": ["error", 15]
+    "complexity": ["error", 15],
+    "no-console": "warn"
   },
   "ignorePatterns": ["**/*.js", "**/*.d.ts"]
 }

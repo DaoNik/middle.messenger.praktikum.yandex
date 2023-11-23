@@ -16,7 +16,7 @@ export class StorageService {
   }
 
   async setItem(key: string, value: unknown): Promise<void> {
-    let result = isPrimitive(value) ? String(value) : JSON.stringify(value);
+    const result = isPrimitive(value) ? String(value) : JSON.stringify(value);
 
     localStorage.setItem(key, result);
   }

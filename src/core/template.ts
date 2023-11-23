@@ -62,7 +62,7 @@ export class Template {
   compile(
     properties: PropertiesT,
     block: HTMLElement,
-    isSave: boolean = true,
+    isSave = true,
     propertyKey?: string
   ): void {
     if (block.children.length > 0) {
@@ -176,7 +176,7 @@ export class Template {
     }
 
     if (content) {
-      const keys = content.match(/{{[\w\-.'()]*}}/gm);
+      const keys = content.match(/{{[\w'().\-]*}}/gm);
 
       if (!keys || keys.length === 0 || properties['length'] === 0) {
         return;

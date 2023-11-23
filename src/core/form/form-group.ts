@@ -5,7 +5,7 @@ type Controls<T> = {
 };
 
 export class FormGroup<T = any> {
-  valid: boolean = false;
+  valid = false;
 
   constructor(public readonly controls: Controls<T>) {}
 

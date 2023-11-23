@@ -52,18 +52,18 @@ export function queryStringify(data: StringIndexed): string | never {
 function innerArrayToQueryString(key: string, value: []): string {
   let result = '';
 
-  for (let i = 0; i < value.length; i++) {
-    const currentValue = value[i];
+  for (let index = 0; index < value.length; index++) {
+    const currentValue = value[index];
 
     if (!isArrayOrObject(currentValue)) {
-      result += `${key}[${i}]=${currentValue}`;
+      result += `${key}[${index}]=${currentValue}`;
     } else if (isArray(currentValue)) {
-      result += innerArrayToQueryString(`${key}[${i}]`, currentValue);
+      result += innerArrayToQueryString(`${key}[${index}]`, currentValue);
     } else {
-      result += innerObjectToQueryString(`${key}[${i}]`, currentValue);
+      result += innerObjectToQueryString(`${key}[${index}]`, currentValue);
     }
 
-    if (i !== value.length - 1) {
+    if (index !== value.length - 1) {
       result += '&';
     }
   }
@@ -71,12 +71,15 @@ function innerArrayToQueryString(key: string, value: []): string {
   return result;
 }
 
-function innerObjectToQueryString(parentKey: string, obj: PlainObject): string {
+function innerObjectToQueryString(
+  parentKey: string,
+  object: PlainObject
+): string {
   let result = '';
   let index = 0;
-  const length = Object.keys(obj).length;
+  const length = Object.keys(object).length;
 
-  for (const [key, value] of Object.entries(obj)) {
+  for (const [key, value] of Object.entries(object)) {
     if (!isArrayOrObject(value)) {
       result += `${parentKey}[${key}]=${value}`;
     } else if (isArray(value)) {

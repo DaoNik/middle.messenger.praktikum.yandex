@@ -8,7 +8,7 @@ export interface IWsMessage {
   type: 'file' | 'get old' | 'message' | 'ping';
 }
 
-const DEFAULT_SOCKET_UPDATE_INTERVAL = 10000;
+const DEFAULT_SOCKET_UPDATE_INTERVAL = 10_000;
 
 export class WebSocketApiService {
   private readonly _chatsApi = new ChatsApiService();
@@ -17,10 +17,7 @@ export class WebSocketApiService {
   private readonly _intervalIdMap = new Map<string, NodeJS.Timeout>();
 
   async connect(chatId: string): Promise<void> {
-    const socketForChat = this._socketsMap.get(chatId);
-
-    if (socketForChat && (socketForChat.CONNECTING || socketForChat.OPEN))
-      return;
+    if (this.isConnected(chatId)) return;
 
     const user = await this._storageService.getItem(AUTH_USER);
 
@@ -41,22 +38,22 @@ export class WebSocketApiService {
       });
   }
 
-  sendMessage(chatId: string, message: IWsMessage) {
+  async sendMessage(chatId: string, message: IWsMessage) {
     const socket = this._socketsMap.get(chatId);
 
     if (!socket) return;
 
     try {
       socket.send(JSON.stringify(message));
-    } catch (e) {
-      this.connect(chatId);
+    } catch {
+      await this.connect(chatId);
     }
   }
 
   private _initListeners(chatId: string, socket: WebSocket): void {
     if (!this._intervalIdMap.get(chatId)) {
-      const interval = setInterval(() => {
-        this.sendMessage(chatId, {
+      const interval = setInterval(async () => {
+        await this.sendMessage(chatId, {
           type: 'ping',
         });
       }, DEFAULT_SOCKET_UPDATE_INTERVAL);
@@ -70,7 +67,7 @@ export class WebSocketApiService {
       this.sendMessage(chatId, {
         content: '0',
         type: 'get old',
-      });
+      }).then(() => {});
     });
 
     socket.addEventListener('close', (event) => {
@@ -101,5 +98,13 @@ export class WebSocketApiService {
     socket.addEventListener('error', (event) => {
       console.log('Ошибка', (event as any).message);
     });
+  }
+
+  isConnected(chatId: string): boolean {
+    const socketForChat = this._socketsMap.get(chatId);
+
+    return Boolean(
+      socketForChat && (socketForChat.CONNECTING || socketForChat.OPEN)
+    );
   }
 }

@@ -9,9 +9,10 @@ export function set(
     return object;
   }
 
+  // eslint-disable-next-line unicorn/no-array-reduce
   const result = path.split('.').reduceRight<Indexed>(
-    (acc, key) => ({
-      [key]: acc,
+    (accumulator, key) => ({
+      [key]: accumulator,
     }),
     value
   );

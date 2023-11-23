@@ -53,16 +53,21 @@ class StoreService extends EventBus {
 
 export const storeService = new StoreService();
 
-export function withStore(mapStateToProps: (state: IState) => any) {
+export function withStore(mapStateToProperties: (state: IState) => any) {
   return (Component: typeof Block) => {
     return class extends Component {
-      constructor(props: any) {
-        super({ ...props, ...mapStateToProps(storeService.getState()) });
+      constructor(properties: any) {
+        super({
+          ...properties,
+          ...mapStateToProperties(storeService.getState()),
+        });
 
         storeService.on(StorageEvent.UpdateState, () => {
-          const propsFromState = mapStateToProps(storeService.getState());
+          const propertiesFromState = mapStateToProperties(
+            storeService.getState()
+          );
 
-          this.setProps(propsFromState);
+          this.setProps(propertiesFromState);
         });
       }
     };

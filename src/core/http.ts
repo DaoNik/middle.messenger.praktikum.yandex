@@ -126,7 +126,7 @@ export class HTTPTransport {
     url: string,
     options: IHttpOptions,
     timeout = 5000,
-    withCredentials: boolean = true
+    withCredentials = true
   ): Promise<T> {
     const { method = '', data, headers = {} } = options;
 
@@ -161,7 +161,7 @@ export class HTTPTransport {
     })
       .then((data) => {
         if (data.status >= 400) {
-          return Promise.reject(data);
+          throw data;
         }
 
         return data;
@@ -169,8 +169,8 @@ export class HTTPTransport {
       .then((data) => {
         try {
           return JSON.parse(data.response);
-        } catch (e) {
-          return undefined;
+        } catch {
+          return;
         }
       });
   }
