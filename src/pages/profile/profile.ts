@@ -36,8 +36,8 @@ export class Profile extends Block {
     );
   }
 
-  override componentDidMount() {
-    const user = this._storageService.getItem(AUTH_USER);
+  override async componentDidMount(): Promise<void> {
+    const user = await this._storageService.getItem(AUTH_USER);
     const image = document.querySelector(
       '.profile__image'
     ) as HTMLImageElement | null;

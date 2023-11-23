@@ -29,7 +29,7 @@ export class AddUserDialog extends Component {
     });
   }
 
-  onSubmit(event: SubmitEvent) {
+  async onSubmit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
 
     const form = this.form;
@@ -37,7 +37,7 @@ export class AddUserDialog extends Component {
     if (!form.valid) return;
 
     const login = form.controls['login'];
-    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = await this._storageService.getItem(CURRENT_CHAT_ID);
 
     if (!chatId) return;
 

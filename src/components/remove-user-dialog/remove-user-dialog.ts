@@ -29,14 +29,14 @@ export class RemoveUserDialog extends Component {
     });
   }
 
-  onSubmit(event: SubmitEvent) {
+  async onSubmit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
 
     if (!this.form.valid) return;
 
     const { login } = this.form.getRawValue();
 
-    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = await this._storageService.getItem(CURRENT_CHAT_ID);
 
     if (!chatId) return;
 

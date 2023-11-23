@@ -14,8 +14,8 @@ export class ConfirmDialog extends Component {
 
   selector = 'confirm-dialog';
 
-  onSaveChanges() {
-    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+  async onSaveChanges(): Promise<void> {
+    const chatId = await this._storageService.getItem(CURRENT_CHAT_ID);
 
     if (!chatId) return;
 

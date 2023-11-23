@@ -11,21 +11,21 @@ export class StorageService {
     StorageService.__instance = this;
   }
 
-  getItem(key: string): string | null {
+  async getItem(key: string): Promise<string | null> {
     return localStorage.getItem(key);
   }
 
-  setItem(key: string, value: unknown): void {
+  async setItem(key: string, value: unknown): Promise<void> {
     let result = isPrimitive(value) ? String(value) : JSON.stringify(value);
 
     localStorage.setItem(key, result);
   }
 
-  removeItem(key: string): void {
+  async removeItem(key: string): Promise<void> {
     localStorage.removeItem(key);
   }
 
-  clear() {
+  async clear(): Promise<void> {
     localStorage.clear();
   }
 }

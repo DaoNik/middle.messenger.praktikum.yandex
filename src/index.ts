@@ -7,12 +7,12 @@ import { StorageService } from './services';
 export interface IRoute {
   path: string;
   component: any;
-  canActivate?: () => boolean;
+  canActivate?: () => Promise<boolean>;
 }
 
-function canActivate(): boolean {
+async function canActivate(): Promise<boolean> {
   const storage = new StorageService();
-  const user = storage.getItem(AUTH_USER);
+  const user = await storage.getItem(AUTH_USER);
 
   return Boolean(user);
 }

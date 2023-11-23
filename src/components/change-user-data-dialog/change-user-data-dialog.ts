@@ -62,8 +62,9 @@ export class ChangeUserDataDialog extends Component {
     this._userApiService
       .updateUserData(this.form.getRawValue())
       .then((user) => {
-        this._storageService.setItem(AUTH_USER, user);
-
+        return this._storageService.setItem(AUTH_USER, user);
+      })
+      .then(() => {
         this._router.refresh();
       });
   }

@@ -16,13 +16,13 @@ export class WebSocketApiService {
   private readonly _socketsMap = new Map<string, WebSocket>();
   private readonly _intervalIdMap = new Map<string, NodeJS.Timeout>();
 
-  connect(chatId: string): void {
+  async connect(chatId: string): Promise<void> {
     const socketForChat = this._socketsMap.get(chatId);
 
     if (socketForChat && (socketForChat.CONNECTING || socketForChat.OPEN))
       return;
 
-    const user = this._storageService.getItem(AUTH_USER);
+    const user = await this._storageService.getItem(AUTH_USER);
 
     if (!user) return;
 

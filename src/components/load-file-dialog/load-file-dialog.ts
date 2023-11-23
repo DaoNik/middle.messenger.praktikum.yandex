@@ -30,16 +30,16 @@ export class LoadFileDialog extends Component {
     this.formData.append('avatar', fileList[0], fileList[0].name);
   }
 
-  onSubmit(event: SubmitEvent) {
+  async onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    this._userApiService.updateAvatar(this.formData).then((user) => {
-      if (user) {
-        this._storageService.setItem(AUTH_USER, user);
+    const user = await this._userApiService.updateAvatar(this.formData);
 
-        this._router.refresh();
-      }
-    });
+    if (user) {
+      await this._storageService.setItem(AUTH_USER, user);
+
+      this._router.refresh();
+    }
   }
 
   onDialogClose() {

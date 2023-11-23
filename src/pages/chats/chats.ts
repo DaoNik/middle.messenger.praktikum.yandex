@@ -44,6 +44,7 @@ class BaseChats extends Block {
   private readonly _storageService = new StorageService();
   private readonly _resourcesApiService = new ResourcesApiService();
   private _messagesContainer: HTMLDivElement | null = null;
+  private _currentChatId: string | null = null;
 
   readonly form = new FormGroup<{ message: string }>({
     message: new FormControl('', [isNotEmptyValidator]),
@@ -71,28 +72,33 @@ class BaseChats extends Block {
     );
   }
 
-  override render(oldProperties?: PropertiesT, newProperties?: PropertiesT) {
-    this._renderMessages(oldProperties, newProperties);
+  override async render(
+    oldProperties?: PropertiesT,
+    newProperties?: PropertiesT
+  ) {
+    await this._renderMessages(oldProperties, newProperties);
 
     super.render(newProperties);
   }
 
-  override componentDidMount() {
+  override async componentDidMount() {
     this._chatsApiService
       .getChats()
       .then((chats) => chats ?? [])
       .then((chats) => {
         this.props['chats'] = chats;
 
-        this._renderChats(chats);
-      });
+        return chats;
+      })
+      .then((chats) => this._renderChats(chats));
 
     super.componentDidMount();
 
     this._messagesContainer = document.querySelector('.chat__messages');
+    this._currentChatId = await this._storageService.getItem(CURRENT_CHAT_ID);
   }
 
-  private _renderChats(chats: IChatData[]) {
+  private async _renderChats(chats: IChatData[]): Promise<void> {
     const chatsList = document.querySelector('.chats__list')!;
 
     if (chats.length === 0) {
@@ -114,9 +120,9 @@ class BaseChats extends Block {
       chatIdAttr.value = String(id);
       item.attributes.setNamedItem(chatIdAttr);
 
-      if (this._storageService.getItem(CURRENT_CHAT_ID) === String(id)) {
+      if (this._currentChatId === String(id)) {
         item.classList.add('chats__list-item-active');
-        this._loadMessages(String(id));
+        await this._loadMessages(String(id));
       }
 
       const correctLastMessage = last_message
@@ -141,10 +147,10 @@ class BaseChats extends Block {
     }
   }
 
-  private _renderMessages(
+  private async _renderMessages(
     oldProperties?: PropertiesT,
     newProperties?: PropertiesT
-  ): void {
+  ): Promise<void> {
     if (!oldProperties && !newProperties) return;
 
     const oldChatMessages = (
@@ -167,15 +173,29 @@ class BaseChats extends Block {
       ) as HTMLTemplateElement
     ).content;
 
-    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = this._currentChatId;
+    console.log(chatId);
+    const user = await this._storageService.getItem(AUTH_USER);
 
-    if (!chatId) return;
+    if (!chatId || !user) return;
+
+    let oldFirstMessageDate: Date | null = null;
+    let oldLastMessageDate: Date | null = null;
+
+    if (!isEmpty(oldChatMessages) && !isEmpty(oldChatMessages[chatId])) {
+      oldFirstMessageDate = new Date(
+        Date.parse(oldChatMessages[chatId][0].time)
+      );
+      oldLastMessageDate = new Date(
+        Date.parse(
+          oldChatMessages[chatId][oldChatMessages[chatId].length - 1].time
+        )
+      );
+    }
 
     let date: Date | null = this.mapChatLastMessageDate.get(chatId) ?? null;
 
-    const authUser = JSON.parse(
-      this._storageService.getItem(AUTH_USER)!
-    ) as IFullUserData;
+    const authUser = JSON.parse(user) as IFullUserData;
 
     for (const message of newChatMessages[chatId]) {
       if (
@@ -233,33 +253,31 @@ class BaseChats extends Block {
           false
         );
 
-        if (isEmpty(oldChatMessages)) {
+        if (!oldFirstMessageDate || !oldLastMessageDate) {
+          this._messagesContainer?.append(item);
+        } else if (messageDate.getTime() >= oldLastMessageDate.getTime()) {
           this._messagesContainer?.append(item);
         } else {
-          if (date && messageDate.getTime() <= date.getTime() + ONE_DAY_IN_MS) {
-            document
-              .querySelector('p.chat__date')
-              ?.insertAdjacentElement('afterend', item);
-          } else {
-            this._messagesContainer?.insertAdjacentElement('afterbegin', item);
-          }
+          document
+            .querySelector('p.chat__date')
+            ?.insertAdjacentElement('afterend', item);
         }
       }
     }
 
-    if (isEmpty(oldChatMessages)) {
+    if (isEmpty(oldChatMessages) || isEmpty(oldChatMessages[chatId])) {
       setTimeout(() => {
         this._scrollMessagesToBottom();
       }, DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES);
     }
   }
 
-  onSubmit(event: SubmitEvent) {
+  async onSubmit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
 
     if (!this.form.valid && isEmpty(this.clipFiles)) return;
 
-    const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = this._currentChatId;
 
     if (!chatId) {
       console.error('Чат не выбран');
@@ -349,9 +367,9 @@ class BaseChats extends Block {
       ?.classList.add('overlay_opened');
   }
 
-  onMessagesContainerScroll(): void {
+  async onMessagesContainerScroll(): Promise<void> {
     if (this._messagesContainer?.scrollTop === 0) {
-      const chatId = this._storageService.getItem(CURRENT_CHAT_ID);
+      const chatId = this._currentChatId;
 
       if (!chatId) return;
 
@@ -367,7 +385,7 @@ class BaseChats extends Block {
     }
   }
 
-  onChatClicked(event: MouseEvent) {
+  async onChatClicked(event: MouseEvent): Promise<void> {
     if (!event.target) return;
 
     const target = event.target as HTMLElement;
@@ -379,26 +397,29 @@ class BaseChats extends Block {
 
     if (!chatId) return;
 
-    const currentChatId = this._storageService.getItem(CURRENT_CHAT_ID);
+    const currentChatId = this._currentChatId;
 
-    if (currentChatId && currentChatId !== chatId) {
-      document
-        .querySelector('.chats__list-item-active')
-        ?.classList.remove('chats__list-item-active');
+    if (currentChatId && currentChatId === chatId) return;
 
-      if (chatMessages) {
-        chatMessages.innerHTML = '';
-      }
+    document
+      .querySelector('.chats__list-item-active')
+      ?.classList.remove('chats__list-item-active');
+
+    if (chatMessages) {
+      chatMessages.innerHTML = '';
     }
 
-    this._storageService.setItem(CURRENT_CHAT_ID, chatId);
+    console.log(chatId);
+
+    this._currentChatId = chatId;
+    await this._storageService.setItem(CURRENT_CHAT_ID, chatId);
     listItem.classList.add('chats__list-item-active');
 
-    this._loadMessages(chatId);
+    await this._loadMessages(chatId);
   }
 
-  private _loadMessages(chatId: string): void {
-    this._webSocketApi.connect(chatId);
+  private _loadMessages(chatId: string): Promise<void> {
+    return this._webSocketApi.connect(chatId);
   }
 
   private _resetForm(): void {

@@ -54,28 +54,28 @@ export class AuthApiService {
     });
   }
 
-  user(): Promise<IFullUserData | void> {
-    return this._http
-      .get<IFullUserData>(joinUrlParts(this._baseUrl, 'user'))
-      .then((user) => {
-        this._storageService.setItem(AUTH_USER, user);
+  async user(): Promise<IFullUserData | void> {
+    try {
+      const user = await this._http.get<IFullUserData>(
+        joinUrlParts(this._baseUrl, 'user')
+      );
 
-        return user;
-      })
-      .catch((err) => {
-        console.error(err);
-        this._storageService.clear();
+      await this._storageService.setItem(AUTH_USER, user);
 
-        this._router.go('/');
-      });
+      return user;
+    } catch (err) {
+      console.error(err);
+      await this._storageService.clear();
+
+      this._router.go('/');
+    }
   }
 
-  logout(): Promise<void> {
-    return this._http
-      .post<void>(joinUrlParts(this._baseUrl, 'logout'))
-      .then(() => {
-        this._storageService.clear();
-        this._router.go('/');
-      });
+  async logout(): Promise<void> {
+    await this._http.post<void>(joinUrlParts(this._baseUrl, 'logout'));
+
+    await this._storageService.clear();
+
+    this._router.go('/');
   }
 }

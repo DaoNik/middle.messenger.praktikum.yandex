@@ -216,6 +216,7 @@
   &__message {
     position: relative;
     border-radius: 10px;
+    min-width: 100px;
   }
 
   &__message-with-text {
