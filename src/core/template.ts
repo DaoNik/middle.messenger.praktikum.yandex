@@ -77,7 +77,7 @@ export class Template {
     this._replaceTextContent(block, properties, isSave, propertyKey);
   }
 
-  addEvents(block: HTMLElement, blockClass: typeof Block) {
+  addEvents(block: HTMLElement, blockClass: Block) {
     this._addOrRemoveEvents(block, blockClass, false);
 
     if (block.children.length > 0) {
@@ -85,7 +85,7 @@ export class Template {
     }
   }
 
-  removeEvents(block: HTMLElement, blockClass: typeof Block) {
+  removeEvents(block: HTMLElement, blockClass: Block) {
     this._addOrRemoveEvents(block, blockClass, true);
 
     if (block.children.length > 0) {
@@ -95,7 +95,7 @@ export class Template {
 
   private _registerEvents(
     elements: HTMLCollection,
-    blockClass: typeof Block,
+    blockClass: Block,
     isRemove: boolean
   ) {
     for (const element of elements) {
@@ -111,7 +111,7 @@ export class Template {
 
   private _addOrRemoveEvents(
     element: Element,
-    blockClass: typeof Block,
+    blockClass: Block,
     isRemove: boolean
   ) {
     const reg = /^\(.*\)$/;
