@@ -24,6 +24,7 @@ export interface IAuthCredentials {
 }
 
 export class AuthApiService {
+  // eslint-disable-next-line no-use-before-define
   static __instance: AuthApiService;
 
   private readonly _http = new HTTPTransport();

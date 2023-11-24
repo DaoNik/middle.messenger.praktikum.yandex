@@ -1,4 +1,4 @@
-import { isEqual } from './isEqual.ts';
+import { isEqual } from './is-equal.ts';
 
 describe('isEqual', () => {
   it('should return correct value', () => {

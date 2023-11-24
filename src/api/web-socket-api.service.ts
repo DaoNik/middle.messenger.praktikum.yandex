@@ -67,7 +67,7 @@ export class WebSocketApiService {
       this.sendMessage(chatId, {
         content: '0',
         type: 'get old',
-      }).then(() => {});
+      }).then();
     });
 
     socket.addEventListener('close', (event) => {

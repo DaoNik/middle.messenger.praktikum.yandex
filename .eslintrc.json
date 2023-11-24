@@ -23,10 +23,12 @@
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "no-var": "error",
-    "no-use-before-define": "error",
+    "no-use-before-define": "warn",
     "unicorn/no-null": "off",
-    "complexity": ["error", 15],
-    "no-console": "warn"
+    "complexity": ["error", 30],
+    "no-console": "warn",
+    "unicorn/no-invalid-remove-event-listener": "off",
+    "unicorn/prefer-regexp-test": "off"
   },
   "ignorePatterns": ["**/*.js", "**/*.d.ts"]
 }

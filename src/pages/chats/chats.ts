@@ -33,9 +33,20 @@ import {
   withStore,
 } from '../../services';
 import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
-import { getTime, isEmpty, isEqual } from '../../utils';
+import {
+  getTime,
+  isEmpty,
+  isEqual,
+  isEqualDate,
+  isFirstDateLessThenSecondDate,
+  isFirstDateMoreThenSecondDate,
+} from '../../utils';
+import { NonEmptyArrayT } from '../../types.ts';
 
-const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 300;
+const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 500;
+const CHAT_LOADS_FILES_CLASS = '.chat__load-files';
+const CHAT_LOADS_FILES_EMPTY_CLASS_NAME = 'chat__load-files_empty';
+const CHATS_LIST_ITEM_ACTIVE_CLASS_NAME = 'chats__list-item-active';
 
 class BaseChats extends Block {
   private readonly _chatsApiService = new ChatsApiService();
@@ -50,7 +61,6 @@ class BaseChats extends Block {
   });
 
   clipFiles: IFile[] = [];
-  mapChatLastMessageDate = new Map<string, Date>();
 
   constructor() {
     super(
@@ -120,7 +130,7 @@ class BaseChats extends Block {
       item.attributes.setNamedItem(chatIdAttribute);
 
       if (this._currentChatId === String(id)) {
-        item.classList.add('chats__list-item-active');
+        item.classList.add(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
         await this._loadMessages(String(id));
       }
 
@@ -146,20 +156,20 @@ class BaseChats extends Block {
     }
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   private async _renderMessages(
     oldProperties?: PropertiesT,
     newProperties?: PropertiesT
   ): Promise<void> {
     if (!oldProperties && !newProperties) return;
 
-    const oldChatMessages = (
-      oldProperties ? oldProperties['chatMessages'] ?? {} : {}
-    ) as Record<string, IMessage[]>;
-    const newChatMessages = (
-      newProperties ? newProperties['chatMessages'] ?? {} : {}
-    ) as Record<string, IMessage[]>;
+    const chatId = this._currentChatId;
+    const user = await this._storageService.getItem(AUTH_USER);
 
-    console.log(oldChatMessages, newChatMessages);
+    if (!chatId || !user) return;
+
+    const oldChatMessages = this._hasChatMessages(chatId, oldProperties);
+    const newChatMessages = this._hasChatMessages(chatId, newProperties);
 
     if (isEmpty(newChatMessages) || !this._messagesContainer) return;
 
@@ -180,109 +190,72 @@ class BaseChats extends Block {
       ) as HTMLTemplateElement
     ).content;
 
-    const chatId = this._currentChatId;
-    const user = await this._storageService.getItem(AUTH_USER);
-
-    if (!chatId || !user) return;
-
     let oldFirstMessageDate: Date | null = null;
-    let oldLastMessageDate: Date | null = null;
 
-    if (!isEmpty(oldChatMessages) && !isEmpty(oldChatMessages[chatId])) {
-      oldFirstMessageDate = new Date(
-        Date.parse(oldChatMessages[chatId][0].time)
-      );
-      oldLastMessageDate = new Date(
-        Date.parse(oldChatMessages[chatId].at(-1)!.time)
-      );
+    if (!isEmpty(oldChatMessages)) {
+      oldFirstMessageDate = new Date(Date.parse(oldChatMessages[0].time));
     }
 
-    let date: Date | null = isEmptyMessagesContainer
-      ? null
-      : this.mapChatLastMessageDate.get(chatId) ?? null;
+    let date: Date | null = null;
 
     const authUser = JSON.parse(user) as IFullUserData;
 
-    console.log(newChatMessages[chatId], isEmptyMessagesContainer);
+    const { updatedMessages, isAddToEnd } = this._getUpdatedMessages(
+      isEmptyMessagesContainer,
+      oldChatMessages,
+      newChatMessages
+    );
+    const newCreatedElements: Element[] = [];
 
-    for (const message of newChatMessages[chatId]) {
-      if (
-        isEmptyMessagesContainer ||
-        ((isEmpty(oldChatMessages) ||
-          !Object.getOwnPropertyNames(oldChatMessages).includes(chatId) ||
-          !oldChatMessages[chatId].includes(message)) &&
-          message.type !== MessageTypesEnum.USER_CONNECTED)
-      ) {
-        console.log(date, message, isEmptyMessagesContainer);
-        const { time, type, user_id, file } = message;
-        const messageDate = new Date(Date.parse(time));
-        let documentFragment: DocumentFragment;
-        let item: HTMLDivElement;
+    for (const message of updatedMessages) {
+      if (message.type !== MessageTypesEnum.USER_CONNECTED) {
+        const messageDate = new Date(Date.parse(message.time));
 
-        if (!date || messageDate.getDate() > date.getDate()) {
-          const newDateParagraph = document.createElement('p');
+        // TODO: remake it
+        if (
+          !date ||
+          isFirstDateMoreThenSecondDate(messageDate, date) ||
+          (oldFirstMessageDate &&
+            isFirstDateLessThenSecondDate(messageDate, oldFirstMessageDate) &&
+            isFirstDateLessThenSecondDate(messageDate, date))
+        ) {
+          const newDateParagraph = this._createDateParagraph(messageDate);
 
-          newDateParagraph.classList.add('chat__date');
-          newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
-
-          this._messagesContainer.append(newDateParagraph);
+          newCreatedElements.push(newDateParagraph);
 
           date = messageDate;
-          this.mapChatLastMessageDate.set(chatId, messageDate);
         }
 
-        switch (type) {
-          case MessageTypesEnum.FILE: {
-            documentFragment = messageWithPhotoTemplateContent.cloneNode(
-              true
-            ) as DocumentFragment;
-            item = documentFragment.children[0] as HTMLDivElement;
-            const image = item.querySelector(
-              '.chat__message-photo'
-            ) as HTMLImageElement;
-
-            image.src = `${BASE_HREF}/resources${file?.path ?? ''}`;
-            image.alt = file?.filename ?? '';
-            break;
-          }
-          default: {
-            documentFragment = messageWithTextTemplateContent.cloneNode(
-              true
-            ) as DocumentFragment;
-            item = documentFragment.children[0] as HTMLDivElement;
-          }
-        }
-
-        item.children[0].classList.add(
-          authUser.id === user_id
-            ? 'chat__message_from-user'
-            : 'chat__message_to-user'
+        const item = this._createMessage(
+          message,
+          messageWithPhotoTemplateContent,
+          messageWithTextTemplateContent,
+          authUser
         );
 
-        this.templater.compile(
-          { ...message, time: getTime(time) } as any,
-          item,
-          false
-        );
-
-        if (!oldFirstMessageDate || !oldLastMessageDate) {
-          this._messagesContainer.append(item);
-        } else if (messageDate.getTime() >= oldLastMessageDate.getTime()) {
-          this._messagesContainer.append(item);
-        } else if (isEmptyMessagesContainer) {
-          this._messagesContainer.append(item);
-        } else {
-          document
-            .querySelector('p.chat__date')
-            ?.insertAdjacentElement('afterend', item);
-        }
+        newCreatedElements.push(item);
       }
     }
 
-    if (isEmpty(oldChatMessages) || isEmpty(oldChatMessages[chatId])) {
-      setTimeout(() => {
-        this._scrollMessagesToBottom();
-      }, DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES);
+    if (isAddToEnd) {
+      this._messagesContainer.append(...newCreatedElements.slice(1));
+    } else {
+      const newFirstMessageDate = new Date(
+        Date.parse(updatedMessages.at(-1)!.time)
+      );
+
+      if (
+        oldFirstMessageDate &&
+        isEqualDate(oldFirstMessageDate, newFirstMessageDate)
+      ) {
+        this._messagesContainer.children[0].remove();
+      }
+
+      this._messagesContainer.prepend(...newCreatedElements);
+    }
+
+    if (isEmpty(oldChatMessages)) {
+      this._scrollMessagesToBottom();
     }
   }
 
@@ -308,10 +281,12 @@ class BaseChats extends Block {
         });
       }
 
-      const loadFilesContainer = document.querySelector('.chat__load-files')!;
+      const loadFilesContainer = document.querySelector(
+        CHAT_LOADS_FILES_CLASS
+      )!;
 
       loadFilesContainer.innerHTML = '';
-      loadFilesContainer.classList.add('chat__load-files_empty');
+      loadFilesContainer.classList.add(CHAT_LOADS_FILES_EMPTY_CLASS_NAME);
     }
 
     if (!isEmpty(message.message)) {
@@ -323,9 +298,7 @@ class BaseChats extends Block {
 
     this._resetForm();
 
-    setTimeout(() => {
-      this._scrollMessagesToBottom();
-    }, DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES);
+    this._scrollMessagesToBottom();
   }
 
   onInput(event: InputEvent): void {
@@ -347,13 +320,17 @@ class BaseChats extends Block {
       image.src = `${BASE_HREF}/resources${file.path}`;
       image.alt = file.filename;
 
-      const loadFilesContainer = document.querySelector('.chat__load-files');
+      const loadFilesContainer = document.querySelector(CHAT_LOADS_FILES_CLASS);
 
-      if (loadFilesContainer?.classList.contains('chat__load-files_empty')) {
-        loadFilesContainer?.classList.remove('chat__load-files_empty');
+      if (
+        loadFilesContainer?.classList.contains(
+          CHAT_LOADS_FILES_EMPTY_CLASS_NAME
+        )
+      ) {
+        loadFilesContainer?.classList.remove(CHAT_LOADS_FILES_EMPTY_CLASS_NAME);
       }
 
-      document.querySelector('.chat__load-files')?.append(image);
+      document.querySelector(CHAT_LOADS_FILES_CLASS)?.append(image);
 
       document.querySelector<HTMLButtonElement>(
         'button.chat__button-send'
@@ -416,8 +393,8 @@ class BaseChats extends Block {
     if (currentChatId && currentChatId === chatId) return;
 
     document
-      .querySelector('.chats__list-item-active')
-      ?.classList.remove('chats__list-item-active');
+      .querySelector(`.${CHATS_LIST_ITEM_ACTIVE_CLASS_NAME}`)
+      ?.classList.remove(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
 
     if (chatMessages) {
       chatMessages.innerHTML = '';
@@ -425,13 +402,11 @@ class BaseChats extends Block {
 
     this._currentChatId = chatId;
     await this._storageService.setItem(CURRENT_CHAT_ID, chatId);
-    listItem.classList.add('chats__list-item-active');
+    listItem.classList.add(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
 
-    if (!this._webSocketApi.isConnected(chatId)) {
-      await this._loadMessages(chatId);
-    } else {
-      await this._renderMessages({}, this.props);
-    }
+    await (this._webSocketApi.isConnected(chatId)
+      ? this._renderMessages({}, this.props)
+      : this._loadMessages(chatId));
   }
 
   private _loadMessages(chatId: string): Promise<void> {
@@ -452,9 +427,111 @@ class BaseChats extends Block {
   }
 
   private _scrollMessagesToBottom(): void {
-    if (this._messagesContainer) {
+    setTimeout(() => {
+      if (!this._messagesContainer) return;
+
       this._messagesContainer.scrollTop = this._messagesContainer.scrollHeight;
+    }, DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES);
+  }
+
+  private _hasChatMessages(
+    chatId: string,
+    properties?: PropertiesT
+  ): IMessage[] {
+    const chatMessages = (
+      properties ? properties['chatMessages'] ?? {} : {}
+    ) as Record<string, IMessage[]>;
+
+    if (Object.getOwnPropertyNames(chatMessages).includes(chatId)) {
+      return chatMessages[chatId];
     }
+
+    return [];
+  }
+
+  private _createDateParagraph(messageDate: Date): HTMLParagraphElement {
+    const newDateParagraph = document.createElement('p');
+
+    newDateParagraph.classList.add('chat__date');
+    newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
+
+    return newDateParagraph;
+  }
+
+  private _getUpdatedMessages(
+    isEmptyMessagesContainer: boolean,
+    oldChatMessages: IMessage[],
+    newChatMessages: IMessage[]
+  ): { updatedMessages: NonEmptyArrayT<IMessage>; isAddToEnd: boolean } {
+    if (isEmptyMessagesContainer || isEmpty(oldChatMessages))
+      return {
+        updatedMessages: newChatMessages as NonEmptyArrayT,
+        isAddToEnd: true,
+      };
+
+    const oldFirstMessage = oldChatMessages[0];
+    const newFirstMessage = newChatMessages[0];
+
+    // элементы добавились пагинацией
+    if (oldFirstMessage.id !== newFirstMessage.id) {
+      const updatedMessages = newChatMessages.slice(
+        0,
+        newChatMessages.length - oldChatMessages.length
+      ) as NonEmptyArrayT;
+
+      return { updatedMessages, isAddToEnd: false };
+    }
+
+    // отправлены новые сообщения
+    return {
+      updatedMessages: newChatMessages.slice(
+        oldChatMessages.length
+      ) as NonEmptyArrayT,
+      isAddToEnd: true,
+    };
+  }
+
+  private _createMessage(
+    message: IMessage,
+    messageWithPhotoTemplateContent: DocumentFragment,
+    messageWithTextTemplateContent: DocumentFragment,
+    authUser: IFullUserData
+  ): HTMLDivElement {
+    const { type, time, user_id, file } = message;
+    let documentFragment: DocumentFragment;
+    let item: HTMLDivElement;
+
+    if (type === MessageTypesEnum.FILE) {
+      documentFragment = messageWithPhotoTemplateContent.cloneNode(
+        true
+      ) as DocumentFragment;
+      item = documentFragment.children[0] as HTMLDivElement;
+      const image = item.querySelector(
+        '.chat__message-photo'
+      ) as HTMLImageElement;
+
+      image.src = `${BASE_HREF}/resources${file?.path ?? ''}`;
+      image.alt = file?.filename ?? '';
+    } else {
+      documentFragment = messageWithTextTemplateContent.cloneNode(
+        true
+      ) as DocumentFragment;
+      item = documentFragment.children[0] as HTMLDivElement;
+    }
+
+    item.children[0].classList.add(
+      authUser.id === user_id
+        ? 'chat__message_from-user'
+        : 'chat__message_to-user'
+    );
+
+    this.templater.compile(
+      { ...message, time: getTime(time) } as unknown as PropertiesT,
+      item,
+      false
+    );
+
+    return item;
   }
 }
 

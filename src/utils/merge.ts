@@ -1,6 +1,4 @@
-export type Indexed<T = any> = {
-  [key in string]: T;
-};
+import { Indexed } from '../types.ts';
 
 export const isObject = (value: unknown): value is Indexed => {
   return typeof value === 'object' && value !== null;

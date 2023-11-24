@@ -1,4 +1,4 @@
-import { Indexed as PlainObject } from './merge';
+import { Indexed as PlainObject } from '../types.ts';
 
 function isPlainObject(value: unknown): value is PlainObject {
   return (
@@ -17,13 +17,13 @@ function isArrayOrObject(value: unknown): value is [] | PlainObject {
   return isPlainObject(value) || isArray(value);
 }
 
-export function isEqual(lhs: PlainObject, rhs: PlainObject) {
+export function isEqual(lhs: PlainObject | [], rhs: PlainObject | []) {
   if (Object.keys(lhs).length !== Object.keys(rhs).length) {
     return false;
   }
 
   for (const [key, value] of Object.entries(lhs)) {
-    const rightValue = rhs[key];
+    const rightValue = isArray(rhs) ? rhs[Number(key)] : rhs[key];
     if (isArrayOrObject(value) && isArrayOrObject(rightValue)) {
       if (isEqual(value, rightValue)) {
         continue;

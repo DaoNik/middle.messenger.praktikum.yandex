@@ -12,13 +12,13 @@ class Route {
   private _query: string;
   private _pathname: string;
 
-  canActivate: (() => boolean) | null;
+  canActivate: (() => Promise<boolean>) | null;
 
   constructor(
     pathname: string,
     view: any,
     query: string,
-    canActivate?: () => boolean
+    canActivate?: () => Promise<boolean>
   ) {
     this._pathname = pathname;
     this._blockClass = view;
@@ -95,20 +95,20 @@ export class Router {
     return this;
   }
 
-  start() {
+  async start() {
     window.addEventListener('popstate', ({ currentTarget }) => {
       if (currentTarget instanceof Window) {
         this._onRoute(currentTarget.location.pathname);
       }
     });
 
-    this._onRoute(window.location.pathname);
+    await this._onRoute(window.location.pathname);
   }
 
-  go(pathname: string) {
+  async go(pathname: string) {
     this.history.pushState({}, '', pathname);
 
-    this._onRoute(pathname);
+    await this._onRoute(pathname);
   }
 
   back() {
@@ -127,14 +127,16 @@ export class Router {
     window.location.reload();
   }
 
-  private _onRoute(pathname: string) {
+  private async _onRoute(pathname: string) {
     const route = this.getRoute(pathname);
 
     if (!route || this._currentRoute?.match(route['_pathname'])) {
       return;
     }
 
-    if (route.canActivate && !route.canActivate()) {
+    const hasAccess = route.canActivate ? await route.canActivate() : true;
+
+    if (!hasAccess) {
       console.error(`you do not have access to ${pathname} page`);
       return;
     }

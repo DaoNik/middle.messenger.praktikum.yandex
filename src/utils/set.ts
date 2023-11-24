@@ -1,4 +1,5 @@
-import { Indexed, merge } from './merge';
+import { merge } from './merge';
+import { Indexed } from '../types.ts';
 
 export function set(
   object: Indexed | unknown,

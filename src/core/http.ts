@@ -15,6 +15,8 @@ interface IHttpOptions {
   method?: string;
 }
 
+const CONTENT_TYPE = 'Content-Type';
+
 function queryStringify(data: HttpDataT) {
   // eslint-disable-next-line unicorn/no-array-reduce
   return Object.keys(data).reduce((result, key, index, keys) => {
@@ -52,7 +54,7 @@ export class HTTPTransport {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
+      headers[CONTENT_TYPE] = 'application/json';
     }
 
     return this.request<T>(
@@ -75,7 +77,7 @@ export class HTTPTransport {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
+      headers[CONTENT_TYPE] = 'application/json';
     }
 
     return this.request<T>(
@@ -111,7 +113,7 @@ export class HTTPTransport {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
+      headers[CONTENT_TYPE] = 'application/json';
     }
 
     return this.request<T>(

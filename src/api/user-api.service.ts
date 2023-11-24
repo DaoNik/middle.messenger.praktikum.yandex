@@ -13,6 +13,7 @@ export interface IUpdateUserData extends Omit<IAuthUser, 'password'> {
 }
 
 export class UserApiService {
+  // eslint-disable-next-line no-use-before-define
   static __instance: UserApiService;
 
   private readonly _baseUrl = joinUrlParts(BASE_HREF, 'user');

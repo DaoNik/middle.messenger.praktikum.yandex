@@ -44,7 +44,7 @@ window.addEventListener(
       router.use(route);
     }
 
-    router.start();
+    await router.start();
 
     const authService = new AuthApiService();
 

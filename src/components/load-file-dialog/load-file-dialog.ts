@@ -12,7 +12,7 @@ export class LoadFileDialog extends Component {
 
   readonly selector = 'load-file-dialog';
 
-  formData = new FormData(this.element?.querySelector('form')!);
+  formData = new FormData(this.element!.querySelector('form')!);
 
   constructor() {
     super(template);

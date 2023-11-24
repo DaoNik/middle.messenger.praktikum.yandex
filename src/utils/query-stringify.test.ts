@@ -1,4 +1,4 @@
-import { queryStringify } from './queryStringify.ts';
+import { queryStringify } from './query-stringify.ts';
 
 describe('queryStringify', () => {
   it('should return correct value', () => {

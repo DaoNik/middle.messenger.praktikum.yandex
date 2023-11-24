@@ -59,6 +59,7 @@ export interface IChatUser extends Omit<IFullUserData, 'phone'> {
 }
 
 export class ChatsApiService {
+  // eslint-disable-next-line no-use-before-define
   static __instance: ChatsApiService;
   private readonly _baseUrl = joinUrlParts(BASE_HREF, 'chats');
   private readonly _http = new HTTPTransport();
