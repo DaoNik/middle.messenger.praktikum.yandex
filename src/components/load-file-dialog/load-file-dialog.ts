@@ -12,26 +12,45 @@ export class LoadFileDialog extends Component {
 
   readonly selector = 'load-file-dialog';
 
-  formData = new FormData(this.element!.querySelector('form')!);
+  formData: FormData | null = null;
+  filenameElement: HTMLSpanElement | null = null;
+  submitElement: HTMLButtonElement | null = null;
 
   constructor() {
     super(template);
+  }
+
+  override componentDidMount() {
+    super.componentDidMount();
+
+    if (!this.element) return;
+
+    this.formData = new FormData(this.element.querySelector('form')!);
+    this.filenameElement = this.element.querySelector('.dialog__load-text');
+    this.submitElement = this.element.querySelector('.dialog__submit');
   }
 
   onInput(event: InputEvent) {
     const fileList = (event.target as any).files as FileList;
     const element = this.element;
 
-    if (fileList.length === 0 || !element) return;
+    if (
+      fileList.length === 0 ||
+      !element ||
+      !this.filenameElement ||
+      !this.submitElement
+    )
+      return;
 
-    element.querySelector('.dialog__load-text')!.textContent = fileList[0].name;
-    (element.querySelector('.dialog__submit') as HTMLButtonElement).disabled =
-      false;
-    this.formData.append('avatar', fileList[0], fileList[0].name);
+    this.filenameElement.textContent = fileList[0].name;
+    this.submitElement.disabled = false;
+    this.formData?.append('avatar', fileList[0], fileList[0].name);
   }
 
   async onSubmit(event: SubmitEvent) {
     event.preventDefault();
+
+    if (!this.formData) return;
 
     const user = await this._userApiService.updateAvatar(this.formData);
 
