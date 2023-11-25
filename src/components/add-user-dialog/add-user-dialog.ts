@@ -37,7 +37,7 @@ export class AddUserDialog extends Component {
     if (!form.valid) return;
 
     const login = form.controls['login'];
-    const chatId = await this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = await this._storageService.getItem<number>(CURRENT_CHAT_ID);
 
     if (!chatId) return;
 
@@ -47,11 +47,13 @@ export class AddUserDialog extends Component {
         return user[0].id;
       })
       .then((id) => {
-        return this._chatsApi.addUsersToChat([id], Number(chatId));
+        return this._chatsApi.addUsersToChat([id], chatId);
       })
       .then(() => {
+        // TODO: change to normal update
         document.location.reload();
-      });
+      })
+      .catch(console.error);
   }
 
   onInput(event: InputEvent) {

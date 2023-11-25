@@ -122,7 +122,7 @@ export class Router {
   getRoute(pathname: string) {
     return this.routes.find((route) => route.match(pathname));
   }
-
+  // TODO: delete it
   refresh(): void {
     window.location.reload();
   }

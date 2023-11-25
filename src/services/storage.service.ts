@@ -11,8 +11,18 @@ export class StorageService {
     StorageService.__instance = this;
   }
 
-  async getItem(key: string): Promise<string | null> {
-    return localStorage.getItem(key);
+  async getItem<T>(key: string): Promise<T | null> {
+    const raw = localStorage.getItem(key);
+
+    if (!raw) return null;
+
+    try {
+      const value = JSON.parse(raw);
+
+      return value as T;
+    } catch {
+      return null;
+    }
   }
 
   async setItem(key: string, value: unknown): Promise<void> {

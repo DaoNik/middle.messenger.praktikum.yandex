@@ -32,10 +32,13 @@ export class AddChatDialog extends Component {
 
     const { title } = this.form.getRawValue();
 
-    this._chatsApi.createChat(title).then(() => {
-      // TODO: change to normal update
-      document.location.reload();
-    });
+    this._chatsApi
+      .createChat(title)
+      .then(() => {
+        // TODO: change to normal update
+        document.location.reload();
+      })
+      .catch(console.error);
   }
 
   onInput(event: InputEvent) {

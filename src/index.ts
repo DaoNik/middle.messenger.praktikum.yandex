@@ -1,6 +1,6 @@
 import { Page500, Chats, Page404, Login, Register, Profile } from './pages';
 import { Router, RouterLink } from './core';
-import { AuthApiService } from './api';
+import { AuthApiService, IFullUserData } from './api';
 import { AUTH_USER } from './constants.ts';
 import { StorageService } from './services';
 
@@ -12,7 +12,7 @@ export interface IRoute {
 
 async function canActivate(): Promise<boolean> {
   const storage = new StorageService();
-  const user = await storage.getItem(AUTH_USER);
+  const user = await storage.getItem<IFullUserData>(AUTH_USER);
 
   return Boolean(user);
 }

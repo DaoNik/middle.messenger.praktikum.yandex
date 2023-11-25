@@ -52,11 +52,14 @@ export class LoadFileDialog extends Component {
 
     if (!this.formData) return;
 
-    const user = await this._userApiService.updateAvatar(this.formData);
+    const user = await this._userApiService
+      .updateAvatar(this.formData)
+      .catch(console.error);
 
     if (user) {
       await this._storageService.setItem(AUTH_USER, user);
 
+      // TODO: change to normal update
       this._router.refresh();
     }
   }

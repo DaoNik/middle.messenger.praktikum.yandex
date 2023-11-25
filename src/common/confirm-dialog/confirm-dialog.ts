@@ -15,13 +15,17 @@ export class ConfirmDialog extends Component {
   selector = 'confirm-dialog';
 
   async onSaveChanges(): Promise<void> {
-    const chatId = await this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = await this._storageService.getItem<number>(CURRENT_CHAT_ID);
 
     if (!chatId) return;
 
-    this._chatsApi.deleteChat(Number(chatId)).then(() => {
-      document.location.reload();
-    });
+    this._chatsApi
+      .deleteChat(chatId)
+      .then(() => {
+        // TODO: change to normal update
+        document.location.reload();
+      })
+      .catch(console.error);
   }
 
   onDialogClose() {

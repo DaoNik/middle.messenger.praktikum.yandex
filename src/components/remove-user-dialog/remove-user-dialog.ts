@@ -36,7 +36,7 @@ export class RemoveUserDialog extends Component {
 
     const { login } = this.form.getRawValue();
 
-    const chatId = await this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = await this._storageService.getItem<number>(CURRENT_CHAT_ID);
 
     if (!chatId) return;
 
@@ -46,11 +46,13 @@ export class RemoveUserDialog extends Component {
         return user[0].id;
       })
       .then((id) => {
-        return this._chatsApi.deleteUsersFromChat([id], Number(chatId));
+        return this._chatsApi.deleteUsersFromChat([id], chatId);
       })
       .then(() => {
+        // TODO: change to normal update
         document.location.reload();
-      });
+      })
+      .catch(console.error);
   }
 
   onInput(event: InputEvent) {

@@ -37,18 +37,16 @@ export class Profile extends Block {
   }
 
   override async componentDidMount(): Promise<void> {
-    const user = await this._storageService.getItem(AUTH_USER);
+    const user = await this._storageService.getItem<IFullUserData>(AUTH_USER);
     const image = document.querySelector(
       '.profile__image'
     ) as HTMLImageElement | null;
 
     if (user) {
-      const userData: IFullUserData = JSON.parse(user);
-
-      this.props = userData as unknown as PropertiesT;
+      this.props = user as unknown as PropertiesT;
 
       if (image) {
-        const { avatar } = userData;
+        const { avatar } = user;
 
         if (avatar) {
           image.src = `${BASE_HREF}/resources${avatar}`;
@@ -77,9 +75,10 @@ export class Profile extends Block {
       ?.classList.add('overlay_opened');
   }
 
-  onLogout() {
-    this._authApiService.logout().then(() => {
-      this._router.go('/');
-    });
+  onLogout(): void {
+    this._authApiService
+      .logout()
+      .then(() => this._router.go('/'))
+      .catch(console.error);
   }
 }

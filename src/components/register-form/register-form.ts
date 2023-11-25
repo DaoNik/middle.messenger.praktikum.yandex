@@ -68,10 +68,14 @@ export class RegisterForm extends Component {
         return this._authApiService.user();
       })
       .then((value) => {
-        if (value) {
-          this._router.go('/messenger');
+        if (!value) {
+          throw 'Get user error';
         }
-      });
+
+        return value;
+      })
+      .then(() => this._router.go('/messenger'))
+      .catch(console.error);
   }
 
   onInput(event: InputEvent) {

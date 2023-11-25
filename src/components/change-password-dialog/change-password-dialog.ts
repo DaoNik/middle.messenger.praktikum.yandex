@@ -44,9 +44,12 @@ export class ChangePasswordDialog extends Component {
 
     if (!this.form.valid) return;
 
-    this._userApiService.updatePassword(this.form.getRawValue()).then(() => {
-      this.onDialogClose();
-    });
+    this._userApiService
+      .updatePassword(this.form.getRawValue())
+      .then(() => {
+        this.onDialogClose();
+      })
+      .catch(console.error);
   }
 
   onInput(event: InputEvent) {

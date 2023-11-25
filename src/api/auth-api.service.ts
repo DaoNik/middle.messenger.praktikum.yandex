@@ -66,17 +66,16 @@ export class AuthApiService {
       return user;
     } catch (error) {
       console.error(error);
+
       await this._storageService.clear();
 
-      this._router.go('/');
+      await this._router.go('/');
     }
   }
 
   async logout(): Promise<void> {
-    await this._http.post<void>(joinUrlParts(this._baseUrl, 'logout'));
-
-    await this._storageService.clear();
-
-    this._router.go('/');
+    return this._http
+      .post<void>(joinUrlParts(this._baseUrl, 'logout'))
+      .then(() => this._storageService.clear());
   }
 }

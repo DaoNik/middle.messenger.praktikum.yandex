@@ -2,6 +2,7 @@ import { ChatsApiService } from './chats-api.service.ts';
 import { AUTH_USER } from '../constants.ts';
 import { IMessage, StorageService, storeService } from '../services';
 import { BASE_WS_HREF } from './constants.ts';
+import { IFullUserData } from './auth-api.service.ts';
 
 export interface IWsMessage {
   content?: string;
@@ -19,23 +20,22 @@ export class WebSocketApiService {
   async connect(chatId: string): Promise<void> {
     if (this.isConnected(chatId)) return;
 
-    const user = await this._storageService.getItem(AUTH_USER);
+    const user = await this._storageService.getItem<IFullUserData>(AUTH_USER);
 
     if (!user) return;
-
-    const authUser = JSON.parse(user);
 
     this._chatsApi
       .getTokenForConnectMessagesServer(Number(chatId))
       .then((token) => {
         const socket = new WebSocket(
-          `${BASE_WS_HREF}/ws/chats/${authUser.id}/${chatId}/${token.token}`
+          `${BASE_WS_HREF}/ws/chats/${user.id}/${chatId}/${token.token}`
         );
 
         this._socketsMap.set(chatId, socket);
 
         this._initListeners(chatId, socket);
-      });
+      })
+      .catch(console.error);
   }
 
   async sendMessage(chatId: string, message: IWsMessage) {
@@ -81,18 +81,26 @@ export class WebSocketApiService {
     });
 
     socket.addEventListener('message', (event) => {
-      if (JSON.parse(event.data).type === 'pong') return;
+      try {
+        const message = JSON.parse(event.data);
 
-      const serverData = JSON.parse(event.data) as IMessage | IMessage[];
-      const newMessages = Array.isArray(serverData) ? serverData : [serverData];
-      const chats = storeService.getState().chatMessages ?? {};
-      const messages = chats[chatId] ?? [];
+        if (message.type === 'pong') return;
 
-      chats[chatId] = [...newMessages, ...messages].sort((a, b) =>
-        a.time > b.time ? 1 : -1
-      );
+        const serverData = message as IMessage | IMessage[];
+        const newMessages = Array.isArray(serverData)
+          ? serverData
+          : [serverData];
+        const chats = storeService.getState().chatMessages ?? {};
+        const messages = chats[chatId] ?? [];
 
-      storeService.set('chatMessages', chats);
+        chats[chatId] = [...newMessages, ...messages].sort((a, b) =>
+          a.time > b.time ? 1 : -1
+        );
+
+        storeService.set('chatMessages', chats);
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     socket.addEventListener('error', (event) => {

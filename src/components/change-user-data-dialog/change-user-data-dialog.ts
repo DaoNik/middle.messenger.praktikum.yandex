@@ -65,8 +65,10 @@ export class ChangeUserDataDialog extends Component {
         return this._storageService.setItem(AUTH_USER, user);
       })
       .then(() => {
+        // TODO: change to normal update
         this._router.refresh();
-      });
+      })
+      .catch(console.error);
   }
 
   onInput(event: InputEvent) {

@@ -169,11 +169,7 @@ export class HTTPTransport {
         return data;
       })
       .then((data) => {
-        try {
-          return JSON.parse(data.response);
-        } catch {
-          return;
-        }
+        return JSON.parse(data.response);
       });
   }
 }

@@ -99,12 +99,15 @@ class BaseChats extends Block {
 
         return chats;
       })
-      .then((chats) => this._renderChats(chats));
+      .then((chats) => this._renderChats(chats))
+      .catch(console.error);
 
     super.componentDidMount();
 
     this._messagesContainer = document.querySelector('.chat__messages');
-    this._currentChatId = await this._storageService.getItem(CURRENT_CHAT_ID);
+    const chatId = await this._storageService.getItem<number>(CURRENT_CHAT_ID);
+
+    this._currentChatId = String(chatId);
   }
 
   private async _renderChats(chats: IChatData[]): Promise<void> {
@@ -164,7 +167,7 @@ class BaseChats extends Block {
     if (!oldProperties && !newProperties) return;
 
     const chatId = this._currentChatId;
-    const user = await this._storageService.getItem(AUTH_USER);
+    const user = await this._storageService.getItem<IFullUserData>(AUTH_USER);
 
     if (!chatId || !user) return;
 
@@ -198,8 +201,6 @@ class BaseChats extends Block {
 
     let date: Date | null = null;
 
-    const authUser = JSON.parse(user) as IFullUserData;
-
     const { updatedMessages, isAddToEnd } = this._getUpdatedMessages(
       isEmptyMessagesContainer,
       oldChatMessages,
@@ -230,7 +231,7 @@ class BaseChats extends Block {
           message,
           messageWithPhotoTemplateContent,
           messageWithTextTemplateContent,
-          authUser
+          user
         );
 
         newCreatedElements.push(item);
@@ -314,30 +315,37 @@ class BaseChats extends Block {
 
     formData.append('resource', fileList[0], fileList[0].name);
 
-    this._resourcesApiService.loadFile(formData).then((file) => {
-      const image = document.createElement('IMG') as HTMLImageElement;
+    this._resourcesApiService
+      .loadFile(formData)
+      .then((file) => {
+        const image = document.createElement('IMG') as HTMLImageElement;
 
-      image.src = `${BASE_HREF}/resources${file.path}`;
-      image.alt = file.filename;
+        image.src = `${BASE_HREF}/resources${file.path}`;
+        image.alt = file.filename;
 
-      const loadFilesContainer = document.querySelector(CHAT_LOADS_FILES_CLASS);
+        const loadFilesContainer = document.querySelector(
+          CHAT_LOADS_FILES_CLASS
+        );
 
-      if (
-        loadFilesContainer?.classList.contains(
-          CHAT_LOADS_FILES_EMPTY_CLASS_NAME
-        )
-      ) {
-        loadFilesContainer?.classList.remove(CHAT_LOADS_FILES_EMPTY_CLASS_NAME);
-      }
+        if (
+          loadFilesContainer?.classList.contains(
+            CHAT_LOADS_FILES_EMPTY_CLASS_NAME
+          )
+        ) {
+          loadFilesContainer?.classList.remove(
+            CHAT_LOADS_FILES_EMPTY_CLASS_NAME
+          );
+        }
 
-      document.querySelector(CHAT_LOADS_FILES_CLASS)?.append(image);
+        document.querySelector(CHAT_LOADS_FILES_CLASS)?.append(image);
 
-      document.querySelector<HTMLButtonElement>(
-        'button.chat__button-send'
-      )!.disabled = false;
+        document.querySelector<HTMLButtonElement>(
+          'button.chat__button-send'
+        )!.disabled = false;
 
-      this.clipFiles.push(file);
-    });
+        this.clipFiles.push(file);
+      })
+      .catch(console.error);
   }
 
   onBlur(event: FocusEvent) {
