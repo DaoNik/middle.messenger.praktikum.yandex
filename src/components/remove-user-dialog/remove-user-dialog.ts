@@ -8,11 +8,11 @@ import {
 } from '../../core';
 import template from './remove-user-dialog.html?raw';
 import { Component } from '../../types.ts';
-import { ChatsApiService, UserApiService } from '../../api';
-import { StorageService } from '../../services';
-import { CURRENT_CHAT_ID } from '../../constants.ts';
+import { ChatsApiService, IFullUserData, UserApiService } from '../../api';
+import { StorageService, storeService } from '../../services';
+import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
 
-export class RemoveUserDialog extends Component {
+export class RemoveUserDialog extends Component<{ login_error: string }> {
   private readonly _userApi = new UserApiService();
   private readonly _chatsApi = new ChatsApiService();
   private readonly _storageService = new StorageService();
@@ -37,21 +37,33 @@ export class RemoveUserDialog extends Component {
     const { login } = this.form.getRawValue();
 
     const chatId = await this._storageService.getItem<number>(CURRENT_CHAT_ID);
+    const authUser = await this._storageService.getItem<IFullUserData>(
+      AUTH_USER
+    );
 
-    if (!chatId) return;
+    if (!chatId || !authUser) return;
 
     this._userApi
       .searchUserByLogin(login)
-      .then((user) => {
-        return user[0].id;
+      .then((users) => {
+        if (users.length === 0) {
+          throw new Error('user not found');
+        }
+
+        return users[0].id;
       })
       .then((id) => {
         return this._chatsApi.deleteUsersFromChat([id], chatId);
       })
       .then(() => {
-        // TODO: change to normal update
-        document.location.reload();
+        if (authUser.login === login) {
+          const { chats = [] } = storeService.getState();
+          const updatedChats = chats.filter((chat) => chat.id !== chatId);
+
+          storeService.set('chats', updatedChats);
+        }
       })
+      .then(() => this.onDialogClose())
       .catch(console.error);
   }
 

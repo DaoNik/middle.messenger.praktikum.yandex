@@ -2,7 +2,7 @@ import { Page500, Chats, Page404, Login, Register, Profile } from './pages';
 import { Router, RouterLink } from './core';
 import { AuthApiService, IFullUserData } from './api';
 import { AUTH_USER } from './constants.ts';
-import { StorageService } from './services';
+import { StorageService, storeService } from './services';
 
 export interface IRoute {
   path: string;
@@ -49,10 +49,13 @@ window.addEventListener(
     const authService = new AuthApiService();
 
     authService.user().then((data) => {
+      if (!data) return;
+
+      storeService.set('user', data);
+
       if (
-        data &&
-        (document.location.pathname === MainRoutes.LOGIN ||
-          document.location.pathname === MainRoutes.SIGN_UP)
+        document.location.pathname === MainRoutes.LOGIN ||
+        document.location.pathname === MainRoutes.SIGN_UP
       ) {
         router.go(MainRoutes.MESSENGER);
       }

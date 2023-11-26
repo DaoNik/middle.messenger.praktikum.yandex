@@ -12,7 +12,6 @@ import {
   FormGroup,
   inputHandler,
   isNotEmptyValidator,
-  PropertiesT,
 } from '../../core';
 import template from './chats.html?raw';
 import {
@@ -30,6 +29,7 @@ import {
   IState,
   MessageTypesEnum,
   StorageService,
+  storeService,
   withStore,
 } from '../../services';
 import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
@@ -41,14 +41,19 @@ import {
   isFirstDateLessThenSecondDate,
   isFirstDateMoreThenSecondDate,
 } from '../../utils';
-import { NonEmptyArrayT } from '../../types.ts';
+import { Indexed, NonEmptyArrayT } from '../../types.ts';
 
 const DEFAULT_TIMEOUT_FOR_LOAD_MESSAGES = 500;
 const CHAT_LOADS_FILES_CLASS = '.chat__load-files';
 const CHAT_LOADS_FILES_EMPTY_CLASS_NAME = 'chat__load-files_empty';
 const CHATS_LIST_ITEM_ACTIVE_CLASS_NAME = 'chats__list-item-active';
 
-class BaseChats extends Block {
+interface IChatsProperties {
+  chats: IChatData[];
+  chatMessages: IState['chatMessages'];
+}
+
+class BaseChats extends Block<IChatsProperties> {
   private readonly _chatsApiService = new ChatsApiService();
   private readonly _webSocketApi = new WebSocketApiService();
   private readonly _storageService = new StorageService();
@@ -75,19 +80,22 @@ class BaseChats extends Block {
       ],
       {
         chats: [],
-        chatMessages: {} as IState['chatMessages'],
+        chatMessages: {},
       },
       { display: 'grid' }
     );
   }
 
   override async render(
-    oldProperties?: PropertiesT,
-    newProperties?: PropertiesT
+    oldProperties?: IChatsProperties,
+    newProperties?: IChatsProperties
   ) {
-    await this._renderMessages(oldProperties, newProperties);
+    if (oldProperties || newProperties) {
+      await this._renderMessages(oldProperties, newProperties);
+      await this._renderChats(oldProperties, newProperties);
+    }
 
-    super.render(newProperties);
+    super.render(oldProperties, newProperties);
   }
 
   override async componentDidMount() {
@@ -95,11 +103,8 @@ class BaseChats extends Block {
       .getChats()
       .then((chats) => chats ?? [])
       .then((chats) => {
-        this.props['chats'] = chats;
-
-        return chats;
+        storeService.set('chats', chats);
       })
-      .then((chats) => this._renderChats(chats))
       .catch(console.error);
 
     super.componentDidMount();
@@ -110,19 +115,45 @@ class BaseChats extends Block {
     this._currentChatId = String(chatId);
   }
 
-  private async _renderChats(chats: IChatData[]): Promise<void> {
+  private async _renderChats(
+    oldProperties?: IChatsProperties,
+    newProperties?: IChatsProperties
+  ): Promise<void> {
+    if (isEqual(oldProperties as Indexed, newProperties as Indexed)) return;
+
+    const oldChats = oldProperties?.chats ?? [];
+    const newChats = newProperties?.chats ?? [];
     const chatsList = document.querySelector('.chats__list')!;
 
-    if (chats.length === 0) {
+    if (newChats.length === 0) {
       chatsList.innerHTML = '';
       return;
     }
 
+    if (oldChats.length > newChats.length) {
+      for (const chat of oldChats) {
+        if (!newChats.includes(chat)) {
+          if (String(chat.id) === this._currentChatId) {
+            this._clearMessages();
+          }
+
+          chatsList
+            .querySelector(`.chats__list-item[chatId="${chat.id}"]`)
+            ?.remove();
+        }
+      }
+
+      return;
+    }
+
+    // created new chats
     const templateContent = (
       document.querySelector('#chat-list-item-template') as HTMLTemplateElement
     ).content;
 
-    for (const chat of chats) {
+    const updatedChats = this._getAddedChats(oldChats, newChats);
+
+    for (const chat of updatedChats) {
       const { id, last_message, avatar } = chat;
       const template = templateContent.cloneNode(true) as DocumentFragment;
       const item = template.children[0] as HTMLLIElement;
@@ -161,11 +192,9 @@ class BaseChats extends Block {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   private async _renderMessages(
-    oldProperties?: PropertiesT,
-    newProperties?: PropertiesT
+    oldProperties?: IChatsProperties,
+    newProperties?: IChatsProperties
   ): Promise<void> {
-    if (!oldProperties && !newProperties) return;
-
     const chatId = this._currentChatId;
     const user = await this._storageService.getItem<IFullUserData>(AUTH_USER);
 
@@ -239,7 +268,9 @@ class BaseChats extends Block {
     }
 
     if (isAddToEnd) {
-      this._messagesContainer.append(...newCreatedElements.slice(1));
+      this._messagesContainer.append(
+        ...newCreatedElements.slice(isEmptyMessagesContainer ? 0 : 1)
+      );
     } else {
       const newFirstMessageDate = new Date(
         Date.parse(updatedMessages.at(-1)!.time)
@@ -392,7 +423,6 @@ class BaseChats extends Block {
       target.tagName === 'LI' ? target : target.parentElement
     ) as HTMLLIElement;
     const chatId = listItem.getAttribute('chatId');
-    const chatMessages = document.querySelector('.chat__messages');
 
     if (!chatId) return;
 
@@ -404,16 +434,14 @@ class BaseChats extends Block {
       .querySelector(`.${CHATS_LIST_ITEM_ACTIVE_CLASS_NAME}`)
       ?.classList.remove(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
 
-    if (chatMessages) {
-      chatMessages.innerHTML = '';
-    }
+    this._clearMessages();
 
     this._currentChatId = chatId;
     await this._storageService.setItem(CURRENT_CHAT_ID, chatId);
     listItem.classList.add(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
 
     await (this._webSocketApi.isConnected(chatId)
-      ? this._renderMessages({}, this.props)
+      ? this._renderMessages(undefined, this.props)
       : this._loadMessages(chatId));
   }
 
@@ -444,11 +472,9 @@ class BaseChats extends Block {
 
   private _hasChatMessages(
     chatId: string,
-    properties?: PropertiesT
+    properties?: IChatsProperties
   ): IMessage[] {
-    const chatMessages = (
-      properties ? properties['chatMessages'] ?? {} : {}
-    ) as Record<string, IMessage[]>;
+    const chatMessages = properties ? properties.chatMessages ?? {} : {};
 
     if (Object.getOwnPropertyNames(chatMessages).includes(chatId)) {
       return chatMessages[chatId];
@@ -464,6 +490,31 @@ class BaseChats extends Block {
     newDateParagraph.textContent = `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()}`;
 
     return newDateParagraph;
+  }
+
+  private _getAddedChats(
+    oldChats: IChatData[],
+    newChats: IChatData[]
+  ): IChatData[] {
+    const updatedChats = [];
+
+    if (oldChats.length === 0) {
+      return newChats;
+    }
+
+    const oldChatsMap = new Map();
+
+    for (const chat of oldChats) {
+      oldChatsMap.set(chat.id, chat);
+    }
+
+    for (const chat of newChats) {
+      if (!oldChatsMap.get(chat.id)) {
+        updatedChats.push(chat);
+      }
+    }
+
+    return updatedChats;
   }
 
   private _getUpdatedMessages(
@@ -497,6 +548,12 @@ class BaseChats extends Block {
       ) as NonEmptyArrayT,
       isAddToEnd: true,
     };
+  }
+
+  private _clearMessages(): void {
+    if (!this._messagesContainer) return;
+
+    this._messagesContainer.innerHTML = '';
   }
 
   private _createMessage(
@@ -534,7 +591,7 @@ class BaseChats extends Block {
     );
 
     this.templater.compile(
-      { ...message, time: getTime(time) } as unknown as PropertiesT,
+      { ...message, time: getTime(time) } as unknown as IChatsProperties,
       item,
       false
     );
@@ -544,7 +601,10 @@ class BaseChats extends Block {
 }
 
 function mapStateToProperties(state: IState) {
-  return { chatMessages: { ...state.chatMessages } };
+  return {
+    chatMessages: { ...state.chatMessages },
+    chats: [...(state.chats ?? [])],
+  };
 }
 
 export const Chats = withStore(mapStateToProperties)(BaseChats);

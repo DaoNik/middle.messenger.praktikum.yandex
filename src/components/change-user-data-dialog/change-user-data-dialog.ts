@@ -5,7 +5,6 @@ import {
   isPhoneNumber,
   inputHandler,
   blurHandler,
-  Router,
   FormGroup,
   FormControl,
 } from '../../core';
@@ -13,11 +12,10 @@ import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 import { IUpdateUserData, UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
-import { StorageService } from '../../services';
+import { StorageService, storeService } from '../../services';
 
 export class ChangeUserDataDialog extends Component {
   private readonly _userApiService = new UserApiService();
-  private readonly _router = Router.__instance;
   private readonly _storageService = new StorageService();
 
   readonly form = new FormGroup<IUpdateUserData>({
@@ -62,12 +60,11 @@ export class ChangeUserDataDialog extends Component {
     this._userApiService
       .updateUserData(this.form.getRawValue())
       .then((user) => {
+        storeService.set('user', user);
+
         return this._storageService.setItem(AUTH_USER, user);
       })
-      .then(() => {
-        // TODO: change to normal update
-        this._router.refresh();
-      })
+      .then(() => this.onDialogClose())
       .catch(console.error);
   }
 

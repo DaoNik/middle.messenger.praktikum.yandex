@@ -1,5 +1,5 @@
-import { Block, EventBus } from '../core';
-import { IFullUserData } from '../api';
+import { Block, EventBus, PropertiesT } from '../core';
+import { IChatData, IFullUserData } from '../api';
 
 // Вебинар 48 минута https://www.youtube.com/watch?v=9SLOq6zrEpo
 
@@ -31,6 +31,7 @@ export interface IMessage {
 export interface IState {
   user?: IFullUserData;
   chatMessages?: Record<string, IMessage[]>;
+  chats?: IChatData[];
 }
 
 enum StorageEvent {
@@ -53,8 +54,10 @@ class StoreService extends EventBus {
 
 export const storeService = new StoreService();
 
-export function withStore(mapStateToProperties: (state: IState) => any) {
-  return (Component: typeof Block) => {
+export function withStore<Properties extends PropertiesT = any>(
+  mapStateToProperties: (state: IState) => any
+) {
+  return (Component: typeof Block<Properties>) => {
     return class extends Component {
       constructor(properties: any) {
         super({

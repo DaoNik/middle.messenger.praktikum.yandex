@@ -41,7 +41,7 @@ export class LoginForm extends Component {
       })
       .then((value) => {
         if (!value) {
-          throw 'Get user error';
+          throw new Error('Get user error');
         }
 
         return value;

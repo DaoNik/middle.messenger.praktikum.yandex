@@ -9,6 +9,7 @@ import {
 import { Component } from '../../types.ts';
 import template from './add-chat-dialog.html?raw';
 import { ChatsApiService } from '../../api';
+import { storeService } from '../../services';
 
 export class AddChatDialog extends Component {
   private readonly _chatsApi = new ChatsApiService();
@@ -34,10 +35,11 @@ export class AddChatDialog extends Component {
 
     this._chatsApi
       .createChat(title)
-      .then(() => {
-        // TODO: change to normal update
-        document.location.reload();
+      .then(() => this._chatsApi.getChats())
+      .then((chats) => {
+        storeService.set('chats', chats);
       })
+      .then(() => this.onDialogClose())
       .catch(console.error);
   }
 

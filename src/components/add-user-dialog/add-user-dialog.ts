@@ -43,16 +43,17 @@ export class AddUserDialog extends Component {
 
     this._userApi
       .searchUserByLogin(login.value)
-      .then((user) => {
-        return user[0].id;
+      .then((users) => {
+        if (users.length === 0) {
+          throw new Error('user not found');
+        }
+
+        return users[0].id;
       })
       .then((id) => {
         return this._chatsApi.addUsersToChat([id], chatId);
       })
-      .then(() => {
-        // TODO: change to normal update
-        document.location.reload();
-      })
+      .then(() => this.onDialogClose())
       .catch(console.error);
   }
 

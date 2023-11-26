@@ -14,21 +14,7 @@
       [forOf]="chats"
       [forLet]="chat"
       (click)="onChatClicked"
-    >
-      <template id="chat-list-item-template">
-        <li class="chats__list-item">
-          <h3 class="chats__item-title">{{title}}</h3>
-          <img
-            class="chats__item-image"
-            src="/assets/no-avatar.svg"
-            alt="аватар"
-          />
-          <p class="chats__item-message">{{last_message.content}}</p>
-          <span class="chats__item-time">{{last_message.time}}</span>
-          <span class="chats__message-num">{{unread_count}}</span>
-        </li>
-      </template>
-    </ul>
+    ></ul>
   </aside>
   <section class="chat">
     <div class="chat__header">
@@ -67,6 +53,15 @@
       <div class="chat__load-files chat__load-files_empty"></div>
     </form>
   </section>
+  <template id="chat-list-item-template">
+    <li class="chats__list-item">
+      <h3 class="chats__item-title">{{title}}</h3>
+      <img class="chats__item-image" src="/assets/no-avatar.svg" alt="аватар" />
+      <p class="chats__item-message">{{last_message.content}}</p>
+      <span class="chats__item-time">{{last_message.time}}</span>
+      <span class="chats__message-num">{{unread_count}}</span>
+    </li>
+  </template>
   <template id="chat-message-with-text-template">
     <div class="chat__message-container">
       <div class="chat__message chat__message-with-text">

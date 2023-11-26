@@ -17,7 +17,17 @@ interface IAuthUserFormData extends IAuthUser {
   password_repeat: string;
 }
 
-export class RegisterForm extends Component {
+interface IRegisterFormProperties {
+  email_error: string;
+  login_error: string;
+  first_name_error: string;
+  second_name_error: string;
+  phone_error: string;
+  password_error: string;
+  password_repeat_error: string;
+}
+
+export class RegisterForm extends Component<IRegisterFormProperties> {
   private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
 
@@ -69,7 +79,7 @@ export class RegisterForm extends Component {
       })
       .then((value) => {
         if (!value) {
-          throw 'Get user error';
+          throw new Error('Get user error');
         }
 
         return value;

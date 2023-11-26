@@ -1,13 +1,11 @@
 import { Component } from '../../types.ts';
 import template from './load-file-dialog.html?raw';
-import { Router } from '../../core';
 import { UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
-import { StorageService } from '../../services';
+import { StorageService, storeService } from '../../services';
 
 export class LoadFileDialog extends Component {
   private readonly _userApiService = new UserApiService();
-  private readonly _router = Router.__instance;
   private readonly _storageService = new StorageService();
 
   readonly selector = 'load-file-dialog';
@@ -59,8 +57,7 @@ export class LoadFileDialog extends Component {
     if (user) {
       await this._storageService.setItem(AUTH_USER, user);
 
-      // TODO: change to normal update
-      this._router.refresh();
+      storeService.set('user', user);
     }
   }
 

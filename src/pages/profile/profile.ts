@@ -4,15 +4,13 @@ import {
   LoadFileDialog,
 } from '../../components';
 import template from './profile.html?raw';
-import { Block, PropertiesT, Router } from '../../core';
+import { Block, Router } from '../../core';
 import { AuthApiService, BASE_HREF, IFullUserData } from '../../api';
-import { AUTH_USER } from '../../constants.ts';
-import { StorageService } from '../../services';
+import { IState, withStore } from '../../services';
 
-export class Profile extends Block {
+class BaseProfile extends Block<IFullUserData> {
   private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
-  private readonly _storageService = new StorageService();
 
   constructor() {
     super(
@@ -22,39 +20,22 @@ export class Profile extends Block {
         new ChangePasswordDialog(),
         new LoadFileDialog(),
       ],
-      {
-        email: '',
-        login: '',
-        first_name: '',
-        second_name: '',
-        phone: '',
-        display_name: '',
-      },
+      undefined,
       {
         display: 'flex',
       }
     );
   }
 
-  override async componentDidMount(): Promise<void> {
-    const user = await this._storageService.getItem<IFullUserData>(AUTH_USER);
-    const image = document.querySelector(
-      '.profile__image'
-    ) as HTMLImageElement | null;
-
-    if (user) {
-      this.props = user as unknown as PropertiesT;
-
-      if (image) {
-        const { avatar } = user;
-
-        if (avatar) {
-          image.src = `${BASE_HREF}/resources${avatar}`;
-        }
-      }
+  override render(
+    oldProperties?: IFullUserData,
+    newProperties?: IFullUserData
+  ) {
+    if (newProperties) {
+      this._renderProfile(newProperties);
     }
 
-    super.componentDidMount();
+    super.render(oldProperties, newProperties);
   }
 
   onAvatarClicked() {
@@ -81,4 +62,24 @@ export class Profile extends Block {
       .then(() => this._router.go('/'))
       .catch(console.error);
   }
+
+  private _renderProfile(user: IFullUserData): void {
+    const image = document.querySelector(
+      '.profile__image'
+    ) as HTMLImageElement | null;
+
+    if (image) {
+      const { avatar } = user;
+
+      if (avatar) {
+        image.src = `${BASE_HREF}/resources${avatar}`;
+      }
+    }
+  }
 }
+
+function mapStateToProperties(state: IState) {
+  return { ...state.user };
+}
+
+export const Profile = withStore(mapStateToProperties)(BaseProfile);

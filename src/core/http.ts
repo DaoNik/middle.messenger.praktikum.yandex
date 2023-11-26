@@ -15,6 +15,12 @@ interface IHttpOptions {
   method?: string;
 }
 
+type HTTPMethod = <R = unknown>(
+  url: string,
+  options?: IHttpOptions,
+  withCredentials?: boolean
+) => Promise<R>;
+
 const CONTENT_TYPE = 'Content-Type';
 
 function queryStringify(data: HttpDataT) {
@@ -25,16 +31,16 @@ function queryStringify(data: HttpDataT) {
 }
 
 export class HTTPTransport {
-  get<T>(
+  get: HTTPMethod = (
     url: string,
     options: IHttpOptions = {},
     withCredentials?: boolean
-  ): Promise<T> {
+  ) => {
     if (options.data && Object.keys(options.data).length > 0) {
       url += queryStringify(options.data);
     }
 
-    return this.request<T>(
+    return this.request(
       url,
       {
         ...options,
@@ -44,20 +50,20 @@ export class HTTPTransport {
       options.timeout,
       withCredentials
     );
-  }
+  };
 
-  post<T>(
+  post: HTTPMethod = (
     url: string,
     options: IHttpOptions = {},
     withCredentials?: boolean
-  ): Promise<T> {
+  ) => {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
       headers[CONTENT_TYPE] = 'application/json';
     }
 
-    return this.request<T>(
+    return this.request(
       url,
       {
         ...options,
@@ -67,20 +73,20 @@ export class HTTPTransport {
       options.timeout,
       withCredentials
     );
-  }
+  };
 
-  put<T>(
+  put: HTTPMethod = (
     url: string,
     options: IHttpOptions = {},
     withCredentials?: boolean
-  ): Promise<T> {
+  ) => {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
       headers[CONTENT_TYPE] = 'application/json';
     }
 
-    return this.request<T>(
+    return this.request(
       url,
       {
         ...options,
@@ -90,39 +96,39 @@ export class HTTPTransport {
       options.timeout,
       withCredentials
     );
-  }
+  };
 
-  patch<T>(
+  patch: HTTPMethod = (
     url: string,
     options: IHttpOptions = {},
     withCredentials?: boolean
-  ): Promise<T> {
-    return this.request<T>(
+  ) => {
+    return this.request(
       url,
       { ...options, method: METHODS.PATCH },
       options.timeout,
       withCredentials
     );
-  }
+  };
 
-  delete<T>(
+  delete: HTTPMethod = (
     url: string,
     options: IHttpOptions = {},
     withCredentials?: boolean
-  ): Promise<T> {
+  ) => {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
       headers[CONTENT_TYPE] = 'application/json';
     }
 
-    return this.request<T>(
+    return this.request(
       url,
       { ...options, method: METHODS.DELETE, headers },
       options.timeout,
       withCredentials
     );
-  }
+  };
 
   request<T>(
     url: string,
@@ -169,7 +175,12 @@ export class HTTPTransport {
         return data;
       })
       .then((data) => {
-        return JSON.parse(data.response);
+        // NOTE: this code only handles a possible error when parsing data, because the server can return a response - "OK"
+        try {
+          return JSON.parse(data.response);
+        } catch {
+          return data.response;
+        }
       });
   }
 }

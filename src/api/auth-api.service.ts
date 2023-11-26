@@ -16,6 +16,7 @@ export interface IAuthUser {
 export interface IFullUserData extends Omit<IAuthUser, 'password'> {
   id: number;
   avatar: string;
+  display_name: string;
 }
 
 export interface IAuthCredentials {
@@ -24,7 +25,6 @@ export interface IAuthCredentials {
 }
 
 export class AuthApiService {
-  // eslint-disable-next-line no-use-before-define
   static __instance: AuthApiService;
 
   private readonly _http = new HTTPTransport();

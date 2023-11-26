@@ -122,10 +122,6 @@ export class Router {
   getRoute(pathname: string) {
     return this.routes.find((route) => route.match(pathname));
   }
-  // TODO: delete it
-  refresh(): void {
-    window.location.reload();
-  }
 
   private async _onRoute(pathname: string) {
     const route = this.getRoute(pathname);

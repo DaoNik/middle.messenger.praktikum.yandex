@@ -1,7 +1,7 @@
 import { Component } from '../../types.ts';
 import { ChatsApiService } from '../../api';
 import template from './confirm-dialog.html?raw';
-import { StorageService } from '../../services';
+import { StorageService, storeService } from '../../services';
 import { CURRENT_CHAT_ID } from '../../constants.ts';
 
 export class ConfirmDialog extends Component {
@@ -22,9 +22,12 @@ export class ConfirmDialog extends Component {
     this._chatsApi
       .deleteChat(chatId)
       .then(() => {
-        // TODO: change to normal update
-        document.location.reload();
+        const { chats = [] } = storeService.getState();
+        const updatedChats = chats.filter((chat) => chat.id !== chatId);
+
+        storeService.set('chats', updatedChats);
       })
+      .then(() => this.onDialogClose())
       .catch(console.error);
   }
 

@@ -12,15 +12,22 @@ export class ChatMenu extends Component {
     document
       .querySelector('.overlay-add-user')!
       .classList.add('overlay_opened');
+    this.close();
   }
 
   onRemoveUserDialogOpened() {
     document
       .querySelector('.overlay-remove-user')!
       .classList.add('overlay_opened');
+    this.close();
   }
 
   onRemoveChatDialogOpened() {
     document.querySelector('.overlay-confirm')!.classList.add('overlay_opened');
+    this.close();
+  }
+
+  close() {
+    this.element?.classList.remove('opened');
   }
 }

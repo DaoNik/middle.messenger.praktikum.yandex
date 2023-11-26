@@ -1,4 +1,4 @@
-export type PrimitiveT = string | number | boolean | null | undefined;
+export type PrimitiveT = string | number | bigint | boolean | null | undefined;
 
 export function isPrimitive(value: unknown): value is PrimitiveT {
   const type = typeof value;

@@ -4,13 +4,7 @@ import { Template } from './template.ts';
 import { Component } from '../types.ts';
 
 export type EventT = (...parameters: any[]) => void;
-export type EventsT = Record<string, EventT>;
-export type PropertiesT = Record<string, unknown>;
-
-export interface IBlockProperties {
-  props: PropertiesT;
-  events: EventsT;
-}
+export type PropertiesT = Record<string, any>;
 
 export enum BlockEvents {
   INIT = 'init',
@@ -20,9 +14,9 @@ export enum BlockEvents {
   DESTROY = 'destroy',
 }
 
-export abstract class Block {
+export abstract class Block<Properties extends PropertiesT = any> {
   eventBus = new EventBus();
-  props: PropertiesT;
+  props: Properties;
   blockId = uuidV4();
   content: string;
   templater = new Template();
@@ -33,7 +27,7 @@ export abstract class Block {
   protected constructor(
     content: string,
     declarations: Component[] = [],
-    properties: PropertiesT = {},
+    properties: Properties = {} as any,
     hostStyles: Record<string, string> = {}
   ) {
     this.content = content;
@@ -83,21 +77,21 @@ export abstract class Block {
   }
 
   private _render(
-    oldProperties?: PropertiesT,
-    newProperties?: PropertiesT
+    oldProperties?: Properties,
+    newProperties?: Properties
   ): void {
     this.render(oldProperties, newProperties);
   }
 
-  render(_oldProperties?: PropertiesT, newProperties?: PropertiesT): void {
+  render(_oldProperties?: Properties, newProperties?: Properties): void {
     if (this.content && this.element) {
       this.templater.compile(newProperties ?? this.props, this.element);
     }
   }
 
   private _componentDidUpdate(
-    oldProperties: PropertiesT,
-    newProperties: PropertiesT
+    oldProperties: Properties,
+    newProperties: Properties
   ): void {
     const response = this.componentDidUpdate(oldProperties, newProperties);
 
@@ -107,21 +101,21 @@ export abstract class Block {
   }
 
   componentDidUpdate(
-    oldProperties: PropertiesT,
-    newProperties: PropertiesT
+    oldProperties: Properties,
+    newProperties: Properties
   ): boolean {
     return JSON.stringify(oldProperties) !== JSON.stringify(newProperties);
   }
 
-  private _makePropsProxy(properties: PropertiesT): PropertiesT {
+  private _makePropsProxy(properties: Properties): Properties {
     const eventBus = this.eventBus;
 
     return new Proxy(properties, {
-      get(target: PropertiesT, property: string) {
+      get(target: Properties, property: keyof Properties & string) {
         const value = target[property];
         return typeof value === 'function' ? value.bind(target) : value;
       },
-      set(target: PropertiesT, property: string, value) {
+      set(target: Properties, property: keyof Properties & string, value) {
         const oldTarget = { ...target };
         target[property] = value;
 
@@ -149,7 +143,7 @@ export abstract class Block {
     }
   }
 
-  setProps(nextProperties: PropertiesT): void {
+  setProps(nextProperties: Properties): void {
     if (!nextProperties) return;
 
     Object.assign(this.props, nextProperties);
