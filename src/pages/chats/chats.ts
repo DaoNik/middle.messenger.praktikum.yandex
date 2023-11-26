@@ -146,7 +146,6 @@ class BaseChats extends Block<IChatsProperties> {
       return;
     }
 
-    // created new chats
     const templateContent = (
       document.querySelector('#chat-list-item-template') as HTMLTemplateElement
     ).content;
@@ -157,6 +156,9 @@ class BaseChats extends Block<IChatsProperties> {
       const { id, last_message, avatar } = chat;
       const template = templateContent.cloneNode(true) as DocumentFragment;
       const item = template.children[0] as HTMLLIElement;
+      const chatAvatar = item.querySelector<HTMLImageElement>(
+        'img.chats__item-image'
+      );
 
       const chatIdAttribute = document.createAttribute('chatId');
 
@@ -183,6 +185,10 @@ class BaseChats extends Block<IChatsProperties> {
         avatar: avatar ?? '/assets/no-avatar.svg',
         last_message: correctLastMessage,
       };
+
+      if (chatAvatar) {
+        chatAvatar.src = formattedChat.avatar;
+      }
 
       this.templater.compile(formattedChat as any, item, false);
 
