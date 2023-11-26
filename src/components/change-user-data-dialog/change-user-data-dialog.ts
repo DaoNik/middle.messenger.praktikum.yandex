@@ -10,11 +10,27 @@ import {
 } from '../../core';
 import { Component } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
-import { IUpdateUserData, UserApiService } from '../../api';
+import { IFullUserData, IUpdateUserData, UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
-import { StorageService, storeService } from '../../services';
+import {
+  IState,
+  StorageService,
+  storeService,
+  withStore,
+} from '../../services';
+import { isEqual } from '../../utils';
 
-export class ChangeUserDataDialog extends Component {
+interface IChangeUserDataDialogProperties {
+  user?: IFullUserData;
+  email_error: string;
+  login_error: string;
+  first_name_error: string;
+  second_name_error: string;
+  phone_error: string;
+  display_name_error: string;
+}
+
+class BaseChangeUserDataDialog extends Component<IChangeUserDataDialogProperties> {
   private readonly _userApiService = new UserApiService();
   private readonly _storageService = new StorageService();
 
@@ -52,6 +68,38 @@ export class ChangeUserDataDialog extends Component {
     });
   }
 
+  override render(
+    oldProperties?: IChangeUserDataDialogProperties,
+    newProperties?: IChangeUserDataDialogProperties
+  ) {
+    if (!isEqual(oldProperties?.user ?? {}, newProperties?.user ?? {})) {
+      const { user } = newProperties ?? {};
+
+      // TODO: remake templater that delete it
+      if (user) {
+        const inputs = document.querySelectorAll<HTMLInputElement>(
+          'form[name="change-data"] input'
+        );
+
+        for (const input of inputs) {
+          input.value = String(user[input.name as keyof IFullUserData]);
+        }
+
+        for (const [key, control] of Object.entries(this.form.controls)) {
+          control.setValue({
+            target: { value: String(user[key as keyof IFullUserData]) },
+          } as unknown as InputEvent);
+        }
+      }
+    }
+
+    super.render(oldProperties, newProperties);
+  }
+
+  override componentDidMount() {
+    super.componentDidMount();
+  }
+
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
 
@@ -84,3 +132,11 @@ export class ChangeUserDataDialog extends Component {
     event.stopPropagation();
   }
 }
+
+function mapStateToProperties(state: IState) {
+  return { user: { ...state.user } };
+}
+
+export const ChangeUserDataDialog = withStore(mapStateToProperties)(
+  BaseChangeUserDataDialog
+);
