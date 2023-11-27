@@ -153,44 +153,7 @@ class BaseChats extends Block<IChatsProperties> {
     const updatedChats = this._getAddedChats(oldChats, newChats);
 
     for (const chat of updatedChats) {
-      const { id, last_message, avatar } = chat;
-      const template = templateContent.cloneNode(true) as DocumentFragment;
-      const item = template.children[0] as HTMLLIElement;
-      const chatAvatar = item.querySelector<HTMLImageElement>(
-        'img.chats__item-image'
-      );
-
-      const chatIdAttribute = document.createAttribute('chatId');
-
-      chatIdAttribute.value = String(id);
-      item.attributes.setNamedItem(chatIdAttribute);
-
-      if (this._currentChatId === String(id)) {
-        item.classList.add(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
-        await this._loadMessages(String(id));
-      }
-
-      const correctLastMessage = last_message
-        ? {
-            ...last_message,
-            time: getTime(last_message.time),
-          }
-        : {
-            content: 'Ещё нет сообщений',
-            time: '',
-          };
-
-      const formattedChat = {
-        ...chat,
-        avatar: avatar ?? '/assets/no-avatar.svg',
-        last_message: correctLastMessage,
-      };
-
-      if (chatAvatar) {
-        chatAvatar.src = formattedChat.avatar;
-      }
-
-      this.templater.compile(formattedChat as any, item, false);
+      const item = await this._createChat(chat, templateContent);
 
       chatsList.append(item);
     }
@@ -560,6 +523,52 @@ class BaseChats extends Block<IChatsProperties> {
     if (!this._messagesContainer) return;
 
     this._messagesContainer.innerHTML = '';
+  }
+
+  private async _createChat(
+    chat: IChatData,
+    templateContent: DocumentFragment
+  ): Promise<HTMLLIElement> {
+    const { id, last_message, avatar } = chat;
+    const template = templateContent.cloneNode(true) as DocumentFragment;
+    const item = template.children[0] as HTMLLIElement;
+    const chatAvatar = item.querySelector<HTMLImageElement>(
+      'img.chats__item-image'
+    );
+
+    const chatIdAttribute = document.createAttribute('chatId');
+
+    chatIdAttribute.value = String(id);
+    item.attributes.setNamedItem(chatIdAttribute);
+
+    if (this._currentChatId === String(id)) {
+      item.classList.add(CHATS_LIST_ITEM_ACTIVE_CLASS_NAME);
+      await this._loadMessages(String(id));
+    }
+
+    const correctLastMessage = last_message
+      ? {
+          ...last_message,
+          time: getTime(last_message.time),
+        }
+      : {
+          content: 'Ещё нет сообщений',
+          time: '',
+        };
+
+    const formattedChat = {
+      ...chat,
+      avatar: avatar ?? '/assets/no-avatar.svg',
+      last_message: correctLastMessage,
+    };
+
+    if (chatAvatar) {
+      chatAvatar.src = formattedChat.avatar;
+    }
+
+    this.templater.compile(formattedChat as any, item, false);
+
+    return item;
   }
 
   private _createMessage(
