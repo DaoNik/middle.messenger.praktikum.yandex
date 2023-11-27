@@ -1,10 +1,11 @@
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './load-file-dialog.html?raw';
 import { UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
 import { StorageService, storeService } from '../../services';
+import { Block } from '../../core';
 
-export class LoadFileDialog extends Component {
+export class LoadFileDialog extends Block implements IComponent {
   private readonly _userApiService = new UserApiService();
   private readonly _storageService = new StorageService();
 

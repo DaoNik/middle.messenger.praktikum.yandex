@@ -5,14 +5,18 @@ import {
   inputHandler,
   FormGroup,
   FormControl,
+  Block,
 } from '../../core';
 import template from './remove-user-dialog.html?raw';
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import { ChatsApiService, IFullUserData, UserApiService } from '../../api';
 import { StorageService, storeService } from '../../services';
 import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
 
-export class RemoveUserDialog extends Component<{ login_error: string }> {
+export class RemoveUserDialog
+  extends Block<{ login_error: string }>
+  implements IComponent
+{
   private readonly _userApi = new UserApiService();
   private readonly _chatsApi = new ChatsApiService();
   private readonly _storageService = new StorageService();

@@ -1,7 +1,7 @@
 import { EventBus } from './event-bus';
 import { v4 as uuidV4 } from 'uuid';
 import { Template } from './template.ts';
-import { Component } from '../types.ts';
+import { IComponent } from '../types.ts';
 
 export type EventT = (...parameters: any[]) => void;
 export type PropertiesT = Record<string, any>;
@@ -20,13 +20,13 @@ export abstract class Block<Properties extends PropertiesT = any> {
   blockId = uuidV4();
   content: string;
   templater = new Template();
-  declarations: Component[];
+  declarations: (Block & IComponent)[];
   hostStyles: Record<string, string>;
   element: HTMLElement | null = null;
 
   protected constructor(
     content: string,
-    declarations: Component[] = [],
+    declarations: (Block & IComponent)[] = [],
     properties: Properties = {} as any,
     hostStyles: Record<string, string> = {}
   ) {

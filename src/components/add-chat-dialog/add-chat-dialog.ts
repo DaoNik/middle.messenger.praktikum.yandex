@@ -1,4 +1,5 @@
 import {
+  Block,
   blurHandler,
   FormControl,
   FormGroup,
@@ -6,12 +7,12 @@ import {
   isMinimalLength,
   isNotEmptyValidator,
 } from '../../core';
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './add-chat-dialog.html?raw';
 import { ChatsApiService } from '../../api';
 import { storeService } from '../../services';
 
-export class AddChatDialog extends Component {
+export class AddChatDialog extends Block implements IComponent {
   private readonly _chatsApi = new ChatsApiService();
 
   readonly form = new FormGroup<{ title: string }>({

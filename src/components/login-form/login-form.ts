@@ -6,12 +6,13 @@ import {
   blurHandler,
   FormGroup,
   FormControl,
+  Block,
 } from '../../core';
-import { Component } from '../../types.ts';
 import template from './login-form.html?raw';
 import { AuthApiService, IAuthCredentials } from '../../api';
+import { IComponent } from '../../types.ts';
 
-export class LoginForm extends Component {
+export class LoginForm extends Block implements IComponent {
   private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
 

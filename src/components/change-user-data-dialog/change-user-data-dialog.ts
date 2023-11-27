@@ -7,8 +7,9 @@ import {
   blurHandler,
   FormGroup,
   FormControl,
+  Block,
 } from '../../core';
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './change-user-data-dialog.html?raw';
 import { IFullUserData, IUpdateUserData, UserApiService } from '../../api';
 import { AUTH_USER } from '../../constants.ts';
@@ -30,7 +31,10 @@ interface IChangeUserDataDialogProperties {
   display_name_error: string;
 }
 
-class BaseChangeUserDataDialog extends Component<IChangeUserDataDialogProperties> {
+class BaseChangeUserDataDialog
+  extends Block<IChangeUserDataDialogProperties>
+  implements IComponent
+{
   private readonly _userApiService = new UserApiService();
   private readonly _storageService = new StorageService();
 
@@ -137,6 +141,6 @@ function mapStateToProperties(state: IState) {
   return { user: { ...state.user } };
 }
 
-export const ChangeUserDataDialog = withStore(mapStateToProperties)(
-  BaseChangeUserDataDialog
-);
+export const ChangeUserDataDialog = withStore<IChangeUserDataDialogProperties>(
+  mapStateToProperties
+)(BaseChangeUserDataDialog);

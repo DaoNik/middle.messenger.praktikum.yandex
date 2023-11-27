@@ -1,7 +1,8 @@
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './chat-menu.html?raw';
+import { Block } from '../../core';
 
-export class ChatMenu extends Component {
+export class ChatMenu extends Block implements IComponent {
   selector = 'chat-menu';
 
   constructor() {

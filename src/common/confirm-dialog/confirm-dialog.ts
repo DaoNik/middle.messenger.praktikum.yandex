@@ -1,10 +1,11 @@
-import { Component } from '../../types.ts';
 import { ChatsApiService } from '../../api';
 import template from './confirm-dialog.html?raw';
 import { StorageService, storeService } from '../../services';
 import { CURRENT_CHAT_ID } from '../../constants.ts';
+import { Block } from '../../core';
+import { IComponent } from '../../types.ts';
 
-export class ConfirmDialog extends Component {
+export class ConfirmDialog extends Block implements IComponent {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _storageService = new StorageService();
 

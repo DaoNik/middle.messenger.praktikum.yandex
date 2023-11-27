@@ -1,5 +1,5 @@
-import { Component } from '../types.ts';
 import { Block, PropertiesT } from './block.ts';
+import { IComponent } from '../types.ts';
 
 const getPropertyValue = (property: PropertiesT, key: string): any => {
   const paths = key.split('.');
@@ -32,7 +32,7 @@ export class Template {
 
   precompile(
     template: string,
-    declarations: Component[],
+    declarations: (Block & IComponent)[],
     blockId: string
   ): string {
     const keys = template.match(/{{>[\w-]*}}/gm);

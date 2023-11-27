@@ -4,8 +4,9 @@ import {
   FormGroup,
   FormControl,
   blurHandler,
+  Block,
 } from '../../core';
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './change-password-dialog.html?raw';
 import { IUpdateUserPasswordData, UserApiService } from '../../api';
 
@@ -13,7 +14,7 @@ interface IUpdateUserPasswordFormData extends IUpdateUserPasswordData {
   password_repeat: string;
 }
 
-export class ChangePasswordDialog extends Component {
+export class ChangePasswordDialog extends Block implements IComponent {
   private readonly _userApiService = new UserApiService();
 
   readonly form = new FormGroup<IUpdateUserPasswordFormData>({

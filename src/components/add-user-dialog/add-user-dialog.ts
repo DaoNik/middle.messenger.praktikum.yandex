@@ -1,4 +1,5 @@
 import {
+  Block,
   blurHandler,
   FormControl,
   FormGroup,
@@ -6,13 +7,13 @@ import {
   isMinimalLength,
   isNotEmptyValidator,
 } from '../../core';
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './add-user-dialog.html?raw';
 import { ChatsApiService, UserApiService } from '../../api';
 import { StorageService } from '../../services';
 import { CURRENT_CHAT_ID } from '../../constants.ts';
 
-export class AddUserDialog extends Component {
+export class AddUserDialog extends Block implements IComponent {
   private readonly _chatsApi = new ChatsApiService();
   private readonly _userApi = new UserApiService();
   private readonly _storageService = new StorageService();

@@ -8,8 +8,9 @@ import {
   Router,
   FormGroup,
   FormControl,
+  Block,
 } from '../../core';
-import { Component } from '../../types.ts';
+import { IComponent } from '../../types.ts';
 import template from './register-form.html?raw';
 import { AuthApiService, IAuthUser } from '../../api';
 
@@ -27,7 +28,10 @@ interface IRegisterFormProperties {
   password_repeat_error: string;
 }
 
-export class RegisterForm extends Component<IRegisterFormProperties> {
+export class RegisterForm
+  extends Block<IRegisterFormProperties>
+  implements IComponent
+{
   private readonly _authApiService = new AuthApiService();
   private readonly _router = Router.__instance;
 
