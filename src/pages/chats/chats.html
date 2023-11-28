@@ -1,113 +1,20 @@
-<div class="wrapper" id="{{blockId}}">
+<div class="wrapper" blockId="{{blockId}}">
   <aside class="chats">
-    <a class="chats__profile-link" href="/profile"
-      >Профиль<span class="chats__profile-arrow"> > </span></a
-    >
+    <div class="chats__actions">
+      <button class="chats__add-chat" (click)="onAddChatOpened">
+        Добавить чат
+      </button>
+      <router-link class="chats__profile-link" link="/settings"
+        >Профиль<span class="chats__profile-arrow"> > </span></router-link
+      >
+    </div>
     <input class="chats__search" placeholder="Поиск" type="text" />
-    <ul class="chats__list">
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus et
-          inventore placeat quaerat, sunt vero?
-        </p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-      <li class="chats__list-item">
-        <h3 class="chats__item-title">User name</h3>
-        <img
-          class="chats__item-image"
-          src="/assets/no-avatar.svg"
-          alt="аватар"
-        />
-        <p class="chats__item-message">Последнее сообщение</p>
-        <span class="chats__item-time">10:49</span>
-        <span class="chats__message-num">2</span>
-      </li>
-    </ul>
+    <ul
+      class="chats__list"
+      [forOf]="chats"
+      [forLet]="chat"
+      (click)="onChatClicked"
+    ></ul>
   </aside>
   <section class="chat">
     <div class="chat__header">
@@ -117,65 +24,21 @@
         <img class="chat__menu-image" src="/assets/menu.svg" alt="меню" />
       </button>
     </div>
-    <div class="chat__messages">
-      <p class="chat__date">19 июля</p>
-      <div class="chat__message-container">
-        <div
-          class="chat__message chat__message-with-text chat__message_to-user"
-        >
-          <p class="chat__message-content">
-            Привет! Смотри, тут всплыл интересный кусок лунной космической
-            истории — НАСА в какой-то момент попросила Хассельблад адаптировать
-            модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты
-            летали с моделью 500 EL — и к слову говоря, все тушки этих камер все
-            еще находятся на поверхности Луны, так как астронавты с собой
-            забрали только кассеты с пленкой. Хассельблад в итоге адаптировал
-            SWC для космоса, но что-то пошло не так и на ракету они так никогда
-            и не попали. Всего их было произведено 25 штук, одну из них недавно
-            продали на аукционе за 45000 евро.
-          </p>
-          <div class="chat__message-time">11:56</div>
-        </div>
-      </div>
-      <div class="chat__message-container">
-        <div
-          class="chat__message chat__message-with-photo chat__message_to-user"
-        >
-          <img
-            class="chat__message-photo"
-            src="/assets/camera.png"
-            alt="камера"
-          />
-          <span class="chat__message-time">11:56</span>
-        </div>
-      </div>
-      <div class="chat__message-container">
-        <div
-          class="chat__message chat__message-with-text chat__message_from-user"
-        >
-          <p class="chat__message-content">Круто!</p>
-          <div class="chat__message-time">
-            <img
-              class="chat__message-status"
-              src="/assets/reading_message.svg"
-            />
-            12:00
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="chat__messages" (scroll)="onMessagesContainerScroll"></div>
     <form class="chat__add-text" name="send-message" (submit)="onSubmit">
-      <buttton
-        class="chat__button-attach"
-        type="button"
-        (click)="onClipMenuToggled"
-      >
-        <img
+      <input
+        type="file"
+        id="clip-file"
+        accept="image/*"
+        (input)="onInputFile"
+        hidden
+      />
+      <label for="clip-file" class="chat__button-attach"
+        ><img
           src="/assets/clip.svg"
           alt="прикрепить файл"
           class="chat__image-clip"
-        />
-      </buttton>
+      /></label>
       <input
         type="text"
         placeholder="Сообщение"
@@ -187,7 +50,34 @@
       <button class="chat__button-send" type="submit" disabled>
         <img src="/assets/exit.svg" alt="отправить" class="chat__image-send" />
       </button>
+      <div class="chat__load-files chat__load-files_empty"></div>
     </form>
   </section>
+  <template id="chat-list-item-template">
+    <li class="chats__list-item">
+      <h3 class="chats__item-title">{{title}}</h3>
+      <img class="chats__item-image" src="/assets/no-avatar.svg" alt="аватар" />
+      <p class="chats__item-message">{{last_message.content}}</p>
+      <span class="chats__item-time">{{last_message.time}}</span>
+      <span class="chats__message-num">{{unread_count}}</span>
+    </li>
+  </template>
+  <template id="chat-message-with-text-template">
+    <div class="chat__message-container">
+      <div class="chat__message chat__message-with-text">
+        <p class="chat__message-content">{{content}}</p>
+        <div class="chat__message-time">{{time}}</div>
+      </div>
+    </div>
+  </template>
+  <template id="chat-message-with-photo-template">
+    <div class="chat__message-container">
+      <div class="chat__message chat__message-with-photo">
+        <img class="chat__message-photo" alt="" src="" />
+        <span class="chat__message-time">{{time}}</span>
+      </div>
+    </div>
+  </template>
+  {{>chat-menu}} {{>clip-menu}} {{>add-user-dialog}} {{>remove-user-dialog}}
+  {{>add-chat-dialog}} {{>confirm-dialog}}
 </div>
-{{>chat-menu}} {{>clip-menu}} {{>add-user-dialog}} {{>remove-user-dialog}}

@@ -1,30 +1,35 @@
-<section class="profile" id="{{blockId}}">
-  <img src="/assets/no-avatar.svg" class="profile__image" alt="ваш аватар" />
-  <h2 class="profile__title">Иван</h2>
+<section class="profile" blockId="{{blockId}}">
+  <img
+    src="/assets/no-avatar.svg"
+    class="profile__image"
+    alt="ваш аватар"
+    (click)="onAvatarClicked"
+  />
+  <h2 class="profile__title">{{first_name}}</h2>
   <table class="profile__table profile__table_big">
     <tr class="profile__table-row">
       <td class="profile__table-cell">Почта</td>
-      <td class="profile__table-cell">pochta@yandex.ru</td>
+      <td class="profile__table-cell">{{email}}</td>
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">Логин</td>
-      <td class="profile__table-cell">ivanivanov</td>
+      <td class="profile__table-cell">{{login}}</td>
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">Имя</td>
-      <td class="profile__table-cell">Иван</td>
+      <td class="profile__table-cell">{{first_name}}</td>
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">Фамилия</td>
-      <td class="profile__table-cell">Иванов</td>
+      <td class="profile__table-cell">{{second_name}}</td>
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">Имя в чате</td>
-      <td class="profile__table-cell">Иван</td>
+      <td class="profile__table-cell">{{display_name}}</td>
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">Телефон</td>
-      <td class="profile__table-cell">+7 (909) 967 30 30</td>
+      <td class="profile__table-cell">{{phone}}</td>
     </tr>
   </table>
   <table class="profile__table profile__table_small">
@@ -52,20 +57,24 @@
     </tr>
     <tr class="profile__table-row">
       <td class="profile__table-cell">
-        <button class="profile__button profile__button_warn" type="button">
+        <button
+          class="profile__button profile__button_warn"
+          type="button"
+          (click)="onLogout"
+        >
           Выйти
         </button>
       </td>
     </tr>
   </table>
   <aside class="sidebar">
-    <a href="/chats" class="sidebar__link">
+    <router-link link="/messenger" class="sidebar__link">
       <img
         src="/assets/exit.svg"
         alt="Вернуться к чатам"
         class="sidebar__image"
       />
-    </a>
+    </router-link>
   </aside>
+  {{>change-password-dialog}} {{>change-user-data-dialog}} {{>load-file-dialog}}
 </section>
-{{>change-password-dialog}} {{>change-user-data-dialog}} {{>load-file-dialog}}

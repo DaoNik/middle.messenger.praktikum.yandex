@@ -1,12 +1,38 @@
-import { Component } from '../types.ts';
-import { EventsT, PropertiesT } from './block.ts';
+import { Block, PropertiesT } from './block.ts';
+import { IComponent } from '../types.ts';
+
+const getPropertyValue = (property: PropertiesT, key: string): any => {
+  const paths = key.split('.');
+
+  if (paths.length === 1) {
+    return property[key];
+  }
+
+  let result: any = property;
+
+  for (const path of paths) {
+    if (
+      (typeof result === 'object' &&
+        result !== null &&
+        Object.getOwnPropertyNames(result).includes(path)) ||
+      (Array.isArray(result) &&
+        Number.isNaN(Number(path)) &&
+        Number(path) >= 0 &&
+        result.length > Number(path))
+    ) {
+      result = result[path];
+    }
+  }
+
+  return result;
+};
 
 export class Template {
-  elementsContentMap = new Map<string, Set<Element>>();
+  elementsContentMap = new Map<string, Set<Element | Node>>();
 
   precompile(
     template: string,
-    declarations: Component[],
+    declarations: (Block & IComponent)[],
     blockId: string
   ): string {
     const keys = template.match(/{{>[\w-]*}}/gm);
@@ -33,47 +59,59 @@ export class Template {
     return result;
   }
 
-  compile(properties: PropertiesT, block: HTMLElement): void {
+  compile(
+    properties: PropertiesT,
+    block: HTMLElement,
+    isSave = true,
+    propertyKey?: string
+  ): void {
     if (block.children.length > 0) {
-      this._replaceTextContentChildNode(block.children, properties);
-    } else {
-      this._replaceTextContent(block, properties);
+      this._replaceTextContentChildNode(
+        block.children,
+        properties,
+        isSave,
+        propertyKey
+      );
+    }
+
+    this._replaceTextContent(block, properties, isSave, propertyKey);
+  }
+
+  addEvents(block: HTMLElement, blockClass: Block) {
+    this._addOrRemoveEvents(block, blockClass, false);
+
+    if (block.children.length > 0) {
+      this._registerEvents(block.children, blockClass, false);
     }
   }
 
-  addEvents(block: HTMLElement, functions: EventsT) {
-    this._addOrRemoveEvents(block, functions, false);
+  removeEvents(block: HTMLElement, blockClass: Block) {
+    this._addOrRemoveEvents(block, blockClass, true);
 
     if (block.children.length > 0) {
-      this._registerEvents(block.children, functions, false);
-    }
-  }
-
-  removeEvents(block: HTMLElement, functions: EventsT) {
-    this._addOrRemoveEvents(block, functions, true);
-
-    if (block.children.length > 0) {
-      this._registerEvents(block.children, functions, true);
+      this._registerEvents(block.children, blockClass, true);
     }
   }
 
   private _registerEvents(
     elements: HTMLCollection,
-    functions: EventsT,
+    blockClass: Block,
     isRemove: boolean
   ) {
     for (const element of elements) {
-      this._addOrRemoveEvents(element, functions, isRemove);
+      if (!element.attributes.getNamedItem('blockId')) {
+        this._addOrRemoveEvents(element, blockClass, isRemove);
 
-      if (element.children.length > 0) {
-        this._registerEvents(element.children, functions, isRemove);
+        if (element.children.length > 0) {
+          this._registerEvents(element.children, blockClass, isRemove);
+        }
       }
     }
   }
 
   private _addOrRemoveEvents(
     element: Element,
-    functions: EventsT,
+    blockClass: Block,
     isRemove: boolean
   ) {
     const reg = /^\(.*\)$/;
@@ -81,15 +119,15 @@ export class Template {
     for (const attribute of element.attributes) {
       if (reg.test(attribute.name)) {
         const eventName = attribute.name.slice(1, -1);
+        const prototype = Object.getPrototypeOf(blockClass);
+        const callback = prototype[attribute.value];
 
-        const callback = functions[attribute.value];
+        if (!callback || typeof callback !== 'function') return;
 
-        if (callback) {
-          if (isRemove) {
-            element.removeEventListener(eventName, callback);
-          } else {
-            element.addEventListener(eventName, callback);
-          }
+        if (isRemove) {
+          element.removeEventListener(eventName, callback.bind(blockClass));
+        } else {
+          element.addEventListener(eventName, callback.bind(blockClass));
         }
       }
     }
@@ -97,53 +135,74 @@ export class Template {
 
   private _replaceTextContentChildNode(
     children: HTMLCollection,
-    properties: PropertiesT
+    properties: PropertiesT,
+    isSave: boolean,
+    propertyKey?: string
   ) {
-    if (children.length > 0) {
-      for (const node of children) {
-        // TODO: добавить проверку на наличие blockId
+    if (children.length === 0) return;
+
+    for (const node of children) {
+      if (!node.attributes.getNamedItem('blockId')) {
         if (node.children.length > 0) {
-          this._replaceTextContentChildNode(node.children, properties);
-        } else {
-          this._replaceTextContent(node, properties);
+          this._replaceTextContentChildNode(
+            node.children,
+            properties,
+            isSave,
+            propertyKey
+          );
         }
+
+        this._replaceTextContent(node, properties, isSave, propertyKey);
       }
     }
   }
 
-  private _replaceTextContent(element: Element, properties: PropertiesT): void {
+  private _replaceTextContent(
+    element: Element | Node,
+    properties: PropertiesT,
+    isSave: boolean,
+    propertyKey?: string
+  ): void {
     const content = element.textContent;
 
-    for (const key in properties) {
-      if (this.elementsContentMap.has(key)) {
-        const elements = this.elementsContentMap.get(key)!;
+    this._renderSavedContent(properties);
 
-        for (const element of elements) {
-          const value = properties[key];
-          if (typeof value === 'string') {
-            element.textContent = value;
-          }
-        }
-      }
+    if (!content) return;
+
+    const keys = content.match(/{{[\w'().-]*}}/gm);
+
+    if (!keys || keys.length === 0 || properties['length'] === 0) {
+      return;
     }
 
-    if (content) {
-      const keys = content.match(/{{[\w-.'()]*}}/gm);
+    for (const key of keys.map((key) => key.slice(2, -2))) {
+      const regExp = new RegExp(`{{${key}}}`, 'gm');
+      const value = getPropertyValue(properties, key) ?? '';
 
-      if (!keys || keys.length === 0 || properties.length === 0) {
-        return;
+      if (isSave) {
+        const fullKey = propertyKey ? `${propertyKey}.${key}` : key;
+
+        const elements = this.elementsContentMap.get(fullKey) ?? new Set();
+
+        elements.add(element);
+        this.elementsContentMap.set(fullKey, elements);
       }
 
-      for (const key of keys.map((key) => key.slice(2, -2))) {
-        const regExp = new RegExp(`{{${key}}}`, 'gm');
-        const value = properties[key];
-        if (typeof value === 'string') {
-          const elements = this.elementsContentMap.get(key) ?? new Set();
+      if (typeof value === 'string' || typeof value === 'number') {
+        element.textContent = content.replace(regExp, String(value));
+      } else if (Array.isArray(value)) {
+        element.textContent = content.replace(regExp, value.join(', '));
+      }
+    }
+  }
 
-          elements.add(element);
-          this.elementsContentMap.set(key, elements);
-          element.textContent = content.replace(regExp, value);
-        }
+  private _renderSavedContent(properties: PropertiesT): void {
+    for (const [key, elements] of this.elementsContentMap.entries()) {
+      const value = getPropertyValue(properties, key);
+      const textContent = value ? String(value) : '';
+
+      for (const element of elements) {
+        element.textContent = textContent;
       }
     }
   }

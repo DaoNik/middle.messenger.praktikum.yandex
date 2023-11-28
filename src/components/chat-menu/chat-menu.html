@@ -1,4 +1,4 @@
-<section class="menu chat-menu" id="{{blockId}}">
+<section class="menu chat-menu" blockId="{{blockId}}">
   <button
     class="menu__button menu__button_add"
     type="button"
@@ -14,5 +14,13 @@
   >
     <img src="/assets/close.svg" alt="удалить" class="menu__icon" />
     Удалить пользователя
+  </button>
+  <button
+    class="menu__button menu__button_remove"
+    type="button"
+    (click)="onRemoveChatDialogOpened"
+  >
+    <img src="/assets/close.svg" alt="удалить" class="menu__icon" />
+    Удалить чат
   </button>
 </section>

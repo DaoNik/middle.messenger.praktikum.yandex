@@ -1,93 +1,73 @@
 import {
-  isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-} from '../../core/validators';
-import {
-  IFormControl,
-  IForm,
-  inputHandler,
+  FormGroup,
+  FormControl,
   blurHandler,
-} from '../../core/form';
-import { Component } from '../../types.ts';
+  Block,
+} from '../../core';
+import { IComponent } from '../../types.ts';
 import template from './change-password-dialog.html?raw';
+import { IUpdateUserPasswordData, UserApiService } from '../../api';
 
-export class ChangePasswordDialog extends Component {
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'oldPassword',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'newPassword',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'password_repeat',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
-  selector = 'change-password-dialog';
+interface IUpdateUserPasswordFormData extends IUpdateUserPasswordData {
+  password_repeat: string;
+}
+
+export class ChangePasswordDialog extends Block implements IComponent {
+  private readonly _userApiService = new UserApiService();
+
+  readonly form = new FormGroup<IUpdateUserPasswordFormData>({
+    oldPassword: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+    newPassword: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+    password_repeat: new FormControl(
+      '',
+      [isNotEmptyValidator, isMinimalLength],
+      6
+    ),
+  });
+  readonly selector = 'change-password-dialog';
 
   constructor() {
-    super(
-      template,
-      [],
-      {
-        oldPassword_error: '',
-        newPassword_error: '',
-        password_repeat_error: '',
-      },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-          const form = this.form;
-          if (isFormValid(form)) {
-            const formValue: Record<string, string> = {};
-            for (const [key, value] of form.controls) {
-              formValue[key] = value.value;
-            }
-            console.log(formValue);
-          }
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
-        },
-        onBlur: (event: FocusEvent) => {
-          blurHandler(event, this.form, this.props, this.element);
-        },
-        onDialogClose: () => {
-          this.element?.classList.remove('overlay_opened');
-        },
-        onDialogNotClose: (event) => {
-          event.stopPropagation();
-        },
-      }
-    );
+    super(template, [], {
+      oldPassword_error: '',
+      newPassword_error: '',
+      password_repeat_error: '',
+    });
   }
 
-  componentDidMount() {
+  override componentDidMount() {
     super.componentDidMount();
+  }
+
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    if (!this.form.valid) return;
+
+    this._userApiService
+      .updatePassword(this.form.getRawValue())
+      .then(() => {
+        this.onDialogClose();
+      })
+      .catch(console.error);
+  }
+
+  onInput(event: InputEvent) {
+    const target = event.target as HTMLInputElement;
+
+    this.form.getControl(target.name)?.setValue(event);
+  }
+
+  onBlur(event: FocusEvent) {
+    blurHandler(event, this.form, this.props, this.element);
+  }
+
+  onDialogClose() {
+    this.element?.classList.remove('overlay_opened');
+  }
+
+  onDialogNotClose(event: MouseEvent) {
+    event.stopPropagation();
   }
 }

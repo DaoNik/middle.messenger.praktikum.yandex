@@ -1,39 +1,69 @@
-import { Page500 } from './pages/500/500';
-import { Chats } from './pages/chats/chats';
-import { Block } from './core/block';
-import { Page404 } from './pages/404/404';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
-import { Profile } from './pages/profile/profile';
+import { Page500, Chats, Page404, Login, Register, Profile } from './pages';
+import { Router, RouterLink } from './core';
+import { AuthApiService, IFullUserData } from './api';
+import { AUTH_USER } from './constants.ts';
+import { StorageService, storeService } from './services';
 
 export interface IRoute {
   path: string;
   component: any;
+  canActivate?: () => Promise<boolean>;
 }
 
-const routes: IRoute[] = [
-  { path: '/chats', component: Chats },
-  { path: '/404', component: Page404 },
-  { path: '/500', component: Page500 },
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
-  { path: '/profile', component: Profile },
-];
+async function canActivate(): Promise<boolean> {
+  const storage = new StorageService();
+  const user = await storage.getItem<IFullUserData>(AUTH_USER);
 
-let currentComponent = null;
-
-if (document.location.pathname === '/') {
-  document.location.pathname = '/login';
+  return Boolean(user);
 }
 
-for (const { path, component } of routes) {
-  if (path === document.location.pathname) {
-    if (currentComponent) {
-      currentComponent.eventBus.emit(Block.EVENTS.DESTROY);
+export enum MainRoutes {
+  MESSENGER = '/messenger',
+  NOT_FOUND = '/404',
+  ERROR_PAGE = '/500',
+  SIGN_UP = '/sign-up',
+  SETTINGS = '/settings',
+  LOGIN = '/',
+}
+
+window.addEventListener(
+  'DOMContentLoaded',
+  async () => {
+    const routes: IRoute[] = [
+      { path: MainRoutes.MESSENGER, component: Chats, canActivate },
+      { path: MainRoutes.NOT_FOUND, component: Page404 },
+      { path: MainRoutes.ERROR_PAGE, component: Page500 },
+      { path: MainRoutes.LOGIN, component: Login },
+      { path: MainRoutes.SIGN_UP, component: Register },
+      { path: MainRoutes.SETTINGS, component: Profile, canActivate },
+    ];
+
+    const router = new Router('#root');
+
+    for (const route of routes) {
+      router.use(route);
     }
 
-    currentComponent = new component();
-    document.querySelector('#root')!.innerHTML = currentComponent.content;
-    currentComponent.eventBus.emit(Block.EVENTS.FLOW_CDM);
-  }
-}
+    await router.start();
+
+    const authService = new AuthApiService();
+
+    authService.user().then((data) => {
+      if (!data) return;
+
+      storeService.set('user', data);
+
+      if (
+        document.location.pathname === MainRoutes.LOGIN ||
+        document.location.pathname === MainRoutes.SIGN_UP
+      ) {
+        router.go(MainRoutes.MESSENGER);
+      }
+    });
+
+    if (!customElements.get('router-link')) {
+      customElements.define('router-link', RouterLink);
+    }
+  },
+  { once: true }
+);

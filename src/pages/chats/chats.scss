@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 310px 1fr;
   height: 100%;
+  width: 100%;
 }
 
 .chats {
@@ -10,12 +11,28 @@
   height: 100%;
   overflow-y: scroll;
   background: var(--light-black);
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid #eaeaea;
   display: grid;
   grid-template-rows: auto auto 1fr;
 
+  &__actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 0;
+  }
+
+  &__add-chat {
+    border: none;
+    background: none;
+    color: var(--green);
+    font-size: 12px;
+    line-height: 12px;
+    cursor: pointer;
+  }
+
   &__profile-link {
-    margin: 21px 10px 0;
     text-align: right;
     text-decoration: none;
     color: var(--green);
@@ -42,7 +59,7 @@
 
   &__list {
     list-style: none;
-    padding: 0 10px;
+    padding: 0;
     margin-top: 10px;
   }
 
@@ -52,9 +69,13 @@
     grid-template-rows: 17px auto;
     column-gap: 10px;
     height: 73px;
-    border-top: 1px solid #EAEAEA;
-    border-bottom: 1px solid #EAEAEA;
-    padding: 12px 0;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    padding: 12px 10px;
+
+    &-active {
+      background-color: #7a7c8d7f;
+    }
   }
 
   &__item-title {
@@ -85,6 +106,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    word-wrap: break-word;
   }
 
   &__item-time {
@@ -99,6 +121,7 @@
     width: 20px;
     height: 20px;
     align-self: flex-end;
+    justify-self: flex-end;
     grid-column: 3/4;
     grid-row: 2/3;
     font-size: 11px;
@@ -106,7 +129,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #25D366;
+    background: #25d366;
     border-radius: 50%;
   }
 }
@@ -115,14 +138,14 @@
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-rows: 54px 1fr 54px;
+  grid-template-rows: 54px 1fr auto;
   grid-column: 2/3;
   row-gap: 20px;
   padding: 0 20px;
 
   &__header {
     display: flex;
-    border-bottom: 1px solid #EAEAEA;
+    border-bottom: 1px solid #eaeaea;
     align-items: center;
   }
 
@@ -132,7 +155,7 @@
     font-weight: 500;
   }
 
-  &__avatar{
+  &__avatar {
     order: -1;
     width: 34px;
     height: 34px;
@@ -141,14 +164,14 @@
 
   &__menu {
     margin-left: auto;
-    background: #1C1D26;
+    background: #1c1d26;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 25px;
     height: 25px;
-    border: 1px solid #B5BFD633;
+    border: 1px solid #b5bfd633;
   }
 
   &__menu-image {
@@ -182,6 +205,7 @@
 
   &__message_to-user {
     grid-column: 1/2;
+    justify-self: flex-start;
   }
 
   &__message_from-user {
@@ -192,10 +216,11 @@
   &__message {
     position: relative;
     border-radius: 10px;
+    min-width: 100px;
   }
 
   &__message-with-text {
-    border: 1px solid #B5BFD633;
+    border: 1px solid #b5bfd633;
     background: var(--light-black);
     padding: 11px 11px 15px;
   }
@@ -223,7 +248,7 @@
   }
 
   &__user-messages &__message-with-text {
-    background: #7A7C8D80;
+    background: #7a7c8d80;
   }
 
   &__message-with-text &__message-time {
@@ -243,7 +268,7 @@
     grid-template-columns: 32px 1fr 28px;
     column-gap: 10px;
     padding: 11px 0;
-    border-top: 1px solid #EAEAEA;
+    border-top: 1px solid #eaeaea;
     align-items: center;
   }
 
@@ -251,11 +276,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
   }
 
   &__input {
     background: var(--light-black);
-    border: 1px solid #B5BFD633;
+    border: 1px solid #b5bfd633;
     border-radius: 30px;
     color: #fff;
     outline: none;
@@ -273,6 +301,17 @@
     border-radius: 50%;
     width: 28px;
     height: 28px;
+  }
+
+  &__load-files {
+    height: 100px;
+    padding-top: 10px;
+    display: flex;
+    grid-column: 1/-1;
+  }
+
+  &__load-files_empty {
+    display: none;
   }
 
   &__message-status {

@@ -15,6 +15,14 @@ interface IHttpOptions {
   method?: string;
 }
 
+type HTTPMethod = <R = unknown>(
+  url: string,
+  options?: IHttpOptions,
+  withCredentials?: boolean
+) => Promise<R>;
+
+const CONTENT_TYPE = 'Content-Type';
+
 function queryStringify(data: HttpDataT) {
   // eslint-disable-next-line unicorn/no-array-reduce
   return Object.keys(data).reduce((result, key, index, keys) => {
@@ -23,55 +31,96 @@ function queryStringify(data: HttpDataT) {
 }
 
 export class HTTPTransport {
-  get(url: string, options: IHttpOptions = {}) {
+  get: HTTPMethod = (url, options = {}, withCredentials) => {
     if (options.data && Object.keys(options.data).length > 0) {
       url += queryStringify(options.data);
     }
 
     return this.request(
       url,
-      { ...options, method: METHODS.GET },
-      options.timeout
+      {
+        ...options,
+        method: METHODS.GET,
+        headers: { Accept: 'application/json', ...options.headers },
+      },
+      options.timeout,
+      withCredentials
     );
-  }
+  };
 
-  post(url: string, options: IHttpOptions = {}) {
+  post: HTTPMethod = (url, options = {}, withCredentials) => {
+    const headers = { ...options.headers };
+
+    if (!(options.data instanceof FormData)) {
+      headers[CONTENT_TYPE] = 'application/json';
+    }
+
     return this.request(
       url,
-      { ...options, method: METHODS.POST },
-      options.timeout
+      {
+        ...options,
+        method: METHODS.POST,
+        headers: headers,
+      },
+      options.timeout,
+      withCredentials
     );
-  }
+  };
 
-  put(url: string, options: IHttpOptions = {}) {
+  put: HTTPMethod = (url, options = {}, withCredentials) => {
+    const headers = { ...options.headers };
+
+    if (!(options.data instanceof FormData)) {
+      headers[CONTENT_TYPE] = 'application/json';
+    }
+
     return this.request(
       url,
-      { ...options, method: METHODS.PUT },
-      options.timeout
+      {
+        ...options,
+        method: METHODS.PUT,
+        headers: headers,
+      },
+      options.timeout,
+      withCredentials
     );
-  }
+  };
 
-  patch(url: string, options: IHttpOptions = {}) {
+  patch: HTTPMethod = (url, options = {}, withCredentials) => {
     return this.request(
       url,
       { ...options, method: METHODS.PATCH },
-      options.timeout
+      options.timeout,
+      withCredentials
     );
-  }
+  };
 
-  delete(url: string, options: IHttpOptions = {}) {
+  delete: HTTPMethod = (url, options = {}, withCredentials) => {
+    const headers = { ...options.headers };
+
+    if (!(options.data instanceof FormData)) {
+      headers[CONTENT_TYPE] = 'application/json';
+    }
+
     return this.request(
       url,
-      { ...options, method: METHODS.DELETE },
-      options.timeout
+      { ...options, method: METHODS.DELETE, headers },
+      options.timeout,
+      withCredentials
     );
-  }
+  };
 
-  request(url: string, options: IHttpOptions, timeout = 5000) {
+  request<T>(
+    url: string,
+    options: IHttpOptions,
+    timeout = 5000,
+    withCredentials = true
+  ): Promise<T> {
     const { method = '', data, headers = {} } = options;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<XMLHttpRequest>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
+      xhr.withCredentials = withCredentials;
 
       xhr.open(method, url);
 
@@ -92,9 +141,26 @@ export class HTTPTransport {
 
       if (method === METHODS.GET || !data) {
         xhr.send();
+      } else if (data instanceof FormData) {
+        xhr.send(data);
       } else {
         xhr.send(JSON.stringify(data));
       }
-    });
+    })
+      .then((data) => {
+        if (data.status >= 400) {
+          throw data;
+        }
+
+        return data;
+      })
+      .then((data) => {
+        // NOTE: this code only handles a possible error when parsing data, because the server can return a response - "OK"
+        try {
+          return JSON.parse(data.response);
+        } catch {
+          return data.response;
+        }
+      });
   }
 }

@@ -1,72 +1,61 @@
 import {
-  isFormValid,
   isMinimalLength,
   isNotEmptyValidator,
-} from '../../core/validators';
-import {
-  blurHandler,
-  IForm,
-  IFormControl,
+  Router,
   inputHandler,
-} from '../../core/form';
-import { Component } from '../../types.ts';
+  blurHandler,
+  FormGroup,
+  FormControl,
+  Block,
+} from '../../core';
 import template from './login-form.html?raw';
+import { AuthApiService, IAuthCredentials } from '../../api';
+import { IComponent } from '../../types.ts';
 
-export class LoginForm extends Component {
-  form: IForm = {
-    controls: new Map<string, IFormControl>([
-      [
-        'login',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 4,
-          valid: false,
-          error: '',
-        },
-      ],
-      [
-        'password',
-        {
-          value: '',
-          validators: [isNotEmptyValidator, isMinimalLength],
-          minLength: 6,
-          valid: false,
-          error: '',
-        },
-      ],
-    ]),
-    valid: false,
-  };
+export class LoginForm extends Block implements IComponent {
+  private readonly _authApiService = new AuthApiService();
+  private readonly _router = Router.__instance;
+
+  readonly form = new FormGroup<IAuthCredentials>({
+    login: new FormControl('', [isNotEmptyValidator, isMinimalLength], 4),
+    password: new FormControl('', [isNotEmptyValidator, isMinimalLength], 6),
+  });
+
   selector = 'login-form';
 
   constructor() {
-    super(
-      template,
-      [],
-      {
-        login_error: '',
-        password_error: '',
-      },
-      {
-        onSubmit: (event: SubmitEvent) => {
-          event.preventDefault();
-          const form = this.form;
-          if (isFormValid(form)) {
-            const formValue: Record<string, string> = {};
-            for (const [key, value] of form.controls) {
-              formValue[key] = value.value;
-            }
-            console.log(formValue);
-          }
-        },
-        onInput: (event: InputEvent) => {
-          inputHandler(event, this.form.controls);
-        },
-        onBlur: (event: FocusEvent) => {
-          blurHandler(event, this.form, this.props, this.element);
-        },
-      }
-    );
+    super(template, [], {
+      login_error: '',
+      password_error: '',
+    });
+  }
+
+  onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    if (!this.form.valid) return;
+
+    this._authApiService
+      .signIn(this.form.getRawValue())
+      .then(() => {
+        return this._authApiService.user();
+      })
+      .then((value) => {
+        if (!value) {
+          throw new Error('Get user error');
+        }
+
+        return value;
+      })
+      .then(() => this._router.go('/messenger'))
+      .catch(console.error);
+  }
+
+  onInput(event: InputEvent) {
+    inputHandler(event, this.form);
+  }
+
+  onBlur(event: FocusEvent) {
+    blurHandler(event, this.form, this.props, this.element);
   }
 }

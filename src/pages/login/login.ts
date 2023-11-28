@@ -1,6 +1,6 @@
-import { LoginForm } from '../../components/login-form/login-form';
+import { LoginForm } from '../../components';
 import template from './login.html?raw';
-import { Block } from '../../core/block.ts';
+import { Block } from '../../core';
 
 export class Login extends Block {
   constructor() {

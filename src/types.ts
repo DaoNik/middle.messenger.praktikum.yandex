@@ -1,5 +1,9 @@
-import { Block } from './core/block.ts';
+export type Indexed<T = any> = {
+  [key in string]: T;
+};
 
-export abstract class Component extends Block {
-  abstract selector: string;
+export type NonEmptyArrayT<T = any> = [T, ...T[]];
+
+export interface IComponent {
+  selector: string;
 }

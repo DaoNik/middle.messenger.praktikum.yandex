@@ -78,3 +78,13 @@ button[type='submit'][disabled] {
     color: #fff;
   }
 }
+
+router-link {
+  cursor: pointer;
+}
+
+.button {
+  &__warn {
+    background: red;
+  }
+}

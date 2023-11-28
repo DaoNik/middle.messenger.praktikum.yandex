@@ -21,12 +21,12 @@
     <h1 class="visually-hidden">Messenger</h1>
     <!--    TODO: удалить после подключения полноценного роутинга-->
     <nav class="nav-menu">
-      <a href="/404">page 404</a>
-      <a href="/500">page 500</a>
-      <a href="/chats">chats</a>
-      <a href="/login">login</a>
-      <a href="/profile">profile</a>
-      <a href="/register">register</a>
+      <router-link link="/404">page 404</router-link>
+      <router-link link="/500">page 500</router-link>
+      <router-link link="/messenger">chats</router-link>
+      <router-link link="/">login</router-link>
+      <router-link link="/settings">profile</router-link>
+      <router-link link="/sign-up">register</router-link>
     </nav>
     <main id="root"></main>
     <script type="module" src="./src/index.ts"></script>

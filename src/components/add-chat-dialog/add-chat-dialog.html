@@ -1,0 +1,23 @@
+<div
+  class="overlay overlay-add-chat"
+  blockId="{{blockId}}"
+  (click)="onDialogClose"
+>
+  <section class="dialog" (click)="onDialogNotClose">
+    <h3 class="dialog__title">Добавить чат</h3>
+    <form name="add-chat" (submit)="onSubmit">
+      <label class="dialog__label">
+        <input
+          class="dialog__input"
+          placeholder="Название чата"
+          type="text"
+          name="title"
+          (input)="onInput"
+          (blur)="onBlur"
+        />
+        <span class="auth__input-error">{{title_error}}</span>
+      </label>
+      <button class="dialog__submit" type="submit" disabled>Добавить</button>
+    </form>
+  </section>
+</div>

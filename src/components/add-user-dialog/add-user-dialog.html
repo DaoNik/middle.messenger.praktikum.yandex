@@ -1,4 +1,8 @@
-<div class="overlay overlay-add-user" id="{{blockId}}" (click)="onDialogClose">
+<div
+  class="overlay overlay-add-user"
+  blockId="{{blockId}}"
+  (click)="onDialogClose"
+>
   <section class="dialog" (click)="onDialogNotClose">
     <h3 class="dialog__title">Добавить пользователя</h3>
     <form name="add-user" (submit)="onSubmit">
