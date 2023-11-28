@@ -31,11 +31,7 @@ function queryStringify(data: HttpDataT) {
 }
 
 export class HTTPTransport {
-  get: HTTPMethod = (
-    url: string,
-    options: IHttpOptions = {},
-    withCredentials?: boolean
-  ) => {
+  get: HTTPMethod = (url, options = {}, withCredentials) => {
     if (options.data && Object.keys(options.data).length > 0) {
       url += queryStringify(options.data);
     }
@@ -52,11 +48,7 @@ export class HTTPTransport {
     );
   };
 
-  post: HTTPMethod = (
-    url: string,
-    options: IHttpOptions = {},
-    withCredentials?: boolean
-  ) => {
+  post: HTTPMethod = (url, options = {}, withCredentials) => {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
@@ -75,11 +67,7 @@ export class HTTPTransport {
     );
   };
 
-  put: HTTPMethod = (
-    url: string,
-    options: IHttpOptions = {},
-    withCredentials?: boolean
-  ) => {
+  put: HTTPMethod = (url, options = {}, withCredentials) => {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
@@ -98,11 +86,7 @@ export class HTTPTransport {
     );
   };
 
-  patch: HTTPMethod = (
-    url: string,
-    options: IHttpOptions = {},
-    withCredentials?: boolean
-  ) => {
+  patch: HTTPMethod = (url, options = {}, withCredentials) => {
     return this.request(
       url,
       { ...options, method: METHODS.PATCH },
@@ -111,11 +95,7 @@ export class HTTPTransport {
     );
   };
 
-  delete: HTTPMethod = (
-    url: string,
-    options: IHttpOptions = {},
-    withCredentials?: boolean
-  ) => {
+  delete: HTTPMethod = (url, options = {}, withCredentials) => {
     const headers = { ...options.headers };
 
     if (!(options.data instanceof FormData)) {
