@@ -39,7 +39,8 @@ export class Template {
     let result = template;
     const componentsMap = new Map<string, string>();
 
-    result = result.replaceAll(/{{blockId}}/gm, blockId);
+    // eslint-disable-next-line unicorn/prefer-string-replace-all
+    result = result.replace(/{{blockId}}/gm, blockId);
 
     if (!keys || keys.length === 0 || declarations.length === 0) {
       return result;

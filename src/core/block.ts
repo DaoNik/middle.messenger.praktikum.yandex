@@ -1,7 +1,7 @@
 import { EventBus } from './event-bus';
-import { v4 as uuidV4 } from 'uuid';
 import { Template } from './template.ts';
 import { IComponent } from '../types.ts';
+import { nanoid } from 'nanoid';
 
 export type EventT = (...parameters: any[]) => void;
 export type PropertiesT = Record<string, any>;
@@ -17,7 +17,7 @@ export enum BlockEvents {
 export abstract class Block<Properties extends PropertiesT = any> {
   eventBus = new EventBus();
   props: Properties;
-  blockId = uuidV4();
+  blockId = nanoid();
   content: string;
   templater = new Template();
   declarations: (Block & IComponent)[];
