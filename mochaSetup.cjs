@@ -1,6 +1,6 @@
 const { JSDOM } = require('jsdom');
 
-const { window } = new JSDOM('<div id="app"></div>', {
+const { window } = new JSDOM('<main id="root"></main>', {
   url: 'http://localhost:5173'
 });
 
