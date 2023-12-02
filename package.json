@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "npm run build && node app.js",
+    "start": "npm run build && node app.cjs",
     "lint": "npx eslint . --fix && stylelint '**/*{.css, .scss}' --fix",
     "test": "nyc mocha --require ts-node/register --require ./mochaSetup.cjs './src/**/*.spec.ts'",
     "prepare": "husky install"
