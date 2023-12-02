@@ -23,7 +23,7 @@ type HTTPMethod = <R = unknown>(
 
 const CONTENT_TYPE = 'Content-Type';
 
-function queryStringify(data: HttpDataT) {
+export function queryStringify(data: HttpDataT) {
   // eslint-disable-next-line unicorn/no-array-reduce
   return Object.keys(data).reduce((result, key, index, keys) => {
     return `${result}${key}=${data[key]}${index < keys.length - 1 ? '&' : ''}`;
@@ -36,7 +36,7 @@ export class HTTPTransport {
       url += queryStringify(options.data);
     }
 
-    return this.request(
+    return this._request(
       url,
       {
         ...options,
@@ -55,7 +55,7 @@ export class HTTPTransport {
       headers[CONTENT_TYPE] = 'application/json';
     }
 
-    return this.request(
+    return this._request(
       url,
       {
         ...options,
@@ -74,12 +74,12 @@ export class HTTPTransport {
       headers[CONTENT_TYPE] = 'application/json';
     }
 
-    return this.request(
+    return this._request(
       url,
       {
         ...options,
         method: METHODS.PUT,
-        headers: headers,
+        headers,
       },
       options.timeout,
       withCredentials
@@ -87,9 +87,19 @@ export class HTTPTransport {
   };
 
   patch: HTTPMethod = (url, options = {}, withCredentials) => {
-    return this.request(
+    const headers = { ...options.headers };
+
+    if (!(options.data instanceof FormData)) {
+      headers[CONTENT_TYPE] = 'application/json';
+    }
+
+    return this._request(
       url,
-      { ...options, method: METHODS.PATCH },
+      {
+        ...options,
+        method: METHODS.PATCH,
+        headers,
+      },
       options.timeout,
       withCredentials
     );
@@ -102,7 +112,7 @@ export class HTTPTransport {
       headers[CONTENT_TYPE] = 'application/json';
     }
 
-    return this.request(
+    return this._request(
       url,
       { ...options, method: METHODS.DELETE, headers },
       options.timeout,
@@ -110,7 +120,7 @@ export class HTTPTransport {
     );
   };
 
-  request<T>(
+  private _request<T>(
     url: string,
     options: IHttpOptions,
     timeout = 5000,
