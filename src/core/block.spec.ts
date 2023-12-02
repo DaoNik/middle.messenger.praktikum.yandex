@@ -1,40 +1,24 @@
-import { Block } from './block.ts';
 import { beforeEach } from 'mocha';
 import { expect } from 'chai';
 import sinon from 'sinon';
-
-class TestPage extends Block<{ testText: string }> {
-  constructor() {
-    super(
-      '<div blockId="{{blockId}}" (click)="onBlockClicked">{{testText}}</div>',
-      [],
-      {
-        testText: 'test',
-      }
-    );
-  }
-
-  onBlockClicked(): void {
-    this.props.testText = 'onBlockClicked';
-  }
-}
+import { ROOT_QUERY_MOCK, TestPage } from './fixtures.ts';
 
 describe('Block', () => {
   let testPage: TestPage;
 
   beforeEach(() => {
     testPage = new TestPage();
-    const root = document.querySelector('#root');
+    const root = document.querySelector(ROOT_QUERY_MOCK);
     root?.insertAdjacentHTML('afterbegin', testPage.content);
   });
 
   afterEach(() => {
-    const root = document.querySelector('#root');
+    const root = document.querySelector(ROOT_QUERY_MOCK);
     root!.innerHTML = '';
   });
 
   it('should be created', () => {
-    expect(testPage).to.exist;
+    expect(testPage).to.be.exist;
   });
 
   it('should correctly compile component', () => {

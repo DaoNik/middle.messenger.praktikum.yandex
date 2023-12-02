@@ -1,14 +1,8 @@
 import { Page500, Chats, Page404, Login, Register, Profile } from './pages';
-import { Router, RouterLink } from './core';
+import { IRoute, Router, RouterLink } from './core';
 import { AuthApiService, IFullUserData } from './api';
 import { AUTH_USER } from './constants.ts';
 import { StorageService, storeService } from './services';
-
-export interface IRoute {
-  path: string;
-  component: any;
-  canActivate?: () => Promise<boolean>;
-}
 
 async function canActivate(): Promise<boolean> {
   const storage = new StorageService();
@@ -51,7 +45,11 @@ window.addEventListener(
     authService.user().then((data) => {
       if (!data) return;
 
-      storeService.set('user', data);
+      try {
+        storeService.set('user', data);
+      } catch (error) {
+        console.error(error);
+      }
 
       if (
         document.location.pathname === MainRoutes.LOGIN ||

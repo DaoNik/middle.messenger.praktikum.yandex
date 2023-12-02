@@ -1,69 +1,9 @@
-import { Block, BlockEvents } from './block.ts';
-import { IRoute, MainRoutes } from '../index.ts';
+import { Route } from './route.ts';
 
-function isEqual(lhs: string, rhs: string) {
-  return lhs === rhs;
-}
-
-class Route {
-  private readonly _blockClass: any;
-
-  private _block: null | Block;
-  private _query: string;
-  private _pathname: string;
-
-  canActivate: (() => Promise<boolean>) | null;
-
-  constructor(
-    pathname: string,
-    view: any,
-    query: string,
-    canActivate?: () => Promise<boolean>
-  ) {
-    this._pathname = pathname;
-    this._blockClass = view;
-    this._block = null;
-    this._query = query;
-    this.canActivate = canActivate ?? null;
-  }
-
-  navigate(pathname: string) {
-    if (this.match(pathname)) {
-      this._pathname = pathname;
-      this.render();
-    }
-  }
-
-  leave() {
-    if (this._block) {
-      this._block.hide();
-    }
-  }
-
-  match(pathname: string) {
-    if (
-      pathname.includes(MainRoutes.MESSENGER) &&
-      this._pathname === MainRoutes.MESSENGER
-    ) {
-      return true;
-    }
-
-    return isEqual(pathname, this._pathname);
-  }
-
-  render() {
-    const root = document.querySelector(this._query)!;
-
-    if (!this._block) {
-      this._block = new this._blockClass() as Block;
-      root.innerHTML = this._block.content;
-      this._block.eventBus.emit(BlockEvents.FLOW_CDM);
-      return;
-    }
-
-    this._block.show();
-    root.insertAdjacentElement('afterbegin', this._block.element!);
-  }
+export interface IRoute {
+  path: string;
+  component: any;
+  canActivate?: () => Promise<boolean>;
 }
 
 export class Router {
@@ -106,8 +46,6 @@ export class Router {
   }
 
   async go(pathname: string) {
-    this.history.pushState({}, '', pathname);
-
     await this._onRoute(pathname);
   }
 
@@ -136,6 +74,8 @@ export class Router {
       console.error(`you do not have access to ${pathname} page`);
       return;
     }
+
+    this.history.pushState({}, '', pathname);
 
     if (this._currentRoute) {
       this._currentRoute.leave();
