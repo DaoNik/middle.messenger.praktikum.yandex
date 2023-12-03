@@ -11,6 +11,12 @@
     "test": "nyc mocha --require ts-node/register --require ./mochaSetup.cjs './src/**/*.spec.ts'",
     "prepare": "husky install"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx --no-install lint-staged",
+      "pre-push": "npm run test"
+    }
+  },
   "lint-staged": {
     "*.{css,scss}": [
       "./node_modules/.bin/stylelint --fix"
