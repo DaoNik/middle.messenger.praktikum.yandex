@@ -558,7 +558,9 @@ class BaseChats extends Block<IChatsProperties> {
 
     const formattedChat = {
       ...chat,
-      avatar: avatar ?? '/assets/no-avatar.svg',
+      avatar: avatar
+        ? `${BASE_HREF}/resources${avatar}`
+        : '/assets/no-avatar.svg',
       last_message: correctLastMessage,
     };
 
