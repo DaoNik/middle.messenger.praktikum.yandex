@@ -13,7 +13,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx --no-install lint-staged",
+      "pre-commit": "npm run test & npm run lint",
       "pre-push": "npm run test"
     }
   },
