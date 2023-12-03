@@ -45,17 +45,17 @@ window.addEventListener(
     authService.user().then((data) => {
       if (!data) return;
 
-      try {
-        storeService.set('user', data);
-      } catch (error) {
-        console.error(error);
-      }
-
       if (
         document.location.pathname === MainRoutes.LOGIN ||
         document.location.pathname === MainRoutes.SIGN_UP
       ) {
         router.go(MainRoutes.MESSENGER);
+      }
+
+      try {
+        storeService.set('user', data);
+      } catch (error) {
+        console.error(error);
       }
     });
 

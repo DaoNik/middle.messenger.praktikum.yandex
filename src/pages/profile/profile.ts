@@ -5,10 +5,11 @@ import {
 } from '../../components';
 import template from './profile.html?raw';
 import { Block, Router } from '../../core';
-import { AuthApiService, BASE_HREF, IFullUserData } from '../../api';
+import { AuthApiService, IFullUserData } from '../../api';
 import { IState, storeService, withStore } from '../../services';
 import { IComponent } from '../../types.ts';
 import { isEmpty } from '../../utils';
+import { getImgSource } from '../../constants.ts';
 
 class BaseProfile extends Block<IFullUserData> {
   private readonly _authApiService = new AuthApiService();
@@ -87,7 +88,7 @@ class BaseProfile extends Block<IFullUserData> {
       const { avatar } = user;
 
       if (avatar) {
-        image.src = `${BASE_HREF}/resources${avatar}`;
+        image.src = getImgSource(avatar);
       }
     }
   }

@@ -15,7 +15,7 @@
     "*.{css,scss}": [
       "./node_modules/.bin/stylelint --fix"
     ],
-    "*.{ts,js,html,json,json5,jsonc,md,mdx}": [
+    "*.{ts,js,html}": [
       "npx eslint . --fix"
     ]
   },

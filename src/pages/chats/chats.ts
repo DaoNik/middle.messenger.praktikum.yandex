@@ -15,7 +15,6 @@ import {
 } from '../../core';
 import template from './chats.html?raw';
 import {
-  BASE_HREF,
   ChatsApiService,
   IChatData,
   IFullUserData,
@@ -32,7 +31,7 @@ import {
   storeService,
   withStore,
 } from '../../services';
-import { AUTH_USER, CURRENT_CHAT_ID } from '../../constants.ts';
+import { AUTH_USER, CURRENT_CHAT_ID, getImgSource } from '../../constants.ts';
 import {
   getTime,
   isEmpty,
@@ -320,7 +319,7 @@ class BaseChats extends Block<IChatsProperties> {
       .then((file) => {
         const image = document.createElement('IMG') as HTMLImageElement;
 
-        image.src = `${BASE_HREF}/resources${file.path}`;
+        image.src = getImgSource(file.path);
         image.alt = file.filename;
 
         const loadFilesContainer = document.querySelector(
@@ -558,9 +557,7 @@ class BaseChats extends Block<IChatsProperties> {
 
     const formattedChat = {
       ...chat,
-      avatar: avatar
-        ? `${BASE_HREF}/resources${avatar}`
-        : '/assets/no-avatar.svg',
+      avatar: avatar ? getImgSource(avatar) : '/assets/no-avatar.svg',
       last_message: correctLastMessage,
     };
 
@@ -592,7 +589,7 @@ class BaseChats extends Block<IChatsProperties> {
         '.chat__message-photo'
       ) as HTMLImageElement;
 
-      image.src = `${BASE_HREF}/resources${file?.path ?? ''}`;
+      image.src = getImgSource(file?.path ?? '');
       image.alt = file?.filename ?? '';
     } else {
       documentFragment = messageWithTextTemplateContent.cloneNode(
