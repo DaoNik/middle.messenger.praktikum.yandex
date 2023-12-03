@@ -6,8 +6,9 @@ import {
 import template from './profile.html?raw';
 import { Block, Router } from '../../core';
 import { AuthApiService, BASE_HREF, IFullUserData } from '../../api';
-import { IState, withStore } from '../../services';
+import { IState, storeService, withStore } from '../../services';
 import { IComponent } from '../../types.ts';
+import { isEmpty } from '../../utils';
 
 class BaseProfile extends Block<IFullUserData> {
   private readonly _authApiService = new AuthApiService();
@@ -26,6 +27,19 @@ class BaseProfile extends Block<IFullUserData> {
         display: 'flex',
       }
     );
+  }
+
+  override componentDidMount() {
+    if (isEmpty(this.props)) {
+      const { user } = storeService.getState();
+
+      if (user) {
+        this.props = user;
+        this._renderProfile(user);
+      }
+    }
+
+    super.componentDidMount();
   }
 
   override render(
