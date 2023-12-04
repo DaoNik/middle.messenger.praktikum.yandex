@@ -5,12 +5,20 @@ import {
 } from '../../components';
 import template from './profile.html?raw';
 import { Block, Router } from '../../core';
-import { AuthApiService, BASE_HREF, IFullUserData } from '../../api';
-import { IState, withStore } from '../../services';
+import { AuthApiService, IFullUserData } from '../../api';
+import {
+  IState,
+  StorageService,
+  storeService,
+  withStore,
+} from '../../services';
 import { IComponent } from '../../types.ts';
+import { isEmpty } from '../../utils';
+import { AUTH_USER, getImgSource } from '../../constants.ts';
 
 class BaseProfile extends Block<IFullUserData> {
   private readonly _authApiService = new AuthApiService();
+  private readonly _storageService = new StorageService();
   private readonly _router = Router.__instance;
 
   constructor() {
@@ -26,6 +34,28 @@ class BaseProfile extends Block<IFullUserData> {
         display: 'flex',
       }
     );
+  }
+
+  override async componentDidMount() {
+    if (isEmpty(this.props)) {
+      const { user } = storeService.getState();
+
+      if (user) {
+        this.props = user;
+        this._renderProfile(user);
+      } else {
+        const userData = await this._storageService.getItem<IFullUserData>(
+          AUTH_USER
+        );
+
+        if (userData) {
+          this.props = userData;
+          this._renderProfile(userData);
+        }
+      }
+    }
+
+    super.componentDidMount();
   }
 
   override render(
@@ -73,7 +103,7 @@ class BaseProfile extends Block<IFullUserData> {
       const { avatar } = user;
 
       if (avatar) {
-        image.src = `${BASE_HREF}/resources${avatar}`;
+        image.src = getImgSource(avatar);
       }
     }
   }

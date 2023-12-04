@@ -30,5 +30,5 @@
     "unicorn/no-invalid-remove-event-listener": "off",
     "unicorn/prefer-regexp-test": "off"
   },
-  "ignorePatterns": ["**/*.js", "**/*.d.ts"]
+  "ignorePatterns": ["**/*.js", "**/*.d.ts", "**/*.json"]
 }
